@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Food Donations | KisanKart</title>
+
+    <style>
+        /* =========================================================
+           RESET & GLOBAL
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f8f4eb;
+            color: #183247;
+            min-height: 100vh;
+        }
+
+
+        /* =========================================================
+           TOP NAVIGATION BAR
+        ========================================================= */
+
+        .topbar {
+            background: #122d3d;
+            color: white;
+
+            padding: 20px 6%;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .back {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .back:hover {
+            opacity: 0.8;
+        }
+
+
+        /* =========================================================
+           MAIN CONTAINER
+        ========================================================= */
+
+        .container {
+            max-width: 1100px;
+            margin: 45px auto;
+            padding: 0 24px;
+        }
+
+
+        /* =========================================================
+           PAGE HEADER
+        ========================================================= */
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .eyebrow {
+            letter-spacing: 3px;
+            color: #c77b13;
+
+            font-weight: 700;
+            font-size: 13px;
+
+            margin-bottom: 14px;
+        }
+
+        .title {
+            font-family: Georgia, serif;
+            font-size: 44px;
+
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #71808b;
+
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+
+        /* =========================================================
+           DONATE BUTTON
+        ========================================================= */
+
+        .donate-btn {
+            display: inline-block;
+
+            background: #c77b13;
+            color: white;
+
+            text-decoration: none;
+
+            padding: 13px 20px;
+
+            border-radius: 12px;
+
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+        .donate-btn:hover {
+            background: #a9630c;
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================================================
+           DONATION GRID
+        ========================================================= */
+
+        .grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(310px, 1fr));
+
+            gap: 22px;
+        }
+
+
+        /* =========================================================
+           DONATION CARD
+        ========================================================= */
+
+        .card {
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 24px;
+
+            box-shadow:
+                0 10px 28px rgba(0, 0, 0, 0.08);
+
+            border: 1px solid #eee6d8;
+
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 14px 32px rgba(0, 0, 0, 0.10);
+        }
+
+
+        /* =========================================================
+           FOOD ICON
+        ========================================================= */
+
+        .icon {
+            width: 54px;
+            height: 54px;
+
+            border-radius: 15px;
+
+            background: #fff4df;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 27px;
+
+            margin-bottom: 16px;
+        }
+
+
+        /* =========================================================
+           FOOD IMAGE
+        ========================================================= */
+
+        .food-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 16px;
+            display: block;
+            margin-bottom: 18px;
+            border: 1px solid #eee6d8;
+        }
+
+        /* =========================================================
+           FOOD NAME
+        ========================================================= */
+
+        .card h2 {
+            font-size: 21px;
+
+            margin-bottom: 16px;
+
+            color: #183247;
+        }
+
+
+        /* =========================================================
+           DONATION INFORMATION ROW
+        ========================================================= */
+
+        .row {
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 11px 0;
+
+            border-bottom: 1px solid #eee;
+        }
+
+        .label {
+            color: #7a8790;
+        }
+
+        .value {
+            font-weight: 700;
+
+            text-align: right;
+
+            word-break: break-word;
+        }
+
+
+        /* =========================================================
+           NGO NAME
+        ========================================================= */
+
+        .ngo {
+            color: #2e7d32;
+            font-weight: 700;
+        }
+
+
+        /* =========================================================
+           STATUS BADGE
+        ========================================================= */
+
+        .status {
+            display: inline-block;
+
+            margin-top: 17px;
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            background: #fff3cd;
+
+            color: #856404;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================= */
+
+        .empty {
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 55px 25px;
+
+            text-align: center;
+
+            box-shadow:
+                0 10px 28px rgba(0, 0, 0, 0.06);
+        }
+
+        .empty-icon {
+            font-size: 50px;
+
+            margin-bottom: 15px;
+        }
+
+        .empty h2 {
+            margin-bottom: 8px;
+        }
+
+        .empty p {
+            color: #7a8790;
+
+            line-height: 1.6;
+
+            max-width: 600px;
+
+            margin: 0 auto;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE DESIGN
+        ========================================================= */
+
+        @media (max-width: 700px) {
+
+            .topbar {
+                padding: 18px 20px;
+            }
+
+            .header-row {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .title {
+                font-size: 36px;
+            }
+
+            .container {
+                margin-top: 30px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .row {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- =========================================================
+         TOP BAR
+    ========================================================= -->
+
+    <header class="topbar">
+
+        <div class="brand">
+            🌱 KisanKart
+        </div>
+
+        <a
+            class="back"
+            href="{{ url_for('buyer_dashboard') }}"
+        >
+            ← Back to Dashboard
+        </a>
+
+    </header>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================= -->
+
+    <main class="container">
+
+
+        <!-- =====================================================
+             PAGE HEADER
+        ===================================================== -->
+
+        <div class="header-row">
+
+            <div>
+
+                <div class="eyebrow">
+                    FOOD DONATION
+                </div>
+
+                <h1 class="title">
+                    My Food Donations
+                </h1>
+
+                <p class="subtitle">
+                    Track the surplus food you have donated
+                    and check its current donation status.
+                </p>
+
+            </div>
+
+
+            <!-- DONATE NEW FOOD -->
+
+            <a
+                class="donate-btn"
+                href="{{ url_for('donate_surplus_food') }}"
+            >
+                + Donate Surplus Food
+            </a>
+
+        </div>
+
+
+
+        <!-- =====================================================
+             DONATION LIST
+        ===================================================== -->
+
+        {% if donations %}
+
+            <div class="grid">
+
+                {% for donation in donations %}
+
+                    <article class="card">
+
+
+                        <!-- FOOD IMAGE / ICON -->
+
+                        <img
+                            src="{{ get_food_image(donation.food_name, donation.food_image) }}"
+                            alt="{{ donation.food_name }}"
+                            class="food-image"
+                            onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/food.jpg') }}';"
+                        >
+
+
+                        <!-- FOOD NAME -->
+
+                        <h2>
+                            {{ donation.food_name }}
+                        </h2>
+
+
+                        <!-- QUANTITY -->
+
+                        <div class="row">
+
+                            <span class="label">
+                                Quantity
+                            </span>
+
+                            <span class="value">
+                                {{ donation.quantity }}
+                                {{ donation.unit }}
+                            </span>
+
+                        </div>
+
+
+                        <!-- PICKUP LOCATION -->
+
+                        <div class="row">
+
+                            <span class="label">
+                                Pickup Location
+                            </span>
+
+                            <span class="value">
+                                {{ donation.location }}
+                            </span>
+
+                        </div>
+
+
+                        <!-- DONATION DATE -->
+
+                        <div class="row">
+
+                            <span class="label">
+                                Donation Date
+                            </span>
+
+                            <span class="value">
+                                {{ donation.donation_date }}
+                            </span>
+
+                        </div>
+
+
+                        <!-- NGO -->
+
+                        <div class="row">
+
+                            <span class="label">
+                                NGO
+                            </span>
+
+                            <span class="value ngo">
+
+                                {{ donation.ngo_name or 'Not Assigned' }}
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- DESCRIPTION -->
+
+                        {% if donation.description %}
+
+                            <div class="row">
+
+                                <span class="label">
+                                    Description
+                                </span>
+
+                                <span class="value">
+                                    {{ donation.description }}
+                                </span>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- STATUS -->
+
+                        <span class="status">
+
+                            🟡 {{ donation.status }}
+
+                        </span>
+
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+
+        <!-- =====================================================
+             EMPTY DONATION STATE
+        ===================================================== -->
+
+        {% else %}
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    🍱
+                </div>
+
+                <h2>
+                    No Food Donations Yet
+                </h2>
+
+                <p>
+                    You have not donated any surplus food yet.
+                    When you donate food, its status and NGO
+                    assignment will appear here.
+                </p>
+
+                <br>
+
+
+                <a
+                    class="donate-btn"
+                    href="{{ url_for('donate_surplus_food') }}"
+                >
+                    Donate Surplus Food
+                </a>
+
+            </div>
+
+        {% endif %}
+
+
+    </main>
+
+</body>
+
+</html>

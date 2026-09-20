@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Reviews | KisanKart</title>
+
+    <style>
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f2e8;
+            color: #18231f;
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .navbar {
+            height: 75px;
+            background: #152a38;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 45px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+
+            margin-left: 22px;
+
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav a:hover {
+            color: #f5a623;
+        }
+
+
+        /* =====================================================
+           MAIN CONTAINER
+        ===================================================== */
+
+        .container {
+            max-width: 960px;
+            margin: 45px auto;
+            padding: 0 20px;
+        }
+
+
+        /* =====================================================
+           BACK BUTTON
+        ===================================================== */
+
+        .back {
+            color: #287a35;
+            text-decoration: none;
+
+            font-weight: 700;
+        }
+
+        .back:hover {
+            text-decoration: underline;
+        }
+
+
+        /* =====================================================
+           PAGE TITLE
+        ===================================================== */
+
+        .title {
+            text-align: center;
+
+            color: #1f6b32;
+
+            font-size: 36px;
+
+            margin: 25px 0 8px;
+        }
+
+        .sub {
+            text-align: center;
+
+            color: #66746d;
+
+            margin-bottom: 30px;
+        }
+
+
+        /* =====================================================
+           REVIEW CARD
+        ===================================================== */
+
+        .review {
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 24px;
+
+            margin-bottom: 18px;
+
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .review:hover {
+            transform: translateY(-2px);
+
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.10);
+        }
+
+
+        /* =====================================================
+           REVIEW TOP SECTION
+        ===================================================== */
+
+        .top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+        }
+
+
+        /* =====================================================
+           PRODUCT NAME
+        ===================================================== */
+
+        .product {
+            font-weight: 800;
+
+            color: #1f6b32;
+
+            font-size: 18px;
+        }
+
+
+        /* =====================================================
+           STARS
+        ===================================================== */
+
+        .stars {
+            color: #e99a00;
+
+            font-size: 21px;
+
+            letter-spacing: 2px;
+
+            white-space: nowrap;
+        }
+
+
+        /* =====================================================
+           BUYER NAME
+        ===================================================== */
+
+        .buyer {
+            font-weight: 700;
+
+            margin-top: 10px;
+
+            color: #26352e;
+        }
+
+
+        /* =====================================================
+           REVIEW TEXT
+        ===================================================== */
+
+        .text {
+            margin-top: 12px;
+
+            color: #59645f;
+
+            line-height: 1.6;
+
+            font-size: 15px;
+        }
+
+
+        /* =====================================================
+           EMPTY REVIEWS
+        ===================================================== */
+
+        .empty {
+            text-align: center;
+
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 45px;
+
+            color: #66746d;
+
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+        }
+
+
+        /* =====================================================
+           RESPONSIVE DESIGN
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .navbar {
+                height: auto;
+
+                padding: 18px 20px;
+
+                flex-direction: column;
+
+                gap: 12px;
+            }
+
+            .nav {
+                flex-wrap: wrap;
+
+                justify-content: center;
+            }
+
+            .nav a {
+                margin: 5px 10px;
+            }
+
+            .container {
+                margin: 30px auto;
+            }
+
+            .title {
+                font-size: 30px;
+            }
+
+            .top {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 8px;
+            }
+
+            .stars {
+                font-size: 20px;
+            }
+
+            .review {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    <div class="navbar">
+
+        <div class="logo">
+            🌾 KisanKart
+        </div>
+
+        <div class="nav">
+
+            <a href="{{ url_for('farmer_dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('farmer_orders') }}">
+                Orders
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <div class="container">
+
+        <a
+            class="back"
+            href="{{ url_for('farmer_dashboard') }}"
+        >
+            ← Back to Dashboard
+        </a>
+
+
+        <h1 class="title">
+            ⭐ Customer Reviews
+        </h1>
+
+
+        <p class="sub">
+            See ratings and feedback given by customers
+            for your products.
+        </p>
+
+
+        <!-- =================================================
+             REVIEWS
+        ================================================== -->
+
+        {% if reviews %}
+
+            {% for review in reviews %}
+
+                <div class="review">
+
+                    <!-- PRODUCT + RATING -->
+
+                    <div class="top">
+
+                        <div class="product">
+                            {{ review.product_name }}
+                        </div>
+
+
+                        <div class="stars">
+
+                            {% for i in range(review.review_rating|int) %}
+                                ★
+                            {% endfor %}
+
+                            {% for i in range(5 - (review.review_rating|int)) %}
+                                ☆
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- BUYER -->
+
+                    <div class="buyer">
+
+                        👤 {{ review.buyer_name or 'Customer' }}
+
+                    </div>
+
+
+                    <!-- REVIEW COMMENT -->
+
+                    {% if review.review_text %}
+
+                        <div class="text">
+                            “{{ review.review_text }}”
+                        </div>
+
+                    {% else %}
+
+                        <div class="text">
+                            No written comment.
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+
+        {% else %}
+
+            <!-- =============================================
+                 NO REVIEWS
+            ============================================== -->
+
+            <div class="empty">
+
+                ⭐
+
+                <br><br>
+
+                <strong>
+                    No customer reviews yet.
+                </strong>
+
+                <br><br>
+
+                Reviews will appear here after customers
+                complete an order and submit a rating.
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>

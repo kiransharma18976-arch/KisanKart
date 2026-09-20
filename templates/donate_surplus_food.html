@@ -1,0 +1,498 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Donate Surplus Food | KisanKart</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7faf7;
+            color: #26352b;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        nav {
+            height: 70px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 55px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 700;
+            color: #2e7d32;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            max-width: 850px;
+            margin: 45px auto;
+            padding: 0 20px;
+        }
+
+        .heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .heading h1 {
+            margin: 0 0 10px;
+            color: #236b2c;
+            font-size: 32px;
+        }
+
+        .heading p {
+            margin: 0;
+            color: #68746b;
+            font-size: 15px;
+        }
+
+        /* =========================
+           FORM CARD
+        ========================= */
+
+        .form-card {
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+        }
+
+        .business-info {
+            background: #eef8f0;
+            border-left: 4px solid #4caf50;
+            padding: 17px 20px;
+            border-radius: 10px;
+            margin-bottom: 28px;
+            line-height: 1.7;
+        }
+
+        .business-info strong {
+            color: #236b2c;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #d32f2f;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d7ded9;
+            border-radius: 9px;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            background: #ffffff;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 0 2px rgba(76,175,80,0.08);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            background: #2e7d32;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .submit-btn:hover {
+            background: #256b29;
+        }
+
+        .info-box {
+            margin-top: 22px;
+            padding: 15px 17px;
+            background: #fff8e1;
+            border-radius: 10px;
+            color: #665a2c;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 650px) {
+
+            nav {
+                padding: 0 20px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .form-card {
+                padding: 25px 20px;
+            }
+
+            .heading h1 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav>
+
+    <div class="logo">
+        KisanKart
+    </div>
+
+    <a href="{{ url_for('buyer_dashboard') }}" class="back-link">
+        ← Back to Dashboard
+    </a>
+
+</nav>
+
+
+<!-- =========================
+     MAIN CONTENT
+========================= -->
+
+<main class="main">
+
+    <div class="heading">
+
+        <h1>🍱 Donate Surplus Food</h1>
+
+        <p>
+            Help reduce food waste by sharing fresh surplus food
+            with NGOs and people in need.
+        </p>
+
+    </div>
+
+
+    <!-- =========================
+         FORM CARD
+    ========================= -->
+
+    <div class="form-card">
+
+        <!-- BUSINESS INFORMATION -->
+
+        <div class="business-info">
+
+            <strong>Business Details</strong><br>
+
+            {% if buyer.business_name %}
+                🏪 {{ buyer.business_name }}<br>
+            {% endif %}
+
+            {% if buyer.business_type %}
+                📋 {{ buyer.business_type }}<br>
+            {% endif %}
+
+            {% if buyer.location %}
+                📍 {{ buyer.location }}
+            {% endif %}
+
+        </div>
+
+
+        <!-- =========================
+             DONATION FORM
+        ========================= -->
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <!-- FOOD NAME -->
+
+            <div class="form-group">
+
+                <label>
+                    Food Name
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    name="food_name"
+                    placeholder="e.g. Cooked Rice, Chapati, Vegetable Curry"
+                    required
+                >
+
+            </div>
+
+
+            <!-- QUANTITY + UNIT -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>
+                        Quantity
+                        <span class="required">*</span>
+                    </label>
+
+                    <input
+                        type="number"
+                        name="quantity"
+                        min="0.01"
+                        step="0.01"
+                        placeholder="e.g. 20"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Unit
+                        <span class="required">*</span>
+                    </label>
+
+                    <select name="unit" required>
+
+                        <option value="">
+                            Select Unit
+                        </option>
+
+                        <option value="kg">
+                            Kilogram (kg)
+                        </option>
+
+                        <option value="litre">
+                            Litre
+                        </option>
+
+                        <option value="plates">
+                            Plates
+                        </option>
+
+                        <option value="packets">
+                            Packets
+                        </option>
+
+                        <option value="boxes">
+                            Boxes
+                        </option>
+
+                        <option value="pieces">
+                            Pieces
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- LOCATION -->
+
+            <div class="form-group">
+
+                <label>
+                    Pickup Location
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    name="location"
+                    value="{{ buyer.location or '' }}"
+                    placeholder="Enter the location from where NGO can collect the food"
+                    required
+                >
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group">
+
+                <label>
+                    Food Description
+                </label>
+
+                <textarea
+                    name="description"
+                    placeholder="Mention food details, freshness, preparation time, pickup instructions, etc."
+                ></textarea>
+
+            </div>
+
+
+
+            <!-- FOOD IMAGE -->
+            <div class="form-group">
+                <label>
+                    Food Image
+                </label>
+
+                <input
+                    type="file"
+                    name="food_image"
+                    accept=".jpg,.jpeg,.png,.webp"
+                >
+
+                <small style="display:block; margin-top:7px; color:#78907b;">
+                    Optional. If you do not upload an image, KisanKart will automatically
+                    select a suitable existing image based on the food name.
+                </small>
+            </div>
+
+            <!-- AUTOMATIC IMAGE PREVIEW -->
+            <div class="form-group">
+                <label>Automatic Image Preview</label>
+                <div id="food-image-preview" style="margin-top:10px; display:none;">
+                    <img id="food-preview-img" src="" alt="Food preview" style="width:180px;height:120px;object-fit:cover;border-radius:14px;border:1px solid #dce8dd;box-shadow:0 6px 18px rgba(0,0,0,.08);">
+                    <div id="food-preview-text" style="margin-top:7px;color:#78907b;font-size:13px;"></div>
+                </div>
+            </div>
+
+            <!-- SUBMIT -->
+
+            <button type="submit" class="submit-btn">
+                🍱 Submit Food Donation
+            </button>
+
+        </form>
+
+
+        <!-- INFORMATION -->
+
+        <div class="info-box">
+
+            💡 <strong>Important:</strong>
+            Please list only fresh and safe-to-distribute food.
+            After submitting the donation, NGOs will be able to view
+            the available food and request it.
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<script>
+(function () {
+    const nameInput = document.querySelector('[name="food_name"]');
+    const uploadInput = document.querySelector('[name="food_image"]');
+    const previewBox = document.getElementById('food-image-preview');
+    const previewImg = document.getElementById('food-preview-img');
+    const previewText = document.getElementById('food-preview-text');
+    if (!nameInput || !previewBox || !previewImg) return;
+
+    const imageMap = {
+        tomato:'tomato.jpg', potato:'potato.jpg', onion:'onion.jpg', carrot:'carrot.jpg',
+        cabbage:'cabbage.jpg', cauliflower:'cauliflower.jpg', spinach:'spinach.jpg',
+        apple:'apple.jpg', banana:'banana.jpg', mango:'mango.jpg', grapes:'grapes.jpg',
+        paneer:'Paneer.jpg', curd:'Fresh Curd.jpg', milk:'fresh Cow Milk.jpg',
+        cheese:'Cheese.jpg', butter:'Butter.jpg', ghee:'Ghee.jpg',
+        wheat:'Wheat.jpg', 'basmati rice':'Premium Basmati Rice.jpg', 'poha':'poha rice.jpg',
+        pulao:'food.jpg', biryani:'food.jpg', rice:'food.jpg', dal:'food.jpg',
+        chapati:'food.jpg', roti:'food.jpg', sabji:'food.jpg', sabzi:'food.jpg',
+        'mixed vegetable':'food.jpg', 'cooked food':'food.jpg', 'surplus food':'food.jpg',
+        raita:'food.jpg', meal:'food.jpg', meals:'food.jpg'
+    };
+
+    function updatePreview() {
+        const uploaded = uploadInput && uploadInput.files && uploadInput.files[0];
+        if (uploaded) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                previewImg.src = e.target.result;
+                previewText.textContent = 'Your uploaded image will be used.';
+                previewBox.style.display = 'block';
+            };
+            reader.readAsDataURL(uploaded);
+            return;
+        }
+        const name = (nameInput.value || '').toLowerCase().trim();
+        let filename = 'food.jpg';
+        for (const key in imageMap) {
+            if (name === key || name.includes(key)) { filename = imageMap[key]; break; }
+        }
+        previewImg.src = "{{ url_for('static', filename='images/') }}" + filename;
+        previewText.textContent = 'Automatic image selected from your existing KisanKart images.';
+        previewBox.style.display = 'block';
+    }
+
+    nameInput.addEventListener('input', updatePreview);
+    if (uploadInput) uploadInput.addEventListener('change', updatePreview);
+    updatePreview();
+})();
+</script>
+
+</body>
+</html>

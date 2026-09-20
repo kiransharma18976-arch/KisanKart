@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile | KisanKart</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f5f8f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .profile-card {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 15px 45px rgba(0,0,0,.10);
+        }
+
+        .logo {
+            color: #2e7d32;
+            font-size: 27px;
+            font-weight: 800;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: #183b20;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #718074;
+            margin-bottom: 25px;
+        }
+
+        .profile-info {
+            background: #f7faf6;
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .row {
+            padding: 14px 0;
+            border-bottom: 1px solid #e1e9e2;
+        }
+
+        .row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            display: block;
+            color: #6b776d;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .value {
+            color: #23452a;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            padding: 13px;
+            background: #2e7d32;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .back:hover {
+            background: #256b29;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="profile-card">
+
+        <div class="logo">
+            🌱 KisanKart
+        </div>
+
+        <h1>My Profile</h1>
+
+        <p class="subtitle">
+            Your KisanKart buyer account information
+        </p>
+
+        <div class="profile-info">
+
+            <div class="row">
+                <span class="label">👤 Full Name</span>
+                <span class="value">
+                    {{ buyer.first_name }} {{ buyer.last_name }}
+                </span>
+            </div>
+
+            <div class="row">
+                <span class="label">📧 Email</span>
+                <span class="value">
+                    {{ buyer.email }}
+                </span>
+            </div>
+
+            <div class="row">
+                <span class="label">📞 Phone</span>
+                <span class="value">
+                    {{ buyer.phone or "Not provided" }}
+                </span>
+            </div>
+
+            <div class="row">
+                <span class="label">📍 Location</span>
+                <span class="value">
+                    {{ buyer.location or "Not provided" }}
+                </span>
+            </div>
+
+            <div class="row">
+                <span class="label">🛒 Account Type</span>
+                <span class="value">
+                    Buyer
+                </span>
+            </div>
+
+        </div>
+
+        <a href="{{ url_for('buyer_dashboard') }}" class="back">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</body>
+</html>

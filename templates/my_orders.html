@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Orders | KisanKart</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f8f3;
+            color: #263a29;
+            min-height: 100vh;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            min-height: 70px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 55px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 800;
+            color: #2e7d32;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #344238;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 9px 12px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .nav a:hover {
+            background: #f1f8f1;
+            color: #2e7d32;
+        }
+
+        .nav .active {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            width: 94%;
+            max-width: 1100px;
+            margin: auto;
+            padding: 40px 0 70px;
+        }
+
+        .back {
+            display: inline-block;
+            color: #2e7d32;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .back:hover {
+            text-decoration: underline;
+        }
+
+        /* ================= HEADING ================= */
+
+        .heading {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .heading h1 {
+            font-size: 36px;
+            color: #245b29;
+            margin-bottom: 8px;
+        }
+
+        .heading p {
+            color: #6c786e;
+            font-size: 14px;
+        }
+
+        /* ================= ORDER LIST ================= */
+
+        .orders {
+            display: grid;
+            gap: 20px;
+        }
+
+        /* ================= ORDER CARD ================= */
+
+        .order-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 23px;
+            box-shadow: 0 5px 22px rgba(0,0,0,0.08);
+            border: 1px solid #e6eee5;
+        }
+
+        /* ================= CARD TOP ================= */
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+
+            padding-bottom: 17px;
+            margin-bottom: 18px;
+
+            border-bottom: 1px solid #edf1ed;
+        }
+
+        .product-name {
+            font-size: 21px;
+            font-weight: 800;
+            color: #245b29;
+            margin-bottom: 6px;
+        }
+
+        .meta {
+            font-size: 12px;
+            color: #7a847b;
+        }
+
+        /* ================= STATUS ================= */
+
+        .status {
+            padding: 8px 15px;
+            border-radius: 20px;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            white-space: nowrap;
+
+            background: #fff3cd;
+            color: #8a6200;
+        }
+
+        .status.accepted {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status.completed {
+            background: #dff3ff;
+            color: #176b8a;
+        }
+
+        /* ================= DETAILS ================= */
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .detail {
+            background: #f7faf6;
+            border-radius: 11px;
+            padding: 13px;
+
+            font-size: 11px;
+            color: #758078;
+        }
+
+        .detail strong {
+            display: block;
+            color: #293c2c;
+
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
+        /* ================= ORDER TIMELINE ================= */
+
+        .timeline {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 9px;
+            margin-top: 20px;
+        }
+
+        .step {
+            padding: 11px 8px;
+
+            border-radius: 10px;
+
+            text-align: center;
+
+            background: #eef2ee;
+            color: #89938b;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .step.done {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .step.current {
+            background: #f7fff7;
+            color: #2e7d32;
+
+            border: 2px solid #2e7d32;
+        }
+
+        /* ================= AMOUNT ================= */
+
+        .amount {
+            margin-top: 19px;
+            padding-top: 16px;
+
+            border-top: 1px solid #edf1ed;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .amount-label {
+            font-size: 13px;
+            color: #6c786e;
+            font-weight: 700;
+        }
+
+        .amount-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: #b56d00;
+        }
+
+        /* ================= EMPTY ================= */
+
+        .empty {
+            background: #ffffff;
+            border-radius: 18px;
+
+            padding: 60px 30px;
+
+            text-align: center;
+
+            box-shadow: 0 5px 22px rgba(0,0,0,0.08);
+        }
+
+        .empty-icon {
+            font-size: 45px;
+            margin-bottom: 12px;
+        }
+
+        .empty h2 {
+            color: #245b29;
+            margin-bottom: 8px;
+        }
+
+        .empty p {
+            color: #7a847b;
+            font-size: 14px;
+        }
+
+        .btn {
+            display: inline-block;
+
+            margin-top: 20px;
+
+            background: #2e7d32;
+            color: #ffffff;
+
+            text-decoration: none;
+
+            padding: 11px 20px;
+
+            border-radius: 9px;
+
+            font-size: 13px;
+            font-weight: 800;
+
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: #256b29;
+        }
+
+
+        /* ================= REVIEW ================= */
+
+        .review-box {
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 13px;
+            background: #f8fbf7;
+            border: 1px solid #e1ebe0;
+        }
+
+        .review-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #245b29;
+            margin-bottom: 12px;
+        }
+
+        .stars {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .stars input {
+            display: none;
+        }
+
+        .stars label {
+            font-size: 29px;
+            color: #cbd3cc;
+            cursor: pointer;
+            line-height: 1;
+            transition: 0.15s;
+        }
+
+        .stars label:hover,
+        .stars label:hover ~ label,
+        .stars input:checked ~ label {
+            color: #f4b400;
+        }
+
+        .review-text {
+            width: 100%;
+            min-height: 85px;
+            resize: vertical;
+            border: 1px solid #d9e4d8;
+            border-radius: 10px;
+            padding: 11px 12px;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+            background: #ffffff;
+        }
+
+        .review-text:focus {
+            border-color: #2e7d32;
+            box-shadow: 0 0 0 3px rgba(46,125,50,0.08);
+        }
+
+        .review-submit {
+            margin-top: 10px;
+            border: 0;
+            border-radius: 9px;
+            padding: 10px 16px;
+            background: #2e7d32;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .review-submit:hover {
+            background: #256b29;
+        }
+
+        .review-done {
+            margin-top: 20px;
+            padding: 15px 17px;
+            border-radius: 13px;
+            background: #e8f5e9;
+            border: 1px solid #cce4cd;
+            color: #2e7d32;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .review-done strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 800px) {
+
+            .navbar {
+                padding: 13px 20px;
+
+                align-items: flex-start;
+                gap: 10px;
+
+                flex-direction: column;
+            }
+
+            .nav {
+                width: 100%;
+            }
+
+            .main {
+                width: 92%;
+                padding-top: 30px;
+            }
+
+            .heading h1 {
+                font-size: 29px;
+            }
+
+            .details {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .timeline {
+                grid-template-columns: 1fr;
+            }
+
+            .top {
+                display: block;
+            }
+
+            .status {
+                display: inline-block;
+                margin-top: 12px;
+            }
+
+            .amount {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .details {
+                grid-template-columns: 1fr;
+            }
+
+            .nav a {
+                font-size: 12px;
+                padding: 8px 9px;
+            }
+
+            .product-name {
+                font-size: 18px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        🌾 KisanKart
+    </div>
+
+    <div class="nav">
+
+        <a href="/">
+            Home
+        </a>
+
+        <a href="/buyer-products">
+            Products
+        </a>
+
+        <a href="/wishlist">
+            ❤️ Wishlist
+        </a>
+
+        <a href="/cart">
+            🛒 Cart
+        </a>
+
+        <a href="/my-orders" class="active">
+            📦 My Orders
+        </a>
+
+        <a href="/logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+    <a href="/buyer-products" class="back">
+        ← Back to Products
+    </a>
+
+
+    <!-- HEADING -->
+
+    <div class="heading">
+
+        <h1>
+            📦 My Order Status
+        </h1>
+
+        <p>
+            Track the latest status of your orders from farmers.
+        </p>
+
+    </div>
+
+
+    <!-- ================= ORDERS ================= -->
+
+    {% if orders %}
+
+    <div class="orders">
+
+        {% for order in orders %}
+
+        {% set st = (order.status or 'Pending')|lower %}
+
+
+        <!-- ================= SINGLE ORDER ================= -->
+
+        <div class="order-card">
+
+
+            <!-- ORDER HEADER -->
+
+            <div class="top">
+<div>
+
+    {% if order.order_type == 'Bulk' %}
+        <div class="order-type bulk">
+            📦 BULK ORDER
+        </div>
+    {% else %}
+        <div class="order-type regular">
+            🛒 REGULAR BUYER ORDER
+        </div>
+    {% endif %}
+
+    <div class="product-name">
+        {{ order.product_name }}
+    </div>
+
+                    <div class="meta">
+
+                        Order #{{ order.id }}
+
+                        {% if order.order_date %}
+                            · {{ order.order_date }}
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="status
+                    {% if st == 'accepted' %}
+                        accepted
+                    {% elif st == 'completed' %}
+                        completed
+                    {% endif %}
+                ">
+
+                    {% if st == 'pending' %}
+
+                        ⏳ Pending
+
+                    {% elif st == 'accepted' %}
+
+                        ✓ Accepted
+
+                    {% elif st == 'completed' %}
+
+                        ✓ Completed
+
+                    {% else %}
+
+                        {{ order.status or 'Pending' }}
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= ORDER DETAILS ================= -->
+
+            <div class="details">
+
+
+                <!-- QUANTITY -->
+
+                <div class="detail">
+
+                    Quantity
+
+                    <strong>
+
+                        {{ order.quantity }}
+
+                        {% if order.unit %}
+                            {{ order.unit }}
+                        {% endif %}
+
+                    </strong>
+
+                </div>
+
+
+                <!-- FARMER -->
+
+                <div class="detail">
+
+                    Farmer
+
+                    <strong>
+
+                        {{ order.farmer_first_name or '' }}
+
+                        {{ order.farmer_last_name or '' }}
+
+                    </strong>
+
+                </div>
+
+
+                <!-- LOCATION -->
+
+                <div class="detail">
+
+                    Location
+
+                    <strong>
+
+                        {{ order.location or '—' }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= STATUS TIMELINE ================= -->
+
+            <div class="timeline">
+
+
+                <!-- ORDER PLACED -->
+
+                <div class="step done">
+
+                    ✓ Order Placed
+
+                </div>
+
+
+                <!-- FARMER ACCEPTED -->
+
+                <div class="step
+
+                    {% if st in ['accepted', 'completed'] %}
+
+                        done
+
+                    {% elif st == 'pending' %}
+
+                        current
+
+                    {% endif %}
+
+                ">
+
+                    {% if st in ['accepted', 'completed'] %}
+
+                        ✓
+
+                    {% else %}
+
+                        2
+
+                    {% endif %}
+
+                    Farmer Accepted
+
+                </div>
+
+
+                <!-- COMPLETED -->
+
+                <div class="step
+
+                    {% if st == 'completed' %}
+
+                        done
+
+                    {% elif st == 'accepted' %}
+
+                        current
+
+                    {% endif %}
+
+                ">
+
+                    {% if st == 'completed' %}
+
+                        ✓
+
+                    {% else %}
+
+                        3
+
+                    {% endif %}
+
+                    Completed
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= AMOUNT ================= -->
+
+            <div class="amount">
+
+                <div class="amount-label">
+                    Total Amount
+                </div>
+
+                <div class="amount-value">
+
+                    ₹{{ '%.2f'|format(order.total_amount|float) }}
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= REVIEW ================= -->
+
+            {% if st == 'completed' %}
+
+                {% if order.review_rating %}
+
+                    <div class="review-done">
+                        <strong>⭐ Your Review</strong>
+                        <div>
+                            {{ '★' * (order.review_rating|int) }}{{ '☆' * (5 - (order.review_rating|int)) }}
+                        </div>
+                        {% if order.review_text %}
+                            <div>{{ order.review_text }}</div>
+                        {% endif %}
+                    </div>
+
+                {% else %}
+
+                    <div class="review-box">
+
+                        <div class="review-title">
+                            ⭐ Rate Your Experience
+                        </div>
+
+                        <form method="POST" action="/submit-review">
+
+                            <input type="hidden" name="order_id" value="{{ order.id }}">
+
+                            <div class="stars">
+                                <input type="radio" id="star5-{{ order.id }}" name="rating" value="5" required>
+                                <label for="star5-{{ order.id }}">★</label>
+
+                                <input type="radio" id="star4-{{ order.id }}" name="rating" value="4">
+                                <label for="star4-{{ order.id }}">★</label>
+
+                                <input type="radio" id="star3-{{ order.id }}" name="rating" value="3">
+                                <label for="star3-{{ order.id }}">★</label>
+
+                                <input type="radio" id="star2-{{ order.id }}" name="rating" value="2">
+                                <label for="star2-{{ order.id }}">★</label>
+
+                                <input type="radio" id="star1-{{ order.id }}" name="rating" value="1">
+                                <label for="star1-{{ order.id }}">★</label>
+                            </div>
+
+                            <textarea
+                                class="review-text"
+                                name="review_text"
+                                placeholder="Share your experience with this order..."
+                                maxlength="500"
+                            ></textarea>
+
+                            <button type="submit" class="review-submit">
+                                Submit Review
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                {% endif %}
+
+            {% endif %}
+
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- ================= NO ORDERS ================= -->
+
+    {% else %}
+
+    <div class="empty">
+
+        <div class="empty-icon">
+            📦
+        </div>
+
+        <h2>
+            No Orders Yet
+        </h2>
+
+        <p>
+            Your placed orders and their status will appear here.
+        </p>
+
+        <a href="/buyer-products" class="btn">
+            Browse Products
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</main>
+
+</body>
+</html>

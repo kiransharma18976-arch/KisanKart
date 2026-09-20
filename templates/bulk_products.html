@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Products | KisanKart</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f5f8f3;
+            color: #263a29;
+        }
+
+        /* NAVBAR - EXISTING */
+        .navbar {
+            min-height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 55px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.08);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #344238;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 9px 12px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            background: #f1f8f1;
+            color: #2e7d32;
+        }
+
+        .active {
+            background: #fff4df !important;
+            color: #a86200 !important;
+        }
+
+        /* HEADER - EXISTING */
+        .header {
+            text-align: center;
+            padding: 38px 20px 28px;
+        }
+
+        .header h1 {
+            color: #245b29;
+            font-size: 35px;
+            margin-bottom: 9px;
+        }
+
+        .header p {
+            color: #6c786e;
+            font-size: 15px;
+        }
+
+        /* THREE LOCATION LAYOUT */
+        .location-layout {
+            width: 96%;
+            max-width: 1500px;
+            margin: 0 auto 60px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            align-items: start;
+        }
+
+        .location-section {
+            background: white;
+            border: 1px solid #e1e9e1;
+            border-radius: 18px;
+            padding: 14px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.06);
+            min-width: 0;
+        }
+
+        .location-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 8px 6px 14px;
+            border-bottom: 1px solid #e8eee8;
+            margin-bottom: 14px;
+        }
+
+        .location-title {
+            color: #245b29;
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .location-count {
+            background: #eef7ed;
+            color: #2e7d32;
+            border-radius: 20px;
+            padding: 5px 9px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        /* PRODUCT GRID INSIDE EACH LOCATION */
+        .products {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        /* CARD - EXISTING PRODUCT INFORMATION PRESERVED */
+        .card {
+            background: white;
+            border: 1px solid #e4ebe4;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0,0,0,.06);
+            transition: .2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,.10);
+        }
+
+        .image {
+            height: 145px;
+            background: #eef6ed;
+        }
+
+        .image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .info {
+            padding: 13px;
+        }
+
+        .info h2 {
+            color: #245b29;
+            font-size: 17px;
+            margin-bottom: 7px;
+        }
+
+        .farmer {
+            color: #748078;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .details {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .price {
+            color: #2e7d32;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .stock {
+            color: #6f7c73;
+            font-size: 11px;
+            text-align: right;
+        }
+
+        .location {
+            display: inline-block;
+            margin-bottom: 12px;
+            background: #f2f7f1;
+            color: #617064;
+            border-radius: 12px;
+            padding: 5px 8px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        .btn {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            background: #ef8f00;
+            color: white;
+            padding: 10px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #df8100;
+        }
+
+        .empty-location {
+            padding: 35px 15px;
+            text-align: center;
+            color: #7b877e;
+            background: #f8faf7;
+            border: 1px dashed #d5dfd5;
+            border-radius: 13px;
+            font-size: 13px;
+        }
+
+        /* LOCATION-SPECIFIC HEADER ACCENTS */
+        .nashik .location-title { color: #2e7d32; }
+        .pune .location-title { color: #7b35d6; }
+        .thane .location-title { color: #2367c9; }
+
+        .pune .location-count {
+            background: #f3eafd;
+            color: #7b35d6;
+        }
+
+        .thane .location-count {
+            background: #eaf2ff;
+            color: #2367c9;
+        }
+
+        .footer {
+            text-align: center;
+            color: #8a958c;
+            font-size: 12px;
+            padding: 0 20px 25px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1050px) {
+            .location-layout {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .location-section:last-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .location-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .location-section:last-child {
+                grid-column: auto;
+            }
+
+            .navbar {
+                padding: 12px 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR - EXISTING LINKS PRESERVED -->
+    <nav class="navbar">
+        <div class="logo">🌾 KisanKart</div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/bulk-buyer">📦 Dashboard</a>
+            <a href="/bulk-products" class="active">Bulk Products</a>
+            <a href="/my-orders">📋 Order Status</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="header">
+        <h1>📦 Bulk Products</h1>
+        <p>Choose fresh farm products and request the quantity your business needs.</p>
+    </header>
+
+    {% if products %}
+
+    <!-- THREE LOCATION COLUMNS -->
+    <section class="location-layout">
+
+        <!-- NASHIK -->
+        <div class="location-section nashik">
+            <div class="location-header">
+                <div class="location-title">📍 Nashik Products</div>
+                <div class="location-count">{{ nashik_products|length }} Products</div>
+            </div>
+
+            {% if nashik_products %}
+            <div class="products">
+                {% for product in nashik_products %}
+                    <div class="card">
+                        <div class="image">
+                            <img src="{{ get_product_image(product.product_name) }}"
+                                 alt="{{ product.product_name }}" loading="lazy">
+                        </div>
+
+                        <div class="info">
+                            <h2>{{ product.product_name }}</h2>
+
+                            <div class="farmer">
+                                👨‍🌾 {{ product.first_name or "Farmer" }} {{ product.last_name or "" }}
+                            </div>
+
+                            <div class="details">
+                                <div class="price">₹{{ product.price }} / {{ product.unit }}</div>
+                                <div class="stock">
+                                    Available<br>
+                                    <strong>{{ product.quantity }} {{ product.unit }}</strong>
+                                </div>
+                            </div>
+
+                            <span class="location">📍 {{ product.location }}</span>
+
+                            <a href="{{ url_for('bulk_order', product_id=product.id) }}" class="btn">
+                                📦 Request in Bulk
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% else %}
+                <div class="empty-location">📦 No bulk products available in Nashik.</div>
+            {% endif %}
+        </div>
+
+        <!-- PUNE -->
+        <div class="location-section pune">
+            <div class="location-header">
+                <div class="location-title">📍 Pune Products</div>
+                <div class="location-count">{{ pune_products|length }} Products</div>
+            </div>
+
+            {% if pune_products %}
+            <div class="products">
+                {% for product in pune_products %}
+                    <div class="card">
+                        <div class="image">
+                            <img src="{{ get_product_image(product.product_name) }}"
+                                 alt="{{ product.product_name }}" loading="lazy">
+                        </div>
+
+                        <div class="info">
+                            <h2>{{ product.product_name }}</h2>
+
+                            <div class="farmer">
+                                👨‍🌾 {{ product.first_name or "Farmer" }} {{ product.last_name or "" }}
+                            </div>
+
+                            <div class="details">
+                                <div class="price">₹{{ product.price }} / {{ product.unit }}</div>
+                                <div class="stock">
+                                    Available<br>
+                                    <strong>{{ product.quantity }} {{ product.unit }}</strong>
+                                </div>
+                            </div>
+
+                            <span class="location">📍 {{ product.location }}</span>
+
+                            <a href="{{ url_for('bulk_order', product_id=product.id) }}" class="btn">
+                                📦 Request in Bulk
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% else %}
+                <div class="empty-location">📦 No bulk products available in Pune.</div>
+            {% endif %}
+        </div>
+
+        <!-- THANE -->
+        <div class="location-section thane">
+            <div class="location-header">
+                <div class="location-title">📍 Thane Products</div>
+                <div class="location-count">{{ thane_products|length }} Products</div>
+            </div>
+
+            {% if thane_products %}
+            <div class="products">
+                {% for product in thane_products %}
+                    <div class="card">
+                        <div class="image">
+                            <img src="{{ get_product_image(product.product_name) }}"
+                                 alt="{{ product.product_name }}" loading="lazy">
+                        </div>
+
+                        <div class="info">
+                            <h2>{{ product.product_name }}</h2>
+
+                            <div class="farmer">
+                                👨‍🌾 {{ product.first_name or "Farmer" }} {{ product.last_name or "" }}
+                            </div>
+
+                            <div class="details">
+                                <div class="price">₹{{ product.price }} / {{ product.unit }}</div>
+                                <div class="stock">
+                                    Available<br>
+                                    <strong>{{ product.quantity }} {{ product.unit }}</strong>
+                                </div>
+                            </div>
+
+                            <span class="location">📍 {{ product.location }}</span>
+
+                            <a href="{{ url_for('bulk_order', product_id=product.id) }}" class="btn">
+                                📦 Request in Bulk
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% else %}
+                <div class="empty-location">📦 No bulk products available in Thane.</div>
+            {% endif %}
+        </div>
+
+    </section>
+
+    {% else %}
+
+    <div class="empty-location" style="width:94%;max-width:700px;margin:30px auto 70px;padding:45px;">
+        📦 No bulk products are currently available.
+    </div>
+
+    {% endif %}
+
+    <div class="footer">🌱 KisanKart — Connecting Farmers &amp; Buyers</div>
+
+</body>
+</html>

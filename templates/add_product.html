@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product | KisanKart</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            background: #f7f2e8;
+            color: #18231f;
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 15px 45px rgba(20,35,30,0.10);
+        }
+
+        .top {
+            margin-bottom: 30px;
+        }
+
+        .back {
+            color: #68736e;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .back:hover {
+            color: #152a38;
+        }
+
+        .small-title {
+            color: #b87322;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 25px;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-family: "Playfair Display", serif;
+            font-size: 38px;
+            color: #152a38;
+        }
+
+        .subtitle {
+            color: #747d78;
+            font-size: 14px;
+            margin-top: 7px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #ddd9d0;
+            border-radius: 11px;
+            padding: 13px 14px;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+            background: #fcfbf8;
+        }
+
+        input,
+        select {
+            height: 48px;
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #e7a33e;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(231,163,62,0.12);
+        }
+
+        .price-box {
+            position: relative;
+        }
+
+        .price-symbol {
+            position: absolute;
+            left: 14px;
+            top: 14px;
+            font-weight: 700;
+            color: #68736e;
+        }
+
+        .price-box input {
+            padding-left: 32px;
+        }
+
+        .button {
+            width: 100%;
+            height: 53px;
+            border: none;
+            border-radius: 12px;
+            background: #152a38;
+            color: white;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .button:hover {
+            background: #213f51;
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 25px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="top">
+
+        <a href="/farmer-dashboard" class="back">
+            ← Back to Dashboard
+        </a>
+
+        <div class="small-title">
+            Farmer Marketplace
+        </div>
+
+        <h1>Add New Product 🌾</h1>
+
+        <p class="subtitle">
+            Add your agricultural product so buyers can discover it.
+        </p>
+
+    </div>
+
+
+    <form action="/add-product" method="POST">
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label for="product_name">
+                    Product Name
+                </label>
+
+                <input
+                    type="text"
+                    id="product_name"
+                    name="product_name"
+                    placeholder="e.g. Fresh Tomato"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="category">
+                    Category
+                </label>
+
+                <select
+                    id="category"
+                    name="category"
+                    required
+                >
+
+                    <option value="" disabled selected>
+                        Select category
+                    </option>
+
+                    <option value="Vegetables">
+                        🥕 Vegetables
+                    </option>
+
+                    <option value="Fruits">
+                        🍎 Fruits
+                    </option>
+
+                    <option value="Grains">
+                        🌾 Grains
+                    </option>
+
+                    <option value="Dairy">
+                        🥛 Dairy
+                    </option>
+
+                    <option value="Spices">
+                        🌶️ Spices
+                    </option>
+
+                    <option value="Other">
+                        📦 Other
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label for="price">
+                    Price
+                </label>
+
+                <div class="price-box">
+
+                    <span class="price-symbol">₹</span>
+
+                    <input
+                        type="number"
+                        id="price"
+                        name="price"
+                        placeholder="Enter price"
+                        step="0.01"
+                        min="0"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="quantity">
+                    Quantity
+                </label>
+
+                <input
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    placeholder="Enter quantity"
+                    step="0.01"
+                    min="0"
+                    required
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label for="unit">
+                    Unit
+                </label>
+
+                <select
+                    id="unit"
+                    name="unit"
+                    required
+                >
+
+                    <option value="" disabled selected>
+                        Select unit
+                    </option>
+
+                    <option value="kg">
+                        Kilogram (kg)
+                    </option>
+
+                    <option value="quintal">
+                        Quintal
+                    </option>
+
+                    <option value="litre">
+                        Litre
+                    </option>
+
+                    <option value="dozen">
+                        Dozen
+                    </option>
+
+                    <option value="piece">
+                        Piece
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="location">
+                    Farm Location
+                </label>
+
+                <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    placeholder="e.g. Nashik"
+                    value="Nashik"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="description">
+                Product Description
+            </label>
+
+            <textarea
+                id="description"
+                name="description"
+                placeholder="Tell buyers something about your product..."
+            ></textarea>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="button"
+        >
+            Add Product →
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

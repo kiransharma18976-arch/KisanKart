@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bulk Checkout | KisanKart</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f8f2;
+            color: #263a29;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            background: #ffffff;
+            padding: 16px 5%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            font-size: 21px;
+            font-weight: 800;
+            color: #285b32;
+            white-space: nowrap;
+        }
+
+        .brand span {
+            color: #ef8f00;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #344238;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            padding: 9px 12px;
+
+            border-radius: 8px;
+
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            background: #eef6ed;
+            color: #23733a;
+        }
+
+        .logout {
+            background: #fff1f1 !important;
+            color: #c62828 !important;
+        }
+
+        .logout:hover {
+            background: #ffe0e0 !important;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            max-width: 850px;
+
+            margin: 40px auto;
+
+            padding: 0 20px 60px;
+        }
+
+        /* ================= CHECKOUT CARD ================= */
+
+        .checkout-card {
+            background: #ffffff;
+
+            border-radius: 22px;
+
+            padding: 32px;
+
+            box-shadow: 0 7px 28px rgba(50, 70, 50, 0.10);
+        }
+
+        /* ================= HEADER ================= */
+
+        .page-header {
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+        .header-icon {
+            width: 70px;
+            height: 70px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 18px;
+
+            background: #fff3df;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 35px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+
+            color: #234c2c;
+
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #707970;
+
+            font-size: 14px;
+        }
+
+        /* ================= SECTION ================= */
+
+        .section-title {
+            font-size: 20px;
+
+            color: #284d30;
+
+            margin-bottom: 18px;
+
+            padding-bottom: 10px;
+
+            border-bottom: 1px solid #e6ebe6;
+        }
+
+        /* ================= BUYER DETAILS ================= */
+
+        .form-row {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 18px;
+
+            margin-bottom: 22px;
+        }
+
+        .form-group {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+
+            margin-bottom: 18px;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            color: #39473d;
+
+            font-size: 14px;
+
+            font-weight: 700;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border: 1px solid #cfd8cf;
+
+            border-radius: 10px;
+
+            background: #fbfdfb;
+
+            outline: none;
+
+            font-size: 14px;
+
+            color: #263a29;
+
+            transition: 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #5c9d64;
+
+            box-shadow: 0 0 0 3px rgba(92, 157, 100, 0.12);
+        }
+
+        .form-group input::placeholder {
+            color: #9aa39c;
+        }
+
+        /* ================= PRODUCTS ================= */
+
+        .products-section {
+            margin-top: 8px;
+
+            margin-bottom: 28px;
+        }
+
+        .product-card {
+            background: #f8faf7;
+
+            border: 1px solid #e2e9e1;
+
+            border-radius: 15px;
+
+            padding: 20px;
+
+            margin-bottom: 14px;
+        }
+
+        .product-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            gap: 20px;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-info h3 {
+            color: #284d30;
+
+            font-size: 19px;
+
+            margin-bottom: 8px;
+        }
+
+        .product-info p {
+            color: #6d786f;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+        .product-price {
+            color: #e27f00;
+
+            font-weight: 800;
+
+            font-size: 17px;
+        }
+
+        .available {
+            color: #3d7044;
+
+            font-weight: 700;
+        }
+
+        /* ================= QUANTITY ================= */
+
+        .quantity-area {
+            min-width: 145px;
+        }
+
+        .quantity-area label {
+            display: block;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            color: #39473d;
+
+            margin-bottom: 7px;
+        }
+
+        .quantity-area input {
+            width: 100%;
+
+            padding: 11px;
+
+            border: 1px solid #cfd8cf;
+
+            border-radius: 9px;
+
+            outline: none;
+
+            font-size: 14px;
+        }
+
+        .quantity-area input:focus {
+            border-color: #5c9d64;
+
+            box-shadow: 0 0 0 3px rgba(92, 157, 100, 0.12);
+        }
+
+        /* ================= PAYMENT ================= */
+
+        .payment-section {
+            margin-top: 5px;
+        }
+
+        .payment-box {
+            background: #fffaf2;
+
+            border: 1px solid #f2dfc1;
+
+            border-radius: 13px;
+
+            padding: 17px;
+
+            margin-bottom: 25px;
+        }
+
+        .payment-box .form-group {
+            margin-bottom: 0;
+        }
+
+        .payment-note {
+            margin-top: 9px;
+
+            color: #7b7469;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+        /* ================= PLACE ORDER ================= */
+
+        .place-order-btn {
+            width: 100%;
+
+            padding: 14px 20px;
+
+            border: none;
+
+            border-radius: 11px;
+
+            background: #ef8f00;
+
+            color: #ffffff;
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .place-order-btn:hover {
+            background: #d97900;
+
+            transform: translateY(-1px);
+        }
+
+        /* ================= BACK ================= */
+
+        .back-link {
+            display: block;
+
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #2d7038;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            font-weight: 700;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ================= SECURITY ================= */
+
+        .security-note {
+            text-align: center;
+
+            margin-top: 18px;
+
+            color: #7a837b;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 750px) {
+
+            .navbar {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                justify-content: flex-start;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .product-top {
+                flex-direction: column;
+            }
+
+            .quantity-area {
+                width: 100%;
+
+                min-width: 0;
+            }
+
+        }
+
+        @media (max-width: 550px) {
+
+            .container {
+                margin-top: 25px;
+
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .checkout-card {
+                padding: 22px 18px;
+            }
+
+            .page-header h1 {
+                font-size: 26px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <div class="brand">
+
+        🌾 KisanKart
+
+        <span>
+            | 📦 Bulk Buyer
+        </span>
+
+    </div>
+
+
+    <div class="nav-links">
+
+        <a href="/bulk-dashboard">
+            Dashboard
+        </a>
+
+        <a href="/bulk-products">
+            Products
+        </a>
+
+        <a href="/bulk-wishlist">
+            ❤️ Wishlist
+        </a>
+
+        <a href="/bulk-cart">
+            🛒 Bulk Cart
+        </a>
+
+        <a href="/bulk-orders">
+            Order Status
+        </a>
+
+        <a href="/logout" class="logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main class="container">
+
+
+    <div class="checkout-card">
+
+
+        <!-- ================= HEADER ================= -->
+
+        <div class="page-header">
+
+            <div class="header-icon">
+                📦
+            </div>
+
+            <h1>
+                Bulk Checkout
+            </h1>
+
+            <p>
+                Review your products and complete your bulk order.
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             FORM
+        ================================================== -->
+
+        <form method="POST">
+
+
+            <!-- ================= BUYER DETAILS ================= -->
+
+            <h2 class="section-title">
+                👤 Buyer & Business Details
+            </h2>
+
+
+            <div class="form-row">
+
+
+                <!-- BUYER NAME -->
+
+                <div class="form-group">
+
+                    <label for="buyer_name">
+                        Your Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="buyer_name"
+                        name="buyer_name"
+                        value="{{ session.get('user_name', '') }}"
+                        placeholder="Enter your name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- BUSINESS NAME -->
+
+                <div class="form-group">
+
+                    <label for="business_name">
+                        Business / Organization Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="business_name"
+                        name="business_name"
+                        placeholder="Restaurant, Mess, Shop, etc."
+                    >
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PRODUCTS
+            ================================================== -->
+
+            <div class="products-section">
+
+                <h2 class="section-title">
+                    🛒 Your Bulk Products
+                </h2>
+
+
+                {% for p in products %}
+
+
+                <div class="product-card">
+
+
+                    <div class="product-top">
+
+
+                        <!-- PRODUCT INFO -->
+
+                        <div class="product-info">
+
+                            <h3>
+                                {{ p.product_name }}
+                            </h3>
+
+                            <p>
+
+                                <span class="product-price">
+                                    ₹{{ p.price }}
+                                </span>
+
+                                / {{ p.unit }}
+
+                            </p>
+
+                            <p>
+                                📍 {{ p.location }}
+                            </p>
+
+                            <p class="available">
+                                📦 Available Quantity:
+                                {{ p.quantity }}
+                                {{ p.unit }}
+                            </p>
+
+                        </div>
+
+
+                        <!-- QUANTITY -->
+
+                        <div class="quantity-area">
+
+                            <label for="qty_{{ p.id }}">
+                                Order Quantity
+                            </label>
+
+                            <input
+                                type="number"
+                                id="qty_{{ p.id }}"
+                                name="qty_{{ p.id }}"
+                                min="1"
+                                max="{{ p.quantity }}"
+                                value="1"
+                                required
+                            >
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PAYMENT
+            ================================================== -->
+
+            <div class="payment-section">
+
+
+                <h2 class="section-title">
+                    💳 Payment Method
+                </h2>
+
+
+                <div class="payment-box">
+
+
+                    <div class="form-group">
+
+                        <label for="payment_method">
+                            Select Payment Method
+                        </label>
+
+                        <select
+                            id="payment_method"
+                            name="payment_method"
+                            required
+                        >
+
+                            <option value="Cash on Delivery">
+                                💵 Cash on Delivery
+                            </option>
+
+                            <option value="Online Payment">
+                                💳 Online Payment (Coming Soon)
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="payment-note">
+
+                        🔒 Online payment functionality will be
+                        available soon. Currently, Cash on Delivery
+                        is available for bulk orders.
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PLACE ORDER
+            ================================================== -->
+
+            <button
+                type="submit"
+                class="place-order-btn"
+            >
+                📦 Place Bulk Orders
+            </button>
+
+
+        </form>
+
+
+
+        <!-- ================= BACK ================= -->
+
+        <a
+            href="/bulk-cart"
+            class="back-link"
+        >
+            ← Back to Bulk Cart
+        </a>
+
+
+        <div class="security-note">
+
+            🔒 Your order details are handled securely.<br>
+            Thank you for choosing KisanKart.
+
+        </div>
+
+
+    </div>
+
+
+</main>
+
+
+</body>
+
+</html>

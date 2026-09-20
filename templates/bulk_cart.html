@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bulk Cart | KisanKart</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f8f2;
+            color: #263a29;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            background: #ffffff;
+            padding: 16px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            font-size: 21px;
+            font-weight: 800;
+            color: #285b32;
+            white-space: nowrap;
+        }
+
+        .brand span {
+            color: #ef8f00;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #344238;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 9px 12px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            background: #eef6ed;
+            color: #23733a;
+        }
+
+        .logout {
+            background: #fff1f1 !important;
+            color: #c62828 !important;
+        }
+
+        .logout:hover {
+            background: #ffe0e0 !important;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            max-width: 1050px;
+            margin: 40px auto;
+            padding: 0 20px 50px;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            font-size: 32px;
+            color: #234c2c;
+            margin-bottom: 7px;
+        }
+
+        .page-heading p {
+            color: #6d786f;
+            font-size: 15px;
+        }
+
+        /* ================= CART ITEM ================= */
+
+        .cart-item {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 16px;
+            box-shadow: 0 5px 22px rgba(50,70,50,0.09);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+
+            transition: 0.2s;
+        }
+
+        .cart-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(50,70,50,0.13);
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-info h2 {
+            font-size: 21px;
+            color: #284d30;
+            margin-bottom: 9px;
+        }
+
+        .product-details {
+            color: #69746c;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .price {
+            font-size: 18px;
+            font-weight: 800;
+            color: #e27f00;
+        }
+
+        /* ================= QUANTITY ================= */
+
+        .quantity-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .quantity-box label {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .qty-input {
+            width: 85px;
+            padding: 10px 9px;
+            border: 1px solid #cfd8cf;
+            border-radius: 9px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .qty-input:focus {
+            border-color: #5b9d62;
+            box-shadow: 0 0 0 3px rgba(91,157,98,0.12);
+        }
+
+        /* ================= REMOVE ================= */
+
+        .remove-btn {
+            text-decoration: none;
+            color: #c62828;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 9px 12px;
+            border-radius: 8px;
+            background: #fff5f5;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: #ffe4e4;
+        }
+
+        /* ================= CHECKOUT BOX ================= */
+
+        .checkout-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 28px;
+            margin-top: 25px;
+            box-shadow: 0 6px 25px rgba(50,70,50,0.10);
+        }
+
+        .checkout-card h2 {
+            color: #284d30;
+            margin-bottom: 20px;
+            font-size: 23px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #39473d;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #d0d8d0;
+            border-radius: 10px;
+            background: #fbfdfb;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #5c9d64;
+            box-shadow: 0 0 0 3px rgba(92,157,100,0.12);
+        }
+
+        /* ================= CHECKOUT FOOTER ================= */
+
+        .checkout-footer {
+            margin-top: 25px;
+            padding-top: 22px;
+            border-top: 1px solid #e5e9e5;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .secure-text {
+            color: #68746b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .checkout-btn {
+            border: none;
+            background: #ef8f00;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .checkout-btn:hover {
+            background: #d97900;
+            transform: translateY(-1px);
+        }
+
+        /* ================= EMPTY CART ================= */
+
+        .empty-cart {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 65px 25px;
+            text-align: center;
+            box-shadow: 0 6px 25px rgba(50,70,50,0.09);
+        }
+
+        .empty-icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .empty-cart h2 {
+            color: #284d30;
+            margin-bottom: 10px;
+        }
+
+        .empty-cart p {
+            color: #747d76;
+            margin-bottom: 22px;
+        }
+
+        .browse-btn {
+            display: inline-block;
+            text-decoration: none;
+            background: #2d7038;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .browse-btn:hover {
+            background: #235d2d;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 800px) {
+
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                justify-content: flex-start;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .quantity-box {
+                width: 100%;
+            }
+
+            .checkout-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .checkout-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .container {
+                margin-top: 25px;
+            }
+
+            .page-heading h1 {
+                font-size: 27px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .checkout-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <div class="brand">
+        🌾 KisanKart <span>| 📦 Bulk Buyer</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/bulk-dashboard">Dashboard</a>
+
+        <a href="/bulk-products">Products</a>
+
+        <a href="/bulk-wishlist">Wishlist</a>
+
+        <a href="/bulk-cart">🛒 Bulk Cart</a>
+
+        <a href="/bulk-orders">Order Status</a>
+
+        <a href="/logout" class="logout">Logout</a>
+
+    </div>
+
+</nav>
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+<main class="container">
+
+    <div class="page-heading">
+
+        <h1>🛒 Bulk Cart</h1>
+
+        <p>
+            Review your selected products and place your bulk order.
+        </p>
+
+    </div>
+
+
+    {% if products %}
+
+    <!-- ================= CART FORM ================= -->
+
+    <form method="POST" action="/bulk-checkout">
+
+        <!-- ================= PRODUCTS ================= -->
+
+        {% for p in products %}
+
+        <div class="cart-item">
+
+            <div class="product-info">
+
+                <h2>{{ p.product_name }}</h2>
+
+                <div class="product-details">
+
+                    <div>
+                        <span class="price">₹{{ p.price }}</span>
+                        / {{ p.unit }}
+                    </div>
+
+                    <div>
+                        📍 {{ p.location }}
+                    </div>
+
+                    <div>
+                        Available Quantity: {{ p.quantity }} {{ p.unit }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Quantity -->
+
+            <div class="quantity-box">
+
+                <label for="qty_{{ p.id }}">
+                    Quantity
+                </label>
+
+                <input
+                    class="qty-input"
+                    id="qty_{{ p.id }}"
+                    type="number"
+                    name="qty_{{ p.id }}"
+                    min="1"
+                    max="{{ p.quantity }}"
+                    value="1"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Remove -->
+
+            <a
+                class="remove-btn"
+                href="{{ url_for('bulk_remove_from_cart', product_id=p.id) }}"
+            >
+                ✕ Remove
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+
+        <!-- ================= CHECKOUT ================= -->
+
+        <div class="checkout-card">
+
+            <h2>📋 Bulk Order Details</h2>
+
+            <div class="form-grid">
+
+                <!-- Buyer Name -->
+
+                <div class="form-group">
+
+                    <label for="buyer_name">
+                        Your Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="buyer_name"
+                        name="buyer_name"
+                        value="{{ session.get('user_name', '') }}"
+                        placeholder="Enter your name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Business Name -->
+
+                <div class="form-group">
+
+                    <label for="business_name">
+                        Business / Organization Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="business_name"
+                        name="business_name"
+                        placeholder="Restaurant, Mess, Shop, etc."
+                    >
+
+                </div>
+
+
+                <!-- Delivery Address -->
+
+                <div class="form-group full">
+
+                    <label for="delivery_address">
+                        🏠 Delivery Address
+                    </label>
+
+                    <input
+                        type="text"
+                        id="delivery_address"
+                        name="delivery_address"
+                        placeholder="Enter your complete delivery address"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- City -->
+
+                <div class="form-group">
+
+                    <label for="city">
+                        📍 City
+                    </label>
+
+                    <input
+                        type="text"
+                        id="city"
+                        name="city"
+                        placeholder="Enter city"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Pincode -->
+
+                <div class="form-group">
+
+                    <label for="pincode">
+                        📮 Pincode
+                    </label>
+
+                    <input
+                        type="text"
+                        id="pincode"
+                        name="pincode"
+                        placeholder="Enter 6-digit pincode"
+                        maxlength="6"
+                        pattern="[0-9]{6}"
+                        inputmode="numeric"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Payment -->
+
+                <div class="form-group full">
+
+                    <label for="payment_method">
+                        Payment Method
+                    </label>
+
+                    <select
+                        id="payment_method"
+                        name="payment_method"
+                        required
+                    >
+
+                        <option value="Cash on Delivery">
+                            💵 Cash on Delivery
+                        </option>
+
+                        <option value="Online Payment">
+                            💳 Online Payment (Coming Soon)
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="checkout-footer">
+
+                <div class="secure-text">
+                    🔒 Your order details are securely submitted.<br>
+                    Online payment will be available soon.
+                </div>
+
+                <button
+                    class="checkout-btn"
+                    type="submit"
+                >
+                    Proceed to Bulk Checkout →
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+
+    {% else %}
+
+    <!-- ================= EMPTY CART ================= -->
+
+    <div class="empty-cart">
+
+        <div class="empty-icon">
+            🛒
+        </div>
+
+        <h2>
+            Your Bulk Cart is Empty
+        </h2>
+
+        <p>
+            Add products from the bulk products section to place an order.
+        </p>
+
+        <a
+            class="browse-btn"
+            href="/bulk-products"
+        >
+            Browse Bulk Products →
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</main>
+
+</body>
+</html>

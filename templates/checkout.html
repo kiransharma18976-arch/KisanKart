@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Checkout | KisanKart</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f7f2e8;
+            color: #18231f;
+            min-height: 100vh;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            height: 75px;
+            background: #152a38;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 45px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #e7a33e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .nav a:hover {
+            opacity: 0.75;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            width: 92%;
+            max-width: 1100px;
+            margin: auto;
+            padding: 42px 0 70px;
+        }
+
+        .back {
+            color: #68736e;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .back:hover {
+            color: #152a38;
+        }
+
+        h1 {
+            font-family: Georgia, serif;
+            color: #152a38;
+            font-size: 38px;
+            margin: 24px 0 28px;
+        }
+
+        /* ================= LAYOUT ================= */
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1.3fr 0.8fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .box {
+            background: white;
+            border-radius: 22px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(20, 35, 30, 0.08);
+        }
+
+        .title {
+            color: #152a38;
+            font-size: 21px;
+            font-weight: 800;
+            border-bottom: 1px solid #eee9df;
+            padding-bottom: 16px;
+            margin-bottom: 22px;
+        }
+
+        /* ================= PRODUCT ================= */
+
+        .product {
+            display: flex;
+            gap: 20px;
+            padding-bottom: 22px;
+            margin-bottom: 22px;
+            border-bottom: 1px solid #eee9df;
+        }
+
+        .product-img {
+            width: 125px;
+            height: 125px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #eef6ed;
+            flex-shrink: 0;
+        }
+
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .category {
+            display: inline-block;
+            background: #f7f2e8;
+            color: #b87322;
+            padding: 5px 9px;
+            border-radius: 7px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .product h2 {
+            color: #152a38;
+            font-size: 23px;
+            margin: 8px 0;
+        }
+
+        .farmer {
+            color: #747d78;
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        .available {
+            color: #747d78;
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        .price {
+            color: #b87322;
+            font-size: 19px;
+            font-weight: 800;
+            margin-top: 9px;
+        }
+
+        .price small {
+            font-size: 12px;
+            color: #747d78;
+            font-weight: 600;
+        }
+
+        /* ================= FORM ================= */
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #152a38;
+            font-size: 13px;
+            font-weight: 800;
+            margin-bottom: 7px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd8cd;
+            border-radius: 10px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            outline: none;
+            background: white;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #e7a33e;
+        }
+
+        .qty {
+            max-width: 140px;
+        }
+
+        /* ================= PAYMENT ================= */
+
+        .payment-title {
+            color: #152a38;
+            font-size: 17px;
+            font-weight: 800;
+            margin: 25px 0 12px;
+        }
+
+        .payment-option {
+            border: 1px solid #ddd8cd;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+        }
+
+        .payment-option label {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #18231f;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .payment-option input {
+            width: auto;
+            accent-color: #2e7d32;
+        }
+
+        .payment-note {
+            color: #747d78;
+            font-size: 11px;
+            margin: 6px 0 0 25px;
+        }
+
+        .coming {
+            color: #b87322;
+        }
+
+        /* ================= SUMMARY ================= */
+
+        .summary {
+            background: #f7f2e8;
+            border-radius: 13px;
+            padding: 18px;
+            margin-top: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 7px 0;
+            color: #68736e;
+            font-size: 13px;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #ded8cc;
+            margin-top: 8px;
+            padding-top: 14px;
+            color: #b87322;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        /* ================= BUTTON ================= */
+
+        .btn {
+            width: 100%;
+            border: none;
+            background: #152a38;
+            color: white;
+            padding: 16px;
+            border-radius: 11px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 18px;
+        }
+
+        .btn:hover {
+            background: #213f51;
+        }
+
+        .secure {
+            text-align: center;
+            color: #747d78;
+            font-size: 11px;
+            margin-top: 12px;
+        }
+
+        .bottom {
+            display: inline-block;
+            margin-top: 17px;
+            color: #2e7d32;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .bottom:hover {
+            text-decoration: underline;
+        }
+
+        /* ================= BULK ================= */
+
+        .bulk {
+            display: inline-block;
+            background: #fff3cd;
+            color: #8a6200;
+            border-radius: 18px;
+            padding: 6px 11px;
+            font-size: 11px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 800px) {
+
+            .navbar {
+                padding: 0 18px;
+            }
+
+            .nav a:not(:last-child) {
+                display: none;
+            }
+
+            .main {
+                padding-top: 30px;
+            }
+
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 520px) {
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .box {
+                padding: 20px;
+            }
+
+            .product {
+                flex-direction: column;
+            }
+
+            .product-img {
+                width: 100%;
+                height: 200px;
+            }
+
+            .qty {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <a class="logo" href="{{ url_for('buyer_dashboard') }}">
+        <span class="logo-icon">🌾</span>
+        KisanKart
+    </a>
+
+    <div class="nav">
+
+        <a href="{{ url_for('buyer_products') }}">
+            Products
+        </a>
+
+        <a href="{{ url_for('cart') }}">
+            🛒 Cart
+        </a>
+
+        <a href="{{ url_for('wishlist') }}">
+            ❤️ Wishlist
+        </a>
+
+        <a href="{{ url_for('my_orders') }}">
+            📦 My Orders
+        </a>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+    <a class="back"
+       href="{{ url_for('bulk_cart') if bulk_mode else url_for('cart') }}">
+        ← Back
+    </a>
+
+    <h1>
+        {% if bulk_mode %}
+            Bulk Order Checkout 📦
+        {% else %}
+            Checkout 🛒
+        {% endif %}
+    </h1>
+
+
+    <div class="layout">
+
+
+        <!-- ================= ORDER DETAILS ================= -->
+
+        <div class="box">
+
+            <h2 class="title">
+                {% if bulk_mode %}
+                    📦 Bulk Order Items
+                {% else %}
+                    🛍️ Your Order
+                {% endif %}
+            </h2>
+
+
+            {% if bulk_mode %}
+
+                <span class="bulk">
+                    📦 BULK BUYER
+                </span>
+
+            {% endif %}
+
+
+            {% for product in products %}
+
+            <div class="product">
+
+                <div class="product-img">
+
+                    <img
+                        src="{{ get_product_image(product.product_name) }}"
+                        alt="{{ product.product_name }}"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <span class="category">
+                        {{ product.category }}
+                    </span>
+
+                    <h2>
+                        {{ product.product_name }}
+                    </h2>
+
+                    <div class="farmer">
+                        👨‍🌾 Farmer:
+                        {{ product.first_name }}
+                        {{ product.last_name }}
+                    </div>
+
+                    <div class="price">
+                        ₹{{ product.price }}
+                        <small>/ {{ product.unit }}</small>
+                    </div>
+
+                    <div class="available">
+                        📦 Available:
+                        {{ product.quantity }}
+                        {{ product.unit }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUANTITY -->
+
+            <div class="form-group">
+
+                <label>
+                    Quantity
+                    {% if bulk_mode %}
+                        for {{ product.product_name }}
+                    {% endif %}
+                </label>
+
+                <input
+                    class="qty"
+                    type="number"
+                    name="qty_{{ product.id }}"
+                    value="1"
+                    min="1"
+                    max="{{ product.quantity }}"
+                    data-price="{{ product.price }}"
+                    required
+                    oninput="calculateTotal()"
+                    form="checkoutForm"
+                >
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+
+        <!-- ================= CUSTOMER DETAILS ================= -->
+
+        <div class="box">
+
+            <h2 class="title">
+                👤 Customer Details
+            </h2>
+
+
+            <form
+                id="checkoutForm"
+                method="POST"
+            >
+
+
+                <!-- FULL NAME -->
+
+                <div class="form-group">
+
+                    <label>
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="buyer_name"
+                        value="{{ session.get('user_name', '') }}"
+                        placeholder="Enter your full name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PHONE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Phone Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        name="buyer_phone"
+                        placeholder="Enter your phone number"
+                        maxlength="15"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- ADDRESS -->
+
+                <div class="form-group">
+
+                    <label>
+                        Delivery Address
+                    </label>
+
+                    <textarea
+                        name="delivery_address"
+                        placeholder="House/Flat No., Street, Area, City, PIN Code"
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <!-- BULK BUSINESS NAME -->
+
+                {% if bulk_mode %}
+
+                <div class="form-group">
+
+                    <label>
+                        Business / Organization Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="business_name"
+                        placeholder="Mess, Canteen, Restaurant or Business Name"
+                        required
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+
+                <!-- PAYMENT -->
+
+                <div class="payment-title">
+                    💳 Payment Method
+                </div>
+
+
+                <div class="payment-option">
+
+                    <label>
+
+                        <input
+                            type="radio"
+                            name="payment_method"
+                            value="Cash on Delivery"
+                            checked
+                        >
+
+                        💵 Cash on Delivery
+
+                    </label>
+
+                    <div class="payment-note">
+                        Pay when your order is delivered.
+                    </div>
+
+                </div>
+
+
+                <div class="payment-option">
+
+                    <label>
+
+                        <input
+                            type="radio"
+                            name="payment_method"
+                            value="Online Payment"
+                        >
+
+                        💳 Online Payment
+
+                    </label>
+
+                    <div class="payment-note coming">
+                        🚀 Coming Soon — Cash on Delivery is available for this demo.
+                    </div>
+
+                </div>
+
+
+
+                <!-- SUMMARY -->
+
+                <div class="summary">
+
+                    <div class="summary-row">
+
+                        <span>
+                            Items
+                        </span>
+
+                        <span>
+                            {{ products|length }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Delivery
+                        </span>
+
+                        <span>
+                            Free
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-total">
+
+                        <span>
+                            Total Amount
+                        </span>
+
+                        <span id="totalAmount">
+                            ₹0.00
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PLACE ORDER -->
+
+                <button
+                    class="btn"
+                    type="submit"
+                >
+                    🛒 Place Order
+                </button>
+
+
+                <div class="secure">
+                    🔒 Your order details are handled securely.
+                </div>
+
+            </form>
+
+
+            <a
+                class="bottom"
+                href="{{ url_for('bulk_cart') if bulk_mode else url_for('cart') }}"
+            >
+                ← Back to
+                {% if bulk_mode %}
+                    Bulk Cart
+                {% else %}
+                    Cart
+                {% endif %}
+            </a>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+function calculateTotal() {
+
+    let total = 0;
+
+    const quantityInputs =
+        document.querySelectorAll(".qty");
+
+
+    quantityInputs.forEach(function(input) {
+
+        const quantity =
+            parseFloat(input.value) || 0;
+
+        const price =
+            parseFloat(input.dataset.price) || 0;
+
+        total += quantity * price;
+
+    });
+
+
+    document.getElementById("totalAmount").textContent =
+        "₹" + total.toFixed(2);
+
+}
+
+
+calculateTotal();
+
+</script>
+
+</body>
+</html>

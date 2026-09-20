@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bulk Buyer Dashboard | KisanKart</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #263a29;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 8% 12%, rgba(76,175,80,.16) 0 115px, transparent 116px),
+                radial-gradient(circle at 94% 16%, rgba(255,193,7,.14) 0 135px, transparent 136px),
+                radial-gradient(circle at 10% 90%, rgba(46,125,50,.12) 0 150px, transparent 151px),
+                radial-gradient(circle at 92% 88%, rgba(255,193,7,.11) 0 125px, transparent 126px),
+                linear-gradient(135deg,#edf7e9 0%,#fffaf0 48%,#e9f5e7 100%);
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before { content:""; position:fixed; inset:0; pointer-events:none; background-image:radial-gradient(circle,rgba(46,125,50,.12) 1px,transparent 1.5px); background-size:30px 30px; opacity:.35; z-index:0; }
+        body::after { content:""; position:fixed; width:280px; height:280px; left:-140px; bottom:-130px; border-radius:50%; background:rgba(46,125,50,.07); box-shadow:1250px -650px 0 rgba(255,193,7,.06),1050px 40px 0 rgba(46,125,50,.05); pointer-events:none; z-index:0; }
+        .navbar, .main { position:relative; z-index:1; }
+
+        /* NAVBAR */
+
+        .navbar {
+            min-height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 55px;
+
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #2e7d32;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #344238;
+            font-size: 14px;
+            font-weight: 600;
+
+            padding: 9px 12px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            background: #f1f8f1;
+            color: #2e7d32;
+        }
+
+        .dashboard {
+            background: #2e7d32 !important;
+            color: white !important;
+        }
+
+        .bulk-link {
+            background: #fff4df;
+            color: #a86200 !important;
+        }
+
+
+        /* MAIN */
+
+        .main {
+            width: 94%;
+            max-width: 1200px;
+
+            margin: auto;
+
+            padding: 40px 0 60px;
+        }
+
+
+        /* WELCOME */
+
+        .welcome {
+            background: linear-gradient(
+                135deg,
+                #1b5e20,
+                #2e7d32
+            );
+
+            color: white;
+
+            border-radius: 25px;
+
+            padding: 40px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 30px;
+
+            box-shadow:
+                0 12px 30px rgba(46,125,50,0.15);
+        }
+
+        .small-title {
+            color: #ffd180;
+
+            text-transform: uppercase;
+
+            letter-spacing: 2px;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            margin-bottom: 10px;
+        }
+
+        .welcome h1 {
+            font-size: 38px;
+
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            color: #e2f0e3;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+        .bulk-icon {
+            width: 100px;
+            height: 100px;
+
+            border-radius: 50%;
+
+            background: rgba(255,193,7,0.18);
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 52px;
+        }
+
+
+        /* TITLE */
+
+        .section-title {
+            color: #245b29;
+
+            font-size: 28px;
+
+            margin-bottom: 18px;
+        }
+
+
+        /* CARDS */
+
+        .actions {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 20px;
+        }
+
+        .action-card {
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 28px;
+
+            text-decoration: none;
+
+            color: #263a29;
+
+            box-shadow:
+                0 10px 30px rgba(20,35,30,.07);
+
+            transition: .25s;
+
+            border: 1px solid #edf1ed;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 14px 30px rgba(0,0,0,.10);
+        }
+
+        .action-icon {
+            width: 54px;
+            height: 54px;
+
+            border-radius: 15px;
+
+            background: #fff4df;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 27px;
+
+            margin-bottom: 17px;
+        }
+
+        .action-card h3 {
+            color: #245b29;
+
+            font-size: 18px;
+
+            margin-bottom: 8px;
+        }
+
+        .action-card p {
+            color: #78847a;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+        .arrow {
+            display: block;
+
+            margin-top: 17px;
+
+            color: #b86b00;
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+
+        /* MOBILE */
+
+        @media(max-width:850px) {
+
+            .navbar {
+                padding: 12px 20px;
+            }
+
+            .actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width:600px) {
+
+            .navbar {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 10px;
+            }
+
+            .welcome {
+                padding: 28px;
+            }
+
+            .welcome h1 {
+                font-size: 30px;
+            }
+
+            .bulk-icon {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        🌾 KisanKart
+    </div>
+
+
+    <div class="nav-links">
+
+        <a href="/">
+            Home
+        </a>
+
+        <a
+            href="/bulk-buyer"
+            class="dashboard"
+        >
+            📦 Dashboard
+        </a>
+
+        <a
+            href="/bulk-products"
+            class="bulk-link"
+        >
+            📦 Bulk Products
+        </a>
+
+        <a href="/my-orders">
+            📋 Order Status
+        </a>
+
+        <a href="/buyer-products">
+            🛒 Regular Buyer
+        </a>
+
+        <a href="/logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+
+    <!-- WELCOME -->
+
+    <section class="welcome">
+
+        <div>
+
+            <div class="small-title">
+                Bulk Buyer Account
+            </div>
+
+
+            <h1>
+                Hello, {{ session.get("user_name", "Bulk Buyer") }}! 📦
+            </h1>
+
+
+            <p>
+                Purchase agricultural products in larger
+                quantities directly from farmers for your
+                business needs.
+            </p>
+
+        </div>
+
+
+        <div class="bulk-icon">
+            📦
+        </div>
+
+    </section>
+
+
+
+    <!-- OPTIONS -->
+
+    <h2 class="section-title">
+        What would you like to do?
+    </h2>
+
+
+
+    <section class="actions">
+
+
+        <!-- BULK PRODUCTS -->
+
+        <a
+            href="/bulk-products"
+            class="action-card"
+        >
+
+            <div class="action-icon">
+                🌾
+            </div>
+
+            <h3>
+                Browse Bulk Products
+            </h3>
+
+            <p>
+                View available farm products and
+                choose the quantity required for
+                your business.
+            </p>
+
+            <span class="arrow">
+                View Bulk Products →
+            </span>
+
+        </a>
+
+
+
+        <!-- BULK ORDER -->
+
+        <a
+            href="/bulk-order"
+            class="action-card"
+        >
+
+            <div class="action-icon">
+                📦
+            </div>
+
+            <h3>
+                Place Bulk Order
+            </h3>
+
+            <p>
+                Select a product, enter your required
+                quantity and send a bulk request
+                directly to the farmer.
+            </p>
+
+            <span class="arrow">
+                Create Bulk Request →
+            </span>
+
+        </a>
+
+
+
+        <!-- ORDER STATUS -->
+
+        <a
+            href="/my-orders"
+            class="action-card"
+        >
+
+            <div class="action-icon">
+                📋
+            </div>
+
+            <h3>
+                Order Status
+            </h3>
+
+            <p>
+                Check your submitted orders and
+                see their current status.
+            </p>
+
+            <span class="arrow">
+                View Order Status →
+            </span>
+
+        </a>
+
+
+
+        <!-- REGULAR BUYER -->
+
+        <a
+            href="/buyer-products"
+            class="action-card"
+        >
+
+            <div class="action-icon">
+                🛒
+            </div>
+
+            <h3>
+                Regular Buyer
+            </h3>
+
+            <p>
+                Switch back to the normal buyer
+                section for regular quantity purchases.
+            </p>
+
+            <span class="arrow">
+                Go to Regular Buyer →
+            </span>
+
+        </a>
+
+
+
+        <!-- HOME -->
+
+        <a
+            href="/"
+            class="action-card"
+        >
+
+            <div class="action-icon">
+                🏠
+            </div>
+
+            <h3>
+                Home
+            </h3>
+
+            <p>
+                Return to the KisanKart home page
+                and explore the main website.
+            </p>
+
+            <span class="arrow">
+                Go Home →
+            </span>
+
+        </a>
+
+
+
+        <!-- LOGOUT -->
+
+        <a
+            href="/logout"
+            class="action-card"
+        >
+
+            <div class="action-icon">
+                🚪
+            </div>
+
+            <h3>
+                Logout
+            </h3>
+
+            <p>
+                Safely end your current KisanKart
+                buyer session.
+            </p>
+
+            <span class="arrow">
+                Logout →
+            </span>
+
+        </a>
+
+
+    </section>
+
+
+</main>
+
+
+</body>
+</html>

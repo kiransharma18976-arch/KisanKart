@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | KisanKart</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ===== ATTRACTIVE PAGE BACKGROUND ===== */
+        body {
+            font-family: "DM Sans", sans-serif;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(circle at 8% 15%, rgba(91, 155, 76, 0.25) 0 100px, transparent 101px),
+                radial-gradient(circle at 92% 18%, rgba(231, 163, 62, 0.20) 0 120px, transparent 121px),
+                radial-gradient(circle at 12% 88%, rgba(72, 135, 82, 0.18) 0 140px, transparent 141px),
+                radial-gradient(circle at 90% 88%, rgba(240, 205, 110, 0.20) 0 110px, transparent 111px),
+                linear-gradient(135deg, #edf7e9 0%, #fffaf0 48%, #eaf5e8 100%);
+
+            background-attachment: fixed;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 25px;
+            color: #18231f;
+
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Subtle decorative dots */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+
+            background-image:
+                radial-gradient(
+                    circle,
+                    rgba(47, 107, 63, 0.13) 1px,
+                    transparent 1.5px
+                );
+
+            background-size: 30px 30px;
+            opacity: 0.35;
+        }
+
+        /* Soft decorative glow */
+        body::after {
+            content: "";
+            position: fixed;
+            width: 280px;
+            height: 280px;
+            left: -130px;
+            bottom: -120px;
+
+            background: rgba(47, 107, 63, 0.08);
+            border-radius: 50%;
+
+            box-shadow:
+                1250px -650px 0 rgba(231, 163, 62, 0.07),
+                1050px 40px 0 rgba(47, 107, 63, 0.06);
+
+            pointer-events: none;
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+
+            width: 100%;
+            max-width: 1100px;
+            min-height: 650px;
+
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+
+            box-shadow: 0 25px 70px rgba(20, 35, 30, 0.15);
+        }
+
+        .farmer-side {
+            position: relative;
+            min-height: 650px;
+            overflow: hidden;
+        }
+
+        .farmer-side img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .farmer-side::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            background: linear-gradient(
+                180deg,
+                rgba(10, 25, 20, 0.10),
+                rgba(10, 25, 20, 0.75)
+            );
+        }
+
+        .image-content {
+            position: absolute;
+            z-index: 2;
+
+            left: 45px;
+            right: 45px;
+            bottom: 45px;
+
+            color: white;
+        }
+
+        .image-badge {
+            display: inline-block;
+
+            padding: 8px 14px;
+            border-radius: 50px;
+
+            background: rgba(231, 163, 62, 0.95);
+            color: #14211e;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            margin-bottom: 16px;
+        }
+
+        .image-content h1 {
+            font-family: "Playfair Display", serif;
+            font-size: 48px;
+            line-height: 1.08;
+            margin-bottom: 12px;
+        }
+
+        .image-content p {
+            color: #e8ece9;
+            font-size: 15px;
+            line-height: 1.7;
+            max-width: 470px;
+        }
+
+        .login-side {
+            padding: 60px 65px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            text-decoration: none;
+            color: #152a38;
+
+            font-size: 25px;
+            font-weight: 800;
+
+            margin-bottom: 45px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+
+            border-radius: 13px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e7a33e;
+            font-size: 23px;
+        }
+
+        .login-heading {
+            margin-bottom: 30px;
+        }
+
+        .login-heading .small-title {
+            color: #b87322;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 2px;
+
+            margin-bottom: 10px;
+        }
+
+        .login-heading h2 {
+            font-family: "Playfair Display", serif;
+
+            font-size: 42px;
+            line-height: 1.1;
+
+            margin-bottom: 10px;
+        }
+
+        .login-heading p {
+            color: #747d78;
+
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            margin-bottom: 8px;
+            color: #27352f;
+        }
+
+        .input-box {
+            position: relative;
+        }
+
+        .input-box span {
+            position: absolute;
+
+            left: 16px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            font-size: 18px;
+        }
+
+        .input-box input {
+            width: 100%;
+            height: 52px;
+
+            border: 1px solid #ddd9d0;
+            border-radius: 12px;
+
+            outline: none;
+
+            padding: 0 15px 0 45px;
+
+            font-size: 14px;
+            font-family: inherit;
+
+            background: #fcfbf8;
+
+            transition: 0.3s;
+        }
+
+        .input-box input:focus {
+            border-color: #e7a33e;
+            background: white;
+
+            box-shadow:
+                0 0 0 3px rgba(231, 163, 62, 0.12);
+        }
+
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin: 5px 0 25px;
+
+            font-size: 13px;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+
+            gap: 7px;
+
+            color: #69736e;
+        }
+
+        .remember input {
+            accent-color: #152a38;
+        }
+
+        .forgot {
+            color: #b87322;
+
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .forgot:hover {
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            height: 54px;
+
+            border: none;
+            border-radius: 12px;
+
+            background: #152a38;
+            color: white;
+
+            font-family: inherit;
+
+            font-size: 15px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #213f51;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 25px rgba(21, 42, 56, 0.2);
+        }
+
+        .register-text {
+            text-align: center;
+
+            margin-top: 25px;
+
+            color: #737d78;
+
+            font-size: 13px;
+        }
+
+        .register-text a {
+            color: #b87322;
+
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .register-text a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .back-home a {
+            color: #68736e;
+
+            font-size: 13px;
+            text-decoration: none;
+
+            font-weight: 600;
+        }
+
+        .back-home a:hover {
+            color: #152a38;
+        }
+
+        /* ===== TABLET ===== */
+
+        @media (max-width: 850px) {
+
+            .login-container {
+                grid-template-columns: 1fr;
+                max-width: 550px;
+            }
+
+            .farmer-side {
+                min-height: 300px;
+                height: 300px;
+            }
+
+            .image-content {
+                left: 30px;
+                bottom: 25px;
+            }
+
+            .image-content h1 {
+                font-size: 34px;
+            }
+
+            .image-content p {
+                display: none;
+            }
+
+            .login-side {
+                padding: 45px 35px;
+            }
+
+            .logo {
+                margin-bottom: 30px;
+            }
+        }
+
+        /* ===== MOBILE ===== */
+
+        @media (max-width: 500px) {
+
+            body {
+                padding: 12px;
+            }
+
+            .login-container {
+                border-radius: 20px;
+            }
+
+            .farmer-side {
+                min-height: 240px;
+                height: 240px;
+            }
+
+            .image-content h1 {
+                font-size: 30px;
+            }
+
+            .login-side {
+                padding: 35px 25px;
+            }
+
+            .login-heading h2 {
+                font-size: 35px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="farmer-side">
+
+            <img
+                src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1200&q=85"
+                alt="Indian Farmer"
+            >
+
+            <div class="image-content">
+
+                <div class="image-badge">
+                    🌱 KisanKart
+                </div>
+
+                <h1>
+                    Empowering<br>
+                    Farmers.
+                </h1>
+
+                <p>
+                    Connect directly with businesses and reach
+                    more customers through KisanKart.
+                </p>
+
+            </div>
+        </div>
+
+
+        <div class="login-side">
+
+            <a href="/" class="logo">
+
+                <div class="logo-icon">
+                    🌾
+                </div>
+
+                KisanKart
+
+            </a>
+
+
+            <div class="login-heading">
+
+                <div class="small-title">
+                    Welcome Back
+                </div>
+
+                <h2>
+                    Login to<br>
+                    Your Account
+                </h2>
+
+                <p>
+                    Enter your details to continue to KisanKart.
+                </p>
+
+            </div>
+
+
+            <form action="/login" method="POST">
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <div class="input-box">
+
+                        <span>✉️</span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-box">
+
+                        <span>🔒</span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-options">
+
+                    <label class="remember">
+
+                        <input type="checkbox">
+
+                        Remember me
+
+                    </label>
+
+
+                    <a href="#" class="forgot">
+                        Forgot Password?
+                    </a>
+
+                </div>
+
+
+                <button type="submit" class="login-btn">
+                    Login →
+                </button>
+
+            </form>
+
+
+            <div class="register-text">
+
+                Don't have an account?
+
+                <a href="/register">
+                    Create Account
+                </a>
+
+            </div>
+
+
+            <div class="back-home">
+
+                <a href="/">
+                    ← Back to KisanKart Home
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

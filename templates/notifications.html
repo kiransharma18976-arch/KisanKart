@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Notifications | KisanKart</title>
+
+    <style>
+        /* =========================
+           RESET & GLOBAL STYLES
+        ========================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(76, 145, 80, 0.10),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 90% 90%,
+                    rgba(231, 163, 62, 0.10),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #eef7ea,
+                    #fffdf7,
+                    #edf6eb
+                );
+
+            color: #24352a;
+        }
+
+
+        /* =========================
+           NAVBAR
+        ========================== */
+
+        .nav {
+            min-height: 72px;
+
+            background: linear-gradient(
+                135deg,
+                #173f32,
+                #245c40
+            );
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 7%;
+
+            box-shadow:
+                0 5px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+        }
+
+        .back {
+            color: #f4bd55;
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            padding: 9px 14px;
+            border-radius: 8px;
+
+            transition: 0.3s ease;
+        }
+
+        .back:hover {
+            background: rgba(255, 255, 255, 0.10);
+            color: #ffd477;
+        }
+
+
+        /* =========================
+           MAIN CONTAINER
+        ========================== */
+
+        .wrap {
+            width: 100%;
+            max-width: 900px;
+
+            margin: 0 auto;
+
+            padding: 55px 22px 70px;
+        }
+
+
+        /* =========================
+           PAGE HEADING
+        ========================== */
+
+        .head {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .head .icon {
+            width: 72px;
+            height: 72px;
+
+            margin: 0 auto 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e8f3e5;
+
+            border-radius: 50%;
+
+            font-size: 36px;
+
+            box-shadow:
+                0 8px 20px rgba(45, 100, 50, 0.08);
+        }
+
+        .head h1 {
+            color: #214c2a;
+
+            font-size: 32px;
+            font-weight: 800;
+
+            margin-bottom: 9px;
+        }
+
+        .head p {
+            color: #68756b;
+
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+
+        /* =========================
+           NOTIFICATION CARD
+        ========================== */
+
+        .card {
+            position: relative;
+
+            background: rgba(255, 255, 255, 0.96);
+
+            border: 1px solid #e0e9dd;
+
+            border-radius: 18px;
+
+            padding: 22px 24px;
+
+            margin-bottom: 16px;
+
+            box-shadow:
+                0 7px 22px rgba(42, 79, 43, 0.07);
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 28px rgba(42, 79, 43, 0.12);
+        }
+
+
+        /* =========================
+           UNREAD NOTIFICATION
+        ========================== */
+
+        .card.unread {
+            border-left: 5px solid #e7a33e;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #fffdf7,
+                    #ffffff
+                );
+        }
+
+
+        /* =========================
+           NOTIFICATION CONTENT
+        ========================== */
+
+        .card h3 {
+            color: #2f7135;
+
+            font-size: 18px;
+            font-weight: 700;
+
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: #5f6c61;
+
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .time {
+            display: block;
+
+            color: #89958b;
+
+            font-size: 12px;
+
+            margin-top: 11px;
+        }
+
+
+        /* =========================
+           EMPTY NOTIFICATION STATE
+        ========================== */
+
+        .empty {
+            background: rgba(255, 255, 255, 0.96);
+
+            border: 1px solid #e0e9dd;
+
+            border-radius: 18px;
+
+            padding: 55px 20px;
+
+            text-align: center;
+
+            box-shadow:
+                0 7px 22px rgba(42, 79, 43, 0.07);
+
+            color: #718076;
+        }
+
+        .empty-icon {
+            font-size: 45px;
+
+            margin-bottom: 12px;
+        }
+
+        .empty h2 {
+            color: #36543b;
+
+            font-size: 22px;
+
+            margin-bottom: 8px;
+        }
+
+        .empty p {
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================
+           BACK HOME BUTTON
+        ========================== */
+
+        .btn {
+            display: inline-block;
+
+            margin-top: 22px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #efad35,
+                    #e7a33e
+                );
+
+            color: #173f2c;
+
+            text-decoration: none;
+
+            padding: 11px 21px;
+
+            border-radius: 9px;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            box-shadow:
+                0 5px 14px rgba(231, 163, 62, 0.20);
+
+            transition: 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 18px rgba(231, 163, 62, 0.30);
+        }
+
+
+        /* =========================
+           MOBILE RESPONSIVE
+        ========================== */
+
+        @media (max-width: 600px) {
+
+            .nav {
+                min-height: 65px;
+                padding: 0 5%;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .back {
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+
+            .wrap {
+                padding:
+                    40px 15px
+                    55px;
+            }
+
+            .head {
+                margin-bottom: 28px;
+            }
+
+            .head .icon {
+                width: 62px;
+                height: 62px;
+                font-size: 30px;
+            }
+
+            .head h1 {
+                font-size: 27px;
+            }
+
+            .head p {
+                font-size: 13px;
+            }
+
+            .card {
+                padding: 18px;
+                border-radius: 15px;
+            }
+
+            .card h3 {
+                font-size: 16px;
+            }
+
+            .card p {
+                font-size: 13px;
+            }
+
+            .empty {
+                padding: 45px 18px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <nav class="nav">
+
+        <div class="logo">
+            🌾 KisanKart
+        </div>
+
+        <a
+            class="back"
+            href="{{ url_for('home') }}"
+        >
+            ← Home
+        </a>
+
+    </nav>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="wrap">
+
+        <!-- PAGE HEADING -->
+
+        <section class="head">
+
+            <div class="icon">
+                🔔
+            </div>
+
+            <h1>
+                Notifications
+            </h1>
+
+            <p>
+                Stay updated about your food donations and NGO activity.
+            </p>
+
+        </section>
+
+
+        <!-- =========================
+             NOTIFICATION LIST
+        ========================== -->
+
+        {% if notifications %}
+
+            {% for n in notifications %}
+
+                <article
+                    class="card {% if not n.is_read %}unread{% endif %}"
+                >
+
+                    <h3>
+                        {{ n.title }}
+                    </h3>
+
+                    <p>
+                        {{ n.message }}
+                    </p>
+
+                    <span class="time">
+                        {{ n.created_at }}
+                    </span>
+
+                </article>
+
+            {% endfor %}
+
+
+        <!-- =========================
+             NO NOTIFICATIONS
+        ========================== -->
+
+        {% else %}
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    🔔
+                </div>
+
+                <h2>
+                    No Notifications Yet
+                </h2>
+
+                <p>
+                    New food donation updates and activity
+                    notifications will appear here.
+                </p>
+
+                <a
+                    class="btn"
+                    href="{{ url_for('home') }}"
+                >
+                    Back Home
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </main>
+
+</body>
+</html>

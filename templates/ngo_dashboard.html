@@ -1,0 +1,2009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NGO Dashboard | KisanKart</title>
+
+    <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #f4f8f4;
+            color: #26352a;
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+
+            background: linear-gradient(
+                180deg,
+                #1b5e20,
+                #2e7d32
+            );
+
+            color: white;
+            padding: 25px 18px;
+
+            z-index: 1000;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo-icon {
+            width: 62px;
+            height: 62px;
+
+            border-radius: 18px;
+
+            background: rgba(255,255,255,0.15);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 32px;
+
+            margin: auto;
+        }
+
+        .logo h2 {
+            margin-top: 10px;
+            font-size: 23px;
+        }
+
+        .logo p {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: white;
+
+            padding: 14px 15px;
+
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            transition: 0.25s;
+
+            font-size: 15px;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background: rgba(255,255,255,0.16);
+            transform: translateX(3px);
+        }
+
+        .nav a:focus {
+            outline: 2px solid white;
+            outline-offset: 2px;
+        }
+
+
+        /* =====================================================
+           LOGOUT
+        ===================================================== */
+
+        .logout {
+            position: absolute;
+
+            bottom: 25px;
+
+            left: 18px;
+            right: 18px;
+        }
+
+        .logout a {
+            background: rgba(0,0,0,0.15);
+        }
+
+
+        /* =====================================================
+           MAIN AREA
+        ===================================================== */
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           TOP BAR
+        ===================================================== */
+
+        .topbar {
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 20px 25px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+
+            margin-bottom: 28px;
+        }
+
+        .welcome h1 {
+            color: #1b5e20;
+            font-size: 27px;
+        }
+
+        .welcome p {
+            color: #78907b;
+
+            margin-top: 6px;
+
+            font-size: 14px;
+        }
+
+        .ngo-badge {
+            background: #e8f5e9;
+
+            color: #2e7d32;
+
+            padding: 10px 16px;
+
+            border-radius: 30px;
+
+            font-weight: bold;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           PAGE SECTIONS
+        ===================================================== */
+
+        .page-section {
+            display: none;
+
+            animation: fadeIn 0.25s ease;
+        }
+
+        .page-section.active-section {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        /* =====================================================
+           DASHBOARD STAT CARDS
+        ===================================================== */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 18px;
+        }
+
+        .stat-card {
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 22px;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,0.06);
+
+            transition: 0.25s;
+
+            cursor: pointer;
+
+            border: 1px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+
+            border-color: #b7d9ba;
+
+            box-shadow:
+                0 12px 30px rgba(46,125,50,0.12);
+        }
+
+        .stat-card:focus {
+            outline: 2px solid #2e7d32;
+            outline-offset: 2px;
+        }
+
+        .stat-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+        .stat-top p {
+            color: #78907b;
+
+            font-size: 13px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+
+            border-radius: 14px;
+
+            background: #e8f5e9;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 24px;
+        }
+
+        .stat-card h3 {
+            color: #26352a;
+
+            font-size: 29px;
+
+            margin-top: 18px;
+        }
+
+        .stat-description {
+            color: #78907b;
+
+            font-size: 13px;
+
+            margin-top: 5px;
+        }
+
+        .view-details {
+            display: block;
+
+            margin-top: 12px;
+
+            color: #2e7d32;
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           SECTION CONTAINER
+        ===================================================== */
+
+        .section {
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,0.06);
+        }
+
+        .section-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            color: #1b5e20;
+
+            font-size: 21px;
+        }
+
+        .section-header span {
+            color: #78907b;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           DONATION GRID
+        ===================================================== */
+
+        .donation-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(280px, 1fr));
+
+            gap: 18px;
+        }
+
+
+        /* =====================================================
+           DONATION CARD
+        ===================================================== */
+
+        .donation-card {
+            border: 1px solid #e0e9e0;
+
+            border-radius: 18px;
+
+            padding: 20px;
+
+            background: #ffffff;
+
+            transition: 0.25s;
+        }
+
+        .donation-card:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 10px 25px rgba(46,125,50,0.10);
+        }
+
+        .food-icon {
+            width: 52px;
+            height: 52px;
+
+            background: #fff8e1;
+
+            border-radius: 15px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 26px;
+
+            margin-bottom: 14px;
+        }
+
+        .donation-card h3 {
+            color: #26352a;
+
+            font-size: 18px;
+
+            margin-bottom: 10px;
+
+            line-height: 1.4;
+        }
+
+        .donation-info {
+            color: #78907b;
+
+            font-size: 13px;
+
+            line-height: 1.9;
+        }
+
+        .donation-info strong {
+            color: #26352a;
+        }
+
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        .status {
+            display: inline-block;
+
+            padding: 6px 11px;
+
+            border-radius: 20px;
+
+            background: #fff3cd;
+
+            color: #856404;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            margin-top: 12px;
+        }
+
+
+        /* =====================================================
+           ACCEPT / COMPLETE BUTTON
+        ===================================================== */
+
+        .review-box {
+        margin-top: 16px;
+        padding: 15px;
+        background: #f7fbf7;
+        border: 1px solid #dcebdc;
+        border-radius: 12px;
+    }
+
+    .review-title {
+        font-weight: 700;
+        color: #1b5e20;
+        margin-bottom: 10px;
+    }
+
+    .star-row {
+        display: flex;
+        flex-direction: row;
+        gap: 6px;
+        margin-bottom: 10px;
+    }
+
+    .star-row input {
+        display: none;
+    }
+
+    .star-row label {
+        cursor: pointer;
+        font-size: 30px;
+        line-height: 1;
+        color: #cfd6cf;
+        opacity: 1;
+        transition: color 0.12s ease, transform 0.12s ease;
+        user-select: none;
+    }
+
+    .star-row label:hover {
+        transform: scale(1.08);
+    }
+
+    .star-row label.active {
+        color: #f5b301;
+    }
+
+    .review-box textarea {
+        width: 100%;
+        min-height: 75px;
+        padding: 10px;
+        border: 1px solid #d7ded9;
+        border-radius: 9px;
+        resize: vertical;
+        font-family: inherit;
+        margin-bottom: 10px;
+    }
+
+    .review-submit {
+        border: none;
+        background: #2e7d32;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .review-display {
+        margin-top: 14px;
+        padding: 12px;
+        background: #fff8e1;
+        border-radius: 10px;
+        color: #5f5a36;
+    }
+
+    .action-btn {
+            display: block;
+
+            width: 100%;
+
+            margin-top: 15px;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 11px;
+
+            background: #2e7d32;
+
+            color: white;
+
+            font-weight: bold;
+
+            font-size: 14px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #1b5e20;
+
+            transform: translateY(-1px);
+        }
+
+        .action-btn:focus {
+            outline: 2px solid #1b5e20;
+            outline-offset: 2px;
+        }
+
+        .reject-btn {
+            background: #c62828;
+        }
+
+        .reject-btn:hover {
+            background: #a61f1f;
+        }
+
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        .empty {
+            text-align: center;
+
+            padding: 55px 20px;
+
+            border: 2px dashed #c8dfca;
+
+            border-radius: 18px;
+
+            background: #fbfdfb;
+        }
+
+        .empty-icon {
+            font-size: 50px;
+
+            margin-bottom: 12px;
+        }
+
+        .empty h3 {
+            color: #2e7d32;
+
+            font-size: 19px;
+
+            margin-bottom: 8px;
+        }
+
+        .empty p {
+            color: #78907b;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           PROFILE
+        ===================================================== */
+
+        .profile-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 15px;
+        }
+
+        .profile-item {
+            background: #f7faf7;
+
+            padding: 16px;
+
+            border-radius: 13px;
+
+            border: 1px solid #edf3ed;
+        }
+
+        .profile-item small {
+            display: block;
+
+            color: #8aa08d;
+
+            font-size: 12px;
+
+            margin-bottom: 6px;
+        }
+
+        .profile-item strong {
+            color: #2e7d32;
+
+            font-size: 14px;
+
+            word-break: break-word;
+        }
+
+
+        /* =====================================================
+           HISTORY FILTER MESSAGE
+        ===================================================== */
+
+        .history-note {
+            margin-bottom: 18px;
+
+            padding: 12px 15px;
+
+            background: #f4faf4;
+
+            border-left: 4px solid #2e7d32;
+
+            border-radius: 8px;
+
+            color: #5f7562;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 750px) {
+
+            .sidebar {
+                position: relative;
+
+                width: 100%;
+
+                height: auto;
+
+                min-height: auto;
+            }
+
+            .logo {
+                margin-bottom: 20px;
+            }
+
+            .nav {
+                gap: 5px;
+            }
+
+            .logout {
+                position: static;
+
+                margin-top: 20px;
+            }
+
+            .main {
+                margin-left: 0;
+
+                padding: 18px;
+            }
+
+            .topbar {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .main {
+                padding: 12px;
+            }
+
+            .topbar {
+                padding: 18px;
+            }
+
+            .welcome h1 {
+                font-size: 23px;
+            }
+
+            .section {
+                padding: 18px;
+            }
+
+            .section-header {
+                align-items: flex-start;
+
+                gap: 8px;
+
+                flex-direction: column;
+            }
+
+        }
+
+    .food-image{width:100%;height:230px;object-fit:cover;display:block;border-radius:14px;margin-bottom:16px;border:1px solid #e2e8e2;}
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            🤝
+        </div>
+
+        <h2>KisanKart</h2>
+
+        <p>NGO Panel</p>
+
+    </div>
+
+
+    <nav class="nav">
+
+        <a href="#dashboard"
+           class="tab-link active"
+           data-section="dashboard">
+
+            🏠
+            <span>Dashboard</span>
+
+        </a>
+
+
+        <a href="#donations"
+           class="tab-link"
+           data-section="donations">
+
+            🍱
+            <span>Food Donations</span>
+
+        </a>
+
+
+        <a href="#history"
+           class="tab-link"
+           data-section="history">
+
+            📦
+            <span>Donation History</span>
+
+        </a>
+
+
+        <a href="#profile"
+           class="tab-link"
+           data-section="profile">
+
+            👤
+            <span>My Profile</span>
+
+        </a>
+
+        <a href="/notifications" class="notification-link">
+
+            🔔
+            <span>Notifications</span>
+
+            {% if unread_notifications|default(0) > 0 %}
+                <span class="notification-badge">
+                    {{ unread_notifications }}
+                </span>
+            {% endif %}
+
+        </a>
+
+    </nav>
+
+
+    <div class="logout">
+
+        <nav class="nav">
+
+            <a href="{{ url_for('logout') }}">
+
+                🚪
+                <span>Logout</span>
+
+            </a>
+
+        </nav>
+
+    </div>
+
+</aside>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="main">
+
+
+    <!-- =====================================================
+         TOP BAR
+    ====================================================== -->
+
+    <div class="topbar">
+
+        <div class="welcome">
+
+            <h1>
+                Welcome,
+                {{ ngo.first_name }}! 🤝
+            </h1>
+
+            <p>
+                Manage surplus food donations
+                and help your community.
+            </p>
+
+        </div>
+
+
+        <div class="ngo-badge">
+
+            🤝 NGO Account
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         DASHBOARD
+    ====================================================== -->
+
+    <section
+        class="page-section active-section"
+        id="dashboard">
+
+
+        <div class="stats">
+
+
+            <!-- TOTAL -->
+
+            <div
+                class="stat-card stat-link"
+                data-target="donations"
+                data-filter="all"
+                tabindex="0"
+                role="button">
+
+                <div class="stat-top">
+
+                    <p>
+                        Total Donations
+                    </p>
+
+                    <div class="stat-icon">
+                        🍱
+                    </div>
+
+                </div>
+
+
+                <h3>
+                    {{ total_donations|default(0) }}
+                </h3>
+
+
+                <p class="stat-description">
+                    All food donations
+                </p>
+
+
+                <span class="view-details">
+                    View details →
+                </span>
+
+            </div>
+
+
+
+            <!-- PENDING -->
+
+            <div
+                class="stat-card stat-link"
+                data-target="donations"
+                data-filter="pending"
+                tabindex="0"
+                role="button">
+
+                <div class="stat-top">
+
+                    <p>
+                        Pending
+                    </p>
+
+                    <div class="stat-icon">
+                        ⏳
+                    </div>
+
+                </div>
+
+
+                <h3>
+                    {{ pending_donations|default(0) }}
+                </h3>
+
+
+                <p class="stat-description">
+                    Waiting for acceptance
+                </p>
+
+
+                <span class="view-details">
+                    View details →
+                </span>
+
+            </div>
+
+
+
+            <!-- ACCEPTED -->
+
+            <div
+                class="stat-card stat-link"
+                data-target="history"
+                data-filter="Accepted"
+                tabindex="0"
+                role="button">
+
+                <div class="stat-top">
+
+                    <p>
+                        Accepted
+                    </p>
+
+                    <div class="stat-icon">
+                        ✅
+                    </div>
+
+                </div>
+
+
+                <h3>
+                    {{ accepted_donations|default(0) }}
+                </h3>
+
+
+                <p class="stat-description">
+                    Donations accepted
+                </p>
+
+
+                <span class="view-details">
+                    View details →
+                </span>
+
+            </div>
+
+
+
+            <!-- COMPLETED -->
+
+            <div
+                class="stat-card stat-link"
+                data-target="history"
+                data-filter="Completed"
+                tabindex="0"
+                role="button">
+
+                <div class="stat-top">
+
+                    <p>
+                        Completed
+                    </p>
+
+                    <div class="stat-icon">
+                        📦
+                    </div>
+
+                </div>
+
+
+                <h3>
+                    {{ completed_donations|default(0) }}
+                </h3>
+
+
+                <p class="stat-description">
+                    Successfully collected
+                </p>
+
+
+                <span class="view-details">
+                    View details →
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FOOD DONATIONS
+    ====================================================== -->
+
+    <section
+        class="section page-section"
+        id="donations">
+
+
+        <div class="section-header">
+
+            <h2>
+                🍱 Available Food Donations
+            </h2>
+
+            <span>
+                Latest donations
+            </span>
+
+        </div>
+
+
+
+        {% if donations %}
+
+
+        <div class="donation-grid">
+
+
+            {% for donation in donations %}
+
+
+            <div
+                class="donation-card donation-item"
+                data-status="{{ donation.status|lower }}">
+
+
+                <img
+                    src="{{ get_food_image(donation.food_name, donation.food_image) }}"
+                    alt="{{ donation.food_name }}"
+                    class="food-image"
+                    loading="lazy"
+                    onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/food.jpg') }}';"
+                >
+
+
+                <h3>
+                    {{ donation.food_name }}
+                </h3>
+
+
+                <div class="donation-info">
+
+
+                    <div>
+                        📦 Quantity:
+                        <strong>
+                            {{ donation.quantity }}
+                            {{ donation.unit }}
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        👤 Donor:
+                        <strong>
+                            {{ donation.donor_name }}
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        📍 Location:
+                        <strong>
+                            {{ donation.location }}
+                        </strong>
+                    </div>
+
+
+                    {% if donation.description %}
+
+                    <div>
+                        📝
+                        {{ donation.description }}
+                    </div>
+
+                    {% endif %}
+
+
+                    <div>
+                        📅
+                        {{ donation.donation_date }}
+                    </div>
+
+
+                </div>
+
+
+                <span class="status">
+
+                    {% if donation.status == "Pending" %}
+                        🟡 Pending
+
+                    {% elif donation.status == "Accepted" %}
+                        🟢 Accepted
+
+                    {% elif donation.status == "Completed" %}
+                        📦 Completed
+
+                    {% else %}
+                        {{ donation.status }}
+
+                    {% endif %}
+
+                </span>
+
+
+
+                {% if donation.status == "Pending" %}
+
+
+                <form
+                    method="POST"
+                    action="{{ url_for('accept_donation', donation_id=donation.id) }}">
+
+                    <button
+                        type="submit"
+                        class="action-btn">
+
+                        ✅ Accept Donation
+
+                    </button>
+
+                </form>
+
+                <form
+                    method="POST"
+                    action="{{ url_for('reject_donation', donation_id=donation.id) }}"
+                    onsubmit="return confirm('Are you sure you want to reject this food donation?');">
+
+                    <button
+                        type="submit"
+                        class="action-btn reject-btn">
+
+                        ❌ Reject Donation
+
+                    </button>
+
+                </form>
+
+
+                {% endif %}
+
+
+            </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+        {% else %}
+
+
+        <div class="empty">
+
+            <div class="empty-icon">
+                🍱
+            </div>
+
+            <h3>
+                No Food Donations Yet
+            </h3>
+
+            <p>
+                When a buyer, restaurant, mess
+                or canteen lists surplus food,
+                it will appear here.
+            </p>
+
+        </div>
+
+
+        {% endif %}
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         DONATION HISTORY
+    ====================================================== -->
+
+    <section
+        class="section page-section"
+        id="history">
+
+
+        <div class="section-header">
+
+            <h2>
+                📦 Donation History
+            </h2>
+
+            <span>
+                Accepted & completed donations
+            </span>
+
+        </div>
+
+
+        <div
+            id="historyFilterMessage"
+            class="history-note"
+            style="display:none;">
+
+            Showing selected donation status.
+
+        </div>
+
+
+
+        {% if history %}
+
+
+        <div class="donation-grid">
+
+
+            {% for donation in history %}
+
+
+            <div
+                class="donation-card history-card"
+                data-status="{{ donation.status }}">
+
+
+                <img
+                    src="{{ get_food_image(donation.food_name, donation.food_image) }}"
+                    alt="{{ donation.food_name }}"
+                    class="food-image"
+                    loading="lazy"
+                    onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/food.jpg') }}';"
+                >
+
+
+                <h3>
+                    {{ donation.food_name }}
+                </h3>
+
+
+                <div class="donation-info">
+
+
+                    <div>
+                        📦 Quantity:
+                        <strong>
+                            {{ donation.quantity }}
+                            {{ donation.unit }}
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        👤 Donor:
+                        <strong>
+                            {{ donation.donor_name }}
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        📍 Location:
+                        <strong>
+                            {{ donation.location }}
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        📅
+                        {{ donation.donation_date }}
+                    </div>
+
+
+                </div>
+
+
+                <span class="status">
+
+                    {% if donation.status == "Accepted" %}
+                        🟢 Accepted
+
+                    {% elif donation.status == "Completed" %}
+                        📦 Completed
+
+                    {% else %}
+                        {{ donation.status }}
+
+                    {% endif %}
+
+                </span>
+
+
+
+                {% if donation.status == "Accepted" %}
+
+
+                <form
+                    method="POST"
+                    action="{{ url_for('complete_donation', donation_id=donation.id) }}">
+
+                    <button
+                        type="submit"
+                        class="action-btn">
+
+                        📦 Mark as Completed
+
+                    </button>
+
+                </form>
+
+
+                {% endif %}
+
+
+                {% if donation.review_rating %}
+                    <div class="review-display">
+                        <strong>⭐ NGO Review: {{ donation.review_rating }}/5</strong>
+                        {% if donation.review_text %}
+                            <br>{{ donation.review_text }}
+                        {% endif %}
+                    </div>
+                {% elif donation.status in ["Accepted", "Completed"] %}
+                    <div class="review-box">
+                        <div class="review-title">⭐ Review this food donation</div>
+
+                        <form method="POST" action="{{ url_for('review_donation', donation_id=donation.id) }}">
+                            <div class="star-row">
+                                <input type="radio" id="star5-{{ donation.id }}" name="rating" value="5" required><label for="star5-{{ donation.id }}">★</label>
+                                <input type="radio" id="star4-{{ donation.id }}" name="rating" value="4"><label for="star4-{{ donation.id }}">★</label>
+                                <input type="radio" id="star3-{{ donation.id }}" name="rating" value="3"><label for="star3-{{ donation.id }}">★</label>
+                                <input type="radio" id="star2-{{ donation.id }}" name="rating" value="2"><label for="star2-{{ donation.id }}">★</label>
+                                <input type="radio" id="star1-{{ donation.id }}" name="rating" value="1"><label for="star1-{{ donation.id }}">★</label>
+                            </div>
+
+                            <textarea name="review_text" placeholder="Tell us about the food quality, freshness and packaging..."></textarea>
+
+                            <button type="submit" class="review-submit">Submit Review</button>
+                        </form>
+                    </div>
+                {% endif %}
+
+
+            </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+        {% else %}
+
+
+        <div class="empty">
+
+            <div class="empty-icon">
+                📦
+            </div>
+
+            <h3>
+                No Donation History
+            </h3>
+
+            <p>
+                Donations accepted by your NGO
+                will appear here.
+            </p>
+
+        </div>
+
+
+        {% endif %}
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         NGO PROFILE
+    ====================================================== -->
+
+    <section
+        class="section page-section"
+        id="profile">
+
+
+        <div class="section-header">
+
+            <h2>
+                👤 NGO Profile
+            </h2>
+
+            <span>
+                Account information
+            </span>
+
+        </div>
+
+
+
+        <div class="profile-grid">
+
+
+            <div class="profile-item">
+
+                <small>
+                    Full Name
+                </small>
+
+                <strong>
+                    {{ ngo.first_name }}
+                    {{ ngo.last_name }}
+                </strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <small>
+                    Account Type
+                </small>
+
+                <strong>
+                    NGO
+                </strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <small>
+                    Email
+                </small>
+
+                <strong>
+                    {{ ngo.email }}
+                </strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <small>
+                    Phone
+                </small>
+
+                <strong>
+                    {{ ngo.phone }}
+                </strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <small>
+                    Location
+                </small>
+
+                <strong>
+                    {{ ngo.location }}
+                </strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <small>
+                    Member Since
+                </small>
+
+                <strong>
+                    {{ ngo.created_at }}
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const links =
+            document.querySelectorAll(".tab-link");
+
+
+        const sections =
+            document.querySelectorAll(".page-section");
+
+
+        const statCards =
+            document.querySelectorAll(".stat-link");
+
+
+        const historyCards =
+            document.querySelectorAll(".history-card");
+
+
+        const historyMessage =
+            document.getElementById(
+                "historyFilterMessage"
+            );
+
+
+
+        /* =====================================================
+           SHOW / HIDE HISTORY CARDS
+        ===================================================== */
+
+        function applyHistoryFilter(filter) {
+
+            let visibleCount = 0;
+
+
+            historyCards.forEach(
+                function (card) {
+
+                    const status =
+                        card.dataset.status || "";
+
+
+                    if (
+                        filter === "all" ||
+                        status === filter
+                    ) {
+
+                        card.style.display = "";
+
+                        visibleCount++;
+
+                    } else {
+
+                        card.style.display = "none";
+
+                    }
+
+                }
+            );
+
+
+            if (
+                historyMessage &&
+                filter !== "all"
+            ) {
+
+                historyMessage.style.display =
+                    "block";
+
+                historyMessage.textContent =
+                    "Showing " +
+                    filter.toLowerCase() +
+                    " donations.";
+
+            }
+
+
+            if (
+                historyMessage &&
+                filter === "all"
+            ) {
+
+                historyMessage.style.display =
+                    "none";
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           SHOW SECTION
+        ===================================================== */
+
+        function showSection(
+            sectionId,
+            filter = "all",
+            updateHash = true
+        ) {
+
+
+            let target =
+                document.getElementById(sectionId);
+
+
+            if (!target) {
+
+                sectionId = "dashboard";
+
+                target =
+                    document.getElementById(
+                        "dashboard"
+                    );
+
+            }
+
+
+
+            sections.forEach(
+                function (section) {
+
+                    section.classList.remove(
+                        "active-section"
+                    );
+
+                }
+            );
+
+
+
+            links.forEach(
+                function (link) {
+
+                    link.classList.remove(
+                        "active"
+                    );
+
+                }
+            );
+
+
+
+            target.classList.add(
+                "active-section"
+            );
+
+
+
+            const activeLink =
+                document.querySelector(
+                    '.tab-link[data-section="' +
+                    sectionId +
+                    '"]'
+                );
+
+
+            if (activeLink) {
+
+                activeLink.classList.add(
+                    "active"
+                );
+
+            }
+
+
+
+            /* -------------------------------------------------
+               FILTER HISTORY
+            ------------------------------------------------- */
+
+            if (sectionId === "history") {
+
+                applyHistoryFilter(filter);
+
+            } else {
+
+                applyHistoryFilter("all");
+
+            }
+
+
+
+            /* -------------------------------------------------
+               FILTER DONATIONS
+            ------------------------------------------------- */
+
+            if (sectionId === "donations") {
+
+                const donationItems =
+                    document.querySelectorAll(
+                        ".donation-item"
+                    );
+
+
+                donationItems.forEach(
+                    function (card) {
+
+                        const status =
+                            card.dataset.status || "";
+
+
+                        if (
+                            filter === "all" ||
+                            status === filter
+                        ) {
+
+                            card.style.display =
+                                "";
+
+                        } else {
+
+                            card.style.display =
+                                "none";
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+
+            /* -------------------------------------------------
+               UPDATE URL HASH
+            ------------------------------------------------- */
+
+            if (updateHash) {
+
+                history.replaceState(
+                    null,
+                    "",
+                    "#" + sectionId
+                );
+
+            }
+
+
+
+            /* -------------------------------------------------
+               SCROLL TOP
+            ------------------------------------------------- */
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+
+
+        /* =====================================================
+           SIDEBAR LINKS
+        ===================================================== */
+
+        links.forEach(
+            function (link) {
+
+                link.addEventListener(
+                    "click",
+                    function (event) {
+
+                        event.preventDefault();
+
+
+                        showSection(
+                            this.dataset.section,
+                            "all"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+
+        /* =====================================================
+           DASHBOARD CARDS
+        ===================================================== */
+
+        statCards.forEach(
+            function (card) {
+
+
+                card.addEventListener(
+                    "click",
+                    function () {
+
+                        showSection(
+                            this.dataset.target,
+                            this.dataset.filter ||
+                            "all"
+                        );
+
+                    }
+                );
+
+
+
+                card.addEventListener(
+                    "keydown",
+                    function (event) {
+
+                        if (
+                            event.key === "Enter" ||
+                            event.key === " "
+                        ) {
+
+                            event.preventDefault();
+
+
+                            showSection(
+                                this.dataset.target,
+                                this.dataset.filter ||
+                                "all"
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+
+        /* =====================================================
+           OPEN SECTION FROM URL HASH
+        ===================================================== */
+
+        const initialSection =
+            window.location.hash
+                .replace("#", "")
+                || "dashboard";
+
+
+        showSection(
+            initialSection,
+            "all",
+            false
+        );
+
+
+    }
+
+);
+
+
+        /* =====================================================
+           CLICKABLE FOOD RATING STARS
+           1 star = only 1 highlighted
+           5 stars = all 5 highlighted
+        ===================================================== */
+
+        document.querySelectorAll(".star-row").forEach(function (row) {
+            const inputs = row.querySelectorAll('input[type="radio"]');
+            const labels = row.querySelectorAll("label");
+
+            inputs.forEach(function (input) {
+                input.addEventListener("change", function () {
+                    const selected = parseInt(this.value, 10);
+
+                    labels.forEach(function (label) {
+                        const labelInput = document.getElementById(label.htmlFor);
+                        const value = parseInt(labelInput.value, 10);
+
+                        label.classList.toggle("active", value <= selected);
+                    });
+                });
+            });
+        });
+
+</script>
+
+
+</body>
+</html>

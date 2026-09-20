@@ -1,0 +1,2826 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>KisanKart | Fresh From Farmers</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap"
+    rel="stylesheet"
+>
+
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: "DM Sans", sans-serif;
+        background: #f7f2e8;
+        color: #18231f;
+        overflow-x: hidden;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    button,
+    input {
+        font-family: inherit;
+    }
+
+    /* =========================
+       NAVBAR
+    ========================= */
+
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        padding: 16px 6%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(13, 25, 34, 0.97);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: white;
+        font-size: 25px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+    .logo-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e7a33e;
+        font-size: 22px;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .nav-links a {
+        color: #f1f3ef;
+        font-size: 14px;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+        color: #e7a33e;
+    }
+
+    .nav-buttons {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .login-btn,
+    .register-btn {
+        padding: 11px 20px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 700;
+        transition: 0.3s;
+    }
+
+    .login-btn {
+        color: white;
+        border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .login-btn:hover {
+        background: rgba(255,255,255,0.1);
+    }
+
+    .register-btn {
+        background: #e7a33e;
+        color: #14211e;
+    }
+
+    .register-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(231,163,62,0.25);
+    }
+
+    /* PROFILE */
+
+    .profile-wrapper {
+        position: relative;
+        display: none;
+    }
+
+    .profile-wrapper.show {
+        display: block;
+    }
+
+    .profile-button {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        border: 1px solid rgba(255,255,255,0.18);
+        background: rgba(255,255,255,0.06);
+        color: white;
+        padding: 7px 12px 7px 7px;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+
+    .profile-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e7a33e;
+        color: #14211e;
+        font-weight: 800;
+        font-size: 14px;
+    }
+
+    .profile-name {
+        font-size: 13px;
+        font-weight: 700;
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .profile-arrow {
+        font-size: 11px;
+        color: #d0d6d3;
+    }
+
+    .profile-menu {
+        position: absolute;
+        right: 0;
+        top: 52px;
+        width: 235px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 18px 50px rgba(0,0,0,0.24);
+        padding: 10px;
+        display: none;
+    }
+
+    .profile-menu.show {
+        display: block;
+    }
+
+    .profile-info {
+        padding: 12px;
+        border-bottom: 1px solid #ece9e1;
+        margin-bottom: 6px;
+    }
+
+    .profile-info strong {
+        display: block;
+        font-size: 15px;
+        color: #18231f;
+    }
+
+    .profile-info span {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+        color: #7b837f;
+    }
+
+    .profile-menu a,
+    .logout-button {
+        width: 100%;
+        display: block;
+        padding: 11px 12px;
+        border-radius: 9px;
+        border: none;
+        background: transparent;
+        text-align: left;
+        font-size: 13px;
+        font-weight: 600;
+        color: #26332f;
+        cursor: pointer;
+    }
+
+    .profile-menu a:hover,
+    .logout-button:hover {
+        background: #f6f2e9;
+    }
+
+    .logout-button {
+        color: #b33a30;
+    }
+
+    /* POLISH: subtle premium finishing */
+    .navbar {
+        box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+    }
+
+    .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: radial-gradient(circle at 78% 45%, rgba(231,163,62,0.10), transparent 30%);
+    }
+
+    .hero-text {
+        text-shadow: 0 2px 18px rgba(0,0,0,0.18);
+    }
+
+    .hero-badge {
+        backdrop-filter: blur(8px);
+    }
+
+    .category-card,
+    .feature-card,
+    .why-card,
+    .search-box,
+    .surplus-container,
+    .bulk-image {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .category-card:focus-visible,
+    .primary-btn:focus-visible,
+    .secondary-btn:focus-visible,
+    .slider-arrow:focus-visible,
+    .search-btn:focus-visible,
+    .profile-button:focus-visible {
+        outline: 3px solid rgba(231,163,62,0.55);
+        outline-offset: 3px;
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .hero {
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+        background: #0d1922;
+    }
+
+    .slides {
+        position: absolute;
+        inset: 0;
+    }
+
+    .slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 1s ease;
+    }
+
+    .slide.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .slide::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(
+                90deg,
+                rgba(5,15,20,0.74) 0%,
+                rgba(5,15,20,0.48) 42%,
+                rgba(5,15,20,0.16) 100%
+            );
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 5;
+        min-height: 100vh;
+        max-width: 1250px;
+        margin: auto;
+        padding: 160px 6% 80px;
+        display: flex;
+        align-items: center;
+    }
+
+    .hero-text {
+        max-width: 720px;
+        color: white;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 15px;
+        border-radius: 50px;
+        background: rgba(231,163,62,0.14);
+        border: 1px solid rgba(231,163,62,0.35);
+        color: #f4c46f;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 22px;
+    }
+
+    .hero h1 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(48px, 5.7vw, 76px);
+        line-height: 1.02;
+        letter-spacing: -2px;
+        margin-bottom: 25px;
+    }
+
+    .hero h1 span {
+        color: #e7a33e;
+    }
+
+    .hero-description {
+        max-width: 620px;
+        color: #d7dedb;
+        font-size: 16px;
+        line-height: 1.75;
+        margin-bottom: 34px;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .primary-btn {
+        display: inline-block;
+        background: #e7a33e;
+        color: #16221f;
+        padding: 14px 24px;
+        border-radius: 12px;
+        font-weight: 800;
+        transition: 0.3s;
+    }
+
+    .primary-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(231,163,62,0.25);
+    }
+
+    .secondary-btn {
+        padding: 14px 24px;
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 12px;
+        color: white;
+        font-weight: 700;
+        transition: 0.3s;
+    }
+
+    .secondary-btn:hover {
+        background: rgba(255,255,255,0.1);
+    }
+
+    /* SLIDER */
+
+    .slider-arrow {
+        position: absolute;
+        z-index: 10;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.3);
+        background: rgba(0,0,0,0.25);
+        color: white;
+        cursor: pointer;
+        font-size: 20px;
+        transition: 0.3s;
+    }
+
+    .slider-arrow:hover {
+        background: #e7a33e;
+        color: #14211e;
+    }
+
+    .prev {
+        left: 25px;
+    }
+
+    .next {
+        right: 25px;
+    }
+
+    .dots {
+        position: absolute;
+        z-index: 20;
+        bottom: 35px;
+        left: 6%;
+        display: flex;
+        gap: 8px;
+    }
+
+    .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(255,255,255,0.45);
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .dot.active {
+        width: 30px;
+        border-radius: 10px;
+        background: #e7a33e;
+    }
+
+    /* COMMON */
+
+    section {
+        padding: 84px 6%;
+    }
+
+    .section-heading {
+        max-width: 720px;
+        margin: 0 auto 44px;
+        text-align: center;
+    }
+
+    .small-title {
+        color: #b87322;
+        text-transform: uppercase;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+    }
+
+    .section-heading h2 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(35px, 4vw, 52px);
+        line-height: 1.1;
+        margin-bottom: 15px;
+    }
+
+    .section-heading p {
+        color: #66716d;
+        line-height: 1.7;
+    }
+
+    /* SEARCH */
+
+    .search-section {
+        background: #f7f2e8;
+        padding-top: 35px;
+        padding-bottom: 35px;
+    }
+
+    .search-box {
+        max-width: 1100px;
+        margin: auto;
+        background: white;
+        border-radius: 22px;
+        padding: 25px;
+        box-shadow: 0 18px 50px rgba(22,34,31,0.10);
+        display: grid;
+        grid-template-columns: 1fr 1fr 180px;
+        gap: 15px;
+    }
+
+    .search-field {
+        position: relative;
+        border: 1px solid #e0ddd4;
+        border-radius: 12px;
+        padding: 14px 17px;
+        background: #fcfbf8;
+        transition: 0.3s;
+    }
+
+    .search-field:focus-within {
+        border-color: #e7a33e;
+        box-shadow: 0 0 0 3px rgba(231,163,62,0.10);
+    }
+
+    .search-field label {
+        display: block;
+        font-size: 11px;
+        color: #7a817d;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+    .search-field input {
+        width: 100%;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 15px;
+        color: #18231f;
+    }
+
+    .search-field input::placeholder {
+        color: #a5aaa7;
+    }
+
+    .search-btn {
+        border: none;
+        border-radius: 12px;
+        background: #152a38;
+        color: white;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .search-btn:hover {
+        background: #213f51;
+        transform: translateY(-2px);
+    }
+
+    .suggestions {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: calc(100% + 6px);
+        z-index: 100;
+        background: white;
+        border: 1px solid #e3dfd5;
+        border-radius: 12px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        overflow: hidden;
+        display: none;
+    }
+
+    .suggestions.show {
+        display: block;
+    }
+
+    .suggestion-item {
+        padding: 11px 14px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #27332f;
+    }
+
+    .suggestion-item:hover {
+        background: #f8f4eb;
+    }
+
+    .suggestion-item span {
+        color: #8a918d;
+        font-size: 11px;
+        margin-left: 5px;
+    }
+
+    .search-result {
+        max-width: 1100px;
+        margin: 15px auto 0;
+        display: none;
+        padding: 14px 18px;
+        border-radius: 12px;
+        background: #fff;
+        border: 1px solid #e7a33e;
+        color: #18231f;
+        font-size: 14px;
+    }
+
+    .search-result.show {
+        display: block;
+    }
+
+    .search-result.success {
+        border-color: #5b9b68;
+        background: #f4fbf5;
+    }
+
+    .search-result.error {
+        border-color: #d16a5e;
+        background: #fff7f5;
+    }
+
+    /* CATEGORIES */
+
+    .categories {
+        background: #fffdf8;
+    }
+
+    .category-grid {
+        max-width: 1150px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 20px;
+    }
+
+    .category-card {
+        position: relative;
+        height: 255px;
+        overflow: hidden;
+        border-radius: 20px;
+        cursor: pointer;
+        box-shadow: 0 12px 32px rgba(20,30,25,0.09);
+        transition: 0.3s;
+    }
+
+    .category-card:hover {
+        transform: translateY(-7px);
+        box-shadow: 0 18px 35px rgba(20,30,25,0.14);
+    }
+
+    .category-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: 0.5s;
+    }
+
+    .category-card:hover img {
+        transform: scale(1.08);
+    }
+
+    .category-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            transparent 20%,
+            rgba(5,15,20,0.88)
+        );
+    }
+
+    .category-info {
+        position: absolute;
+        z-index: 2;
+        left: 18px;
+        right: 18px;
+        bottom: 18px;
+        color: white;
+    }
+
+    .category-info h3 {
+        font-size: 21px;
+        margin-bottom: 5px;
+    }
+
+    .category-info span {
+        display: block;
+        font-size: 12px;
+        color: #e7d7bd;
+        margin-bottom: 10px;
+    }
+
+    .explore-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: #e7a33e;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    /* FEATURES */
+
+    .features {
+        background: #152a38;
+        color: white;
+    }
+
+    .features .section-heading p {
+        color: #b9c4c8;
+    }
+
+    .features .small-title {
+        color: #e7a33e;
+    }
+
+    .feature-grid {
+        max-width: 1150px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .feature-card {
+        padding: 28px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.055);
+        border: 1px solid rgba(255,255,255,0.08);
+        transition: 0.3s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-6px);
+        background: rgba(255,255,255,0.08);
+    }
+
+    .feature-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(231,163,62,0.13);
+        font-size: 25px;
+        margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .feature-card p {
+        color: #aeb9bd;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    /* HOW IT WORKS */
+
+    .how-it-works {
+        background: #f7f2e8;
+    }
+
+    .steps {
+        max-width: 1100px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+    .step {
+        text-align: center;
+        position: relative;
+    }
+
+    .step-number {
+        width: 58px;
+        height: 58px;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #152a38;
+        color: #e7a33e;
+        font-weight: 800;
+        font-size: 18px;
+    }
+
+    .step h3 {
+        margin-bottom: 8px;
+    }
+
+    .step p {
+        color: #68736e;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    /* BULK */
+
+    .bulk-section {
+        background: #e9dfcf;
+    }
+
+    .bulk-container {
+        max-width: 1150px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 55px;
+        align-items: center;
+    }
+
+    .bulk-image {
+        height: 430px;
+        border-radius: 25px;
+        overflow: hidden;
+    }
+
+    .bulk-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .bulk-content .small-title {
+        text-align: left;
+    }
+
+    .bulk-content h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 48px;
+        line-height: 1.1;
+        margin-bottom: 18px;
+    }
+
+    .bulk-content p {
+        color: #5d6862;
+        line-height: 1.8;
+        margin-bottom: 25px;
+    }
+
+    .check-list {
+        list-style: none;
+        margin-bottom: 28px;
+    }
+
+    .check-list li {
+        margin: 12px 0;
+        font-weight: 600;
+    }
+
+    .check-list li::before {
+        content: "✓";
+        color: #447c54;
+        font-weight: 900;
+        margin-right: 10px;
+    }
+
+    /* SURPLUS */
+
+    .surplus {
+        background: #fffdf8;
+    }
+
+    .surplus-container {
+        max-width: 1150px;
+        margin: auto;
+        padding: 50px;
+        border-radius: 25px;
+        background: #162a36;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        align-items: center;
+        color: white;
+    }
+
+    .surplus-image {
+        height: 320px;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .surplus-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .surplus-content h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 42px;
+        margin-bottom: 15px;
+    }
+
+    .surplus-content p {
+        color: #b7c1c4;
+        line-height: 1.8;
+        margin-bottom: 22px;
+    }
+
+    /* WHY */
+
+    .why-us {
+        background: #f7f2e8;
+    }
+
+    .why-grid {
+        max-width: 1050px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+
+    .why-card {
+        background: white;
+        padding: 25px 18px;
+        border-radius: 17px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(25,35,30,0.06);
+    }
+
+    .why-card strong {
+        display: block;
+        font-size: 28px;
+        color: #152a38;
+        margin-bottom: 6px;
+    }
+
+    .why-card span {
+        color: #737c77;
+        font-size: 13px;
+    }
+
+    /* CTA */
+
+    .cta {
+        background: #e7a33e;
+        text-align: center;
+    }
+
+    .cta h2 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(38px, 5vw, 58px);
+        margin-bottom: 14px;
+        color: #14211e;
+    }
+
+    .cta p {
+        max-width: 650px;
+        margin: auto auto 25px;
+        color: #4f482f;
+        line-height: 1.7;
+    }
+
+    .cta-btn {
+        display: inline-block;
+        padding: 14px 25px;
+        border-radius: 12px;
+        background: #152a38;
+        color: white;
+        font-weight: 800;
+    }
+
+    /* FOOTER */
+
+    footer {
+        background: #0d1922;
+        color: white;
+        padding: 60px 6% 24px;
+    }
+
+    .footer-grid {
+        max-width: 1150px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+        gap: 40px;
+        padding-bottom: 45px;
+    }
+
+    .footer-brand p {
+        color: #9da9ad;
+        line-height: 1.7;
+        max-width: 330px;
+        margin-top: 15px;
+        font-size: 14px;
+    }
+
+    .footer-column h4 {
+        margin-bottom: 18px;
+        color: #e7a33e;
+    }
+
+    .footer-column a {
+        display: block;
+        color: #aeb8bb;
+        font-size: 14px;
+        margin: 11px 0;
+        transition: 0.3s;
+    }
+
+    .footer-column a:hover {
+        color: white;
+    }
+
+    .copyright {
+        max-width: 1150px;
+        margin: auto;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        color: #7f8a8e;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 1100px) {
+
+        .category-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+    }
+
+    @media (max-width: 950px) {
+
+        .nav-links {
+            display: none;
+        }
+
+        .category-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .feature-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .steps {
+            grid-template-columns: repeat(2, 1fr);
+            row-gap: 35px;
+        }
+
+        .why-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .bulk-container,
+        .surplus-container {
+            grid-template-columns: 1fr;
+        }
+
+        .search-box {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .search-btn {
+            height: 50px;
+            grid-column: span 2;
+        }
+
+        .footer-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .navbar {
+            padding: 14px 4%;
+        }
+
+        .logo {
+            font-size: 21px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+        }
+
+        .nav-buttons .login-btn,
+        .nav-buttons .register-btn {
+            display: none;
+        }
+
+        .profile-name {
+            display: none;
+        }
+
+        .hero-content {
+            padding: 130px 6% 80px;
+        }
+
+        .hero h1 {
+            font-size: 46px;
+        }
+
+        .hero-description {
+            font-size: 15px;
+        }
+
+        .slider-arrow {
+            width: 40px;
+            height: 40px;
+        }
+
+        .prev {
+            left: 12px;
+        }
+
+        .next {
+            right: 12px;
+        }
+
+        section {
+            padding: 70px 5%;
+        }
+
+        .search-box {
+            grid-template-columns: 1fr;
+        }
+
+        .search-btn {
+            grid-column: auto;
+        }
+
+        .category-grid,
+        .feature-grid,
+        .steps,
+        .why-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .bulk-content h2,
+        .surplus-content h2 {
+            font-size: 38px;
+        }
+
+        .surplus-container {
+            padding: 25px;
+        }
+
+        .footer-grid {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<header class="navbar">
+
+    <a href="/" class="logo">
+        <div class="logo-icon">🌾</div>
+        KisanKart
+    </a>
+
+    <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="#categories">Categories</a>
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="nav-buttons">
+
+        <a href="/login" class="login-btn" id="loginButton">
+            Login
+        </a>
+
+        <a href="/register" class="register-btn" id="registerButton">
+            Register
+        </a>
+
+        <!-- PROFILE -->
+
+        <div class="profile-wrapper" id="profileWrapper">
+
+            <button
+                type="button"
+                class="profile-button"
+                onclick="toggleProfileMenu()"
+            >
+
+                <div class="profile-avatar" id="profileAvatar">
+                    U
+                </div>
+
+                <span class="profile-name" id="profileName">
+                    User
+                </span>
+
+                <span class="profile-arrow">
+                    ▼
+                </span>
+
+            </button>
+
+            <div class="profile-menu" id="profileMenu">
+
+                <div class="profile-info">
+
+                    <strong id="profileFullName">
+                        User
+                    </strong>
+
+                    <span id="profileRole">
+                        KisanKart User
+                    </span>
+
+                </div>
+
+                <a href="/profile">
+                    👤 My Profile
+                </a>
+
+                <a href="{% if user_role == 'farmer' %}/farmer-dashboard{% elif user_role == 'buyer' %}/buyer-dashboard{% elif user_role == 'ngo' %}/ngo-dashboard{% else %}/{% endif %}">
+                    📊 Dashboard
+                </a>
+
+                {% if user_role == 'buyer' %}
+                <a href="/my-orders">
+                    🛒 My Orders
+                </a>
+
+                <a href="/wishlist">
+                    ❤️ Wishlist
+                </a>
+                {% endif %}
+
+                <button
+                    type="button"
+                    class="logout-button"
+                    onclick="logoutUser()"
+                >
+                    🚪 Logout
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section class="hero">
+
+    <div class="slides">
+
+        <div class="slide active">
+            <img
+                src="/static/images/hero1.jpg"
+                alt="Fresh farm"
+            >
+        </div>
+
+        <div class="slide">
+            <img
+                src="/static/images/hero2.jpg"
+                alt="Fresh vegetables"
+            >
+        </div>
+
+        <div class="slide">
+            <img
+                src="/static/images/hero3.jpg"
+                alt="Fresh fruits"
+            >
+        </div>
+
+    </div>
+
+    <div class="hero-content">
+
+        <div class="hero-text">
+
+            <div class="hero-badge">
+                🌱 Connecting Farms With Businesses
+            </div>
+
+            <h1>
+                Fresh From
+                <br>
+                <span>Farmers.</span>
+                <br>
+                Directly To Businesses.
+            </h1>
+
+            <p class="hero-description">
+                KisanKart connects farmers with businesses and bulk buyers,
+                making fresh agricultural products easier to discover,
+                compare and order directly from the source.
+            </p>
+
+            <div class="hero-actions">
+
+                <a
+                    href="#categories"
+                    class="primary-btn"
+                >
+                    Explore Products →
+                </a>
+
+                <a
+                    href="/register"
+                    class="secondary-btn"
+                >
+                    Join as Farmer
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <button
+        class="slider-arrow prev"
+        onclick="changeSlide(-1)"
+        aria-label="Previous slide"
+    >
+        ‹
+    </button>
+
+    <button
+        class="slider-arrow next"
+        onclick="changeSlide(1)"
+        aria-label="Next slide"
+    >
+        ›
+    </button>
+
+    <div class="dots">
+
+        <button
+            class="dot active"
+            onclick="goToSlide(0)"
+            aria-label="Slide 1"
+        ></button>
+
+        <button
+            class="dot"
+            onclick="goToSlide(1)"
+            aria-label="Slide 2"
+        ></button>
+
+        <button
+            class="dot"
+            onclick="goToSlide(2)"
+            aria-label="Slide 3"
+        ></button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SEARCH
+========================= -->
+
+<section class="search-section">
+
+    <div class="search-box">
+
+        <div class="search-field">
+
+            <label>
+                What do you need?
+            </label>
+
+            <input
+                type="text"
+                id="productSearch"
+                placeholder="Search tomato, rice, milk..."
+                autocomplete="off"
+            >
+
+            <div
+                class="suggestions"
+                id="productSuggestions"
+            ></div>
+
+        </div>
+
+
+        <div class="search-field">
+
+            <label>
+                Your location
+            </label>
+
+            <input
+                type="text"
+                id="locationSearch"
+                placeholder="Enter city or location..."
+                autocomplete="off"
+            >
+
+            <div
+                class="suggestions"
+                id="locationSuggestions"
+            ></div>
+
+        </div>
+
+
+        <button
+            class="search-btn"
+            type="button"
+            onclick="searchProducts()"
+        >
+            🔎 Find Products
+        </button>
+
+    </div>
+
+
+    <div
+        id="searchResult"
+        class="search-result"
+    ></div>
+
+</section>
+
+
+<!-- =========================
+     CATEGORIES
+========================= -->
+
+<section
+    class="categories"
+    id="categories"
+>
+
+    <div class="section-heading">
+
+        <div class="small-title">
+            Explore Fresh Produce
+        </div>
+
+        <h2>
+            Everything You Need,
+            From The Farm
+        </h2>
+
+        <p>
+            Explore fresh agricultural products available directly from
+            registered farmers.
+        </p>
+
+    </div>
+
+
+    <div class="category-grid">
+
+        <a
+            href="/explore/Vegetables"
+            class="category-card"
+        >
+
+            <img
+                src="/static/images/vegetable.jpg"
+                alt="Fresh Vegetables"
+            >
+
+            <div class="category-info">
+
+                <h3>
+                    Vegetables
+                </h3>
+
+                <span>
+                    Fresh & locally sourced
+                </span>
+
+                <div class="explore-link">
+                    Explore →
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <a
+            href="/explore/Fruits"
+            class="category-card"
+        >
+
+            <img
+                src="/static/images/fruits.jpg"
+                alt="Fresh Fruits"
+            >
+
+            <div class="category-info">
+
+                <h3>
+                    Fruits
+                </h3>
+
+                <span>
+                    Fresh seasonal produce
+                </span>
+
+                <div class="explore-link">
+                    Explore →
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <a
+            href="/explore/Grains"
+            class="category-card"
+        >
+
+            <img
+                src="/static/images/grains.jpg"
+                alt="Farm Grains"
+            >
+
+            <div class="category-info">
+
+                <h3>
+                    Grains
+                </h3>
+
+                <span>
+                    Quality farm grains
+                </span>
+
+                <div class="explore-link">
+                    Explore →
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <a
+            href="/explore/Dairy"
+            class="category-card"
+        >
+
+            <img
+                src="/static/images/dairy.jpg"
+                alt="Fresh Dairy"
+            >
+
+            <div class="category-info">
+
+                <h3>
+                    Dairy
+                </h3>
+
+                <span>
+                    Fresh dairy products
+                </span>
+
+                <div class="explore-link">
+                    Explore →
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <a
+            href="/explore/Spices"
+            class="category-card"
+        >
+
+            <img
+                src="/static/images/spices.jpg"
+                alt="Natural Spices"
+            >
+
+            <div class="category-info">
+
+                <h3>
+                    Spices
+                </h3>
+
+                <span>
+                    Natural farm spices
+                </span>
+
+                <div class="explore-link">
+                    Explore →
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FEATURES
+========================= -->
+
+<section
+    class="features"
+    id="features"
+>
+
+    <div class="section-heading">
+
+        <div class="small-title">
+            Why KisanKart
+        </div>
+
+        <h2>
+            A Smarter Way To Source
+            Fresh Produce
+        </h2>
+
+        <p>
+            Built to make farmer-to-business agricultural trade simpler.
+        </p>
+
+    </div>
+
+
+    <div class="feature-grid">
+
+        <div class="feature-card">
+            <div class="feature-icon">📍</div>
+
+            <h3>
+                Location-Based Matching
+            </h3>
+
+            <p>
+                Find products from farmers based on your selected
+                city and location.
+            </p>
+        </div>
+
+
+        <div class="feature-card">
+            <div class="feature-icon">💰</div>
+
+            <h3>
+                Compare Prices
+            </h3>
+
+            <p>
+                Compare prices and available quantities from
+                different farmers before ordering.
+            </p>
+        </div>
+
+
+        <div class="feature-card">
+            <div class="feature-icon">📦</div>
+
+            <h3>
+                Bulk Orders
+            </h3>
+
+            <p>
+                Designed for canteens, caterers, restaurants and
+                other businesses requiring larger quantities.
+            </p>
+        </div>
+
+
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+
+            <h3>
+                Pre-Order
+            </h3>
+
+            <p>
+                Buyers can plan requirements in advance according
+                to their required delivery date.
+            </p>
+        </div>
+
+
+        <div class="feature-card">
+            <div class="feature-icon">🔔</div>
+
+            <h3>
+                Order Notifications
+            </h3>
+
+            <p>
+                Farmers receive notifications when a buyer places
+                a new order.
+            </p>
+        </div>
+
+
+        <div class="feature-card">
+            <div class="feature-icon">🤝</div>
+
+            <h3>
+                Direct Connection
+            </h3>
+
+            <p>
+                Connect farmers and businesses directly through
+                one simple digital platform.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     HOW IT WORKS
+========================= -->
+
+<section
+    class="how-it-works"
+    id="how-it-works"
+>
+
+    <div class="section-heading">
+
+        <div class="small-title">
+            Simple Process
+        </div>
+
+        <h2>
+            How KisanKart Works
+        </h2>
+
+        <p>
+            From requirement to farmer — everything in a few simple steps.
+        </p>
+
+    </div>
+
+
+    <div class="steps">
+
+        <div class="step">
+
+            <div class="step-number">
+                01
+            </div>
+
+            <h3>
+                Enter Requirement
+            </h3>
+
+            <p>
+                Tell us what product and quantity you need.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <div class="step-number">
+                02
+            </div>
+
+            <h3>
+                Select Location
+            </h3>
+
+            <p>
+                Choose your city or preferred location.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <div class="step-number">
+                03
+            </div>
+
+            <h3>
+                Compare Farmers
+            </h3>
+
+            <p>
+                Compare available quantity and farmer prices.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <div class="step-number">
+                04
+            </div>
+
+            <h3>
+                Place Order
+            </h3>
+
+            <p>
+                Select your farmer and place your requirement.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     BULK ORDER
+========================= -->
+
+<section class="bulk-section">
+
+    <div class="bulk-container">
+
+        <div class="bulk-image">
+
+            <img
+                src="/static/images/vegetable.jpg"
+                alt="Bulk fresh vegetables"
+            >
+
+        </div>
+
+
+        <div class="bulk-content">
+
+            <div class="small-title">
+                Built For Businesses
+            </div>
+
+            <h2>
+                Need Fresh Produce In Bulk?
+            </h2>
+
+            <p>
+                KisanKart is designed for businesses such as
+                restaurants, caterers, canteens and messes that
+                regularly require fresh agricultural products.
+            </p>
+
+
+            <ul class="check-list">
+
+                <li>
+                    Compare multiple farmer prices
+                </li>
+
+                <li>
+                    Check available quantities
+                </li>
+
+                <li>
+                    Plan requirements in advance
+                </li>
+
+                <li>
+                    Connect directly with farmers
+                </li>
+
+            </ul>
+
+
+            <a
+                href="/bulk-buyer"
+                class="primary-btn"
+            >
+                Get Started →
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SURPLUS FOOD
+========================= -->
+
+<section class="surplus">
+
+    <div class="surplus-container">
+
+        <div class="surplus-image">
+
+            <img
+                src="/static/images/fruits.jpg"
+                alt="Food donation"
+            >
+
+        </div>
+
+
+        <div class="surplus-content">
+
+            <div class="small-title">
+                Social Impact
+            </div>
+
+            <h2>
+                Don't Waste Good Food.
+            </h2>
+
+            <p>
+                Restaurants and canteens can list usable surplus food
+                on KisanKart so registered NGOs can discover available
+                food and coordinate collection.
+            </p>
+
+            <a
+                href="/surplus-food"
+                class="primary-btn"
+            >
+                Learn More →
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     WHY KISANKART
+========================= -->
+
+<section class="why-us">
+
+    <div class="section-heading">
+
+        <div class="small-title">
+            Our Vision
+        </div>
+
+        <h2>
+            Agriculture Meets Technology
+        </h2>
+
+        <p>
+            A digital platform designed around real agricultural
+            sourcing problems.
+        </p>
+
+    </div>
+
+
+    <div class="why-grid">
+
+        <div class="why-card">
+            <strong>01</strong>
+            <span>Direct Farmer Connection</span>
+        </div>
+
+        <div class="why-card">
+            <strong>02</strong>
+            <span>Location-Based Discovery</span>
+        </div>
+
+        <div class="why-card">
+            <strong>03</strong>
+            <span>Price Comparison</span>
+        </div>
+
+        <div class="why-card">
+            <strong>04</strong>
+            <span>Bulk Requirement Support</span>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CTA
+========================= -->
+
+<section class="cta">
+
+    <h2>
+        Grow With KisanKart.
+    </h2>
+
+    <p>
+        Whether you are a farmer looking for buyers or a business
+        looking for fresh agricultural products, KisanKart brings
+        both sides together.
+    </p>
+
+    <a
+        href="/register"
+        class="cta-btn"
+    >
+        Create Your Account →
+    </a>
+
+</section>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer id="contact">
+
+    <div class="footer-grid">
+
+        <div class="footer-brand">
+
+            <a
+                href="/"
+                class="logo"
+            >
+
+                <div class="logo-icon">
+                    🌾
+                </div>
+
+                KisanKart
+
+            </a>
+
+            <p>
+                Connecting farmers with businesses through a smarter,
+                location-aware agricultural marketplace.
+            </p>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>
+                Platform
+            </h4>
+
+            <a href="/">
+                Home
+            </a>
+
+            <a href="#categories">
+                Products
+            </a>
+
+            <a href="#features">
+                Features
+            </a>
+
+            <a href="#how-it-works">
+                How It Works
+            </a>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>
+                Join KisanKart
+            </h4>
+
+            <a href="/register">
+                Register
+            </a>
+
+            <a href="/login">
+                Login
+            </a>
+
+            <a href="/register">
+                Join as Farmer
+            </a>
+
+            <a href="/register">
+                Join as Buyer
+            </a>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>
+                Contact
+            </h4>
+
+            <a href="#">
+                About Us
+            </a>
+
+            <a href="#contact">
+                Contact Us
+            </a>
+
+            <a href="#">
+                Privacy Policy
+            </a>
+
+            <a href="#">
+                Terms & Conditions
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="copyright">
+        © 2026 KisanKart. All Rights Reserved.
+    </div>
+
+</footer>
+
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script>
+
+    /* =====================================================
+       HERO SLIDER
+    ===================================================== */
+
+    let currentSlide = 0;
+
+    const slides = document.querySelectorAll(".slide");
+    const dots = document.querySelectorAll(".dot");
+
+    function showSlide(index) {
+
+        if (index >= slides.length) {
+            currentSlide = 0;
+        }
+        else if (index < 0) {
+            currentSlide = slides.length - 1;
+        }
+        else {
+            currentSlide = index;
+        }
+
+        slides.forEach(function(slide) {
+            slide.classList.remove("active");
+        });
+
+        dots.forEach(function(dot) {
+            dot.classList.remove("active");
+        });
+
+        if (slides[currentSlide]) {
+            slides[currentSlide].classList.add("active");
+        }
+
+        if (dots[currentSlide]) {
+            dots[currentSlide].classList.add("active");
+        }
+
+    }
+
+    function changeSlide(direction) {
+        showSlide(currentSlide + direction);
+    }
+
+    function goToSlide(index) {
+        showSlide(index);
+    }
+
+    setInterval(function() {
+        changeSlide(1);
+    }, 5000);
+
+
+    /* =====================================================
+       PRODUCT DATABASE
+    ===================================================== */
+
+    const productCategories = {
+
+        tomato: "Vegetables",
+        tomatoes: "Vegetables",
+        potato: "Vegetables",
+        potatoes: "Vegetables",
+        onion: "Vegetables",
+        onions: "Vegetables",
+        carrot: "Vegetables",
+        carrots: "Vegetables",
+        spinach: "Vegetables",
+        cabbage: "Vegetables",
+        cauliflower: "Vegetables",
+        brinjal: "Vegetables",
+        eggplant: "Vegetables",
+        cucumber: "Vegetables",
+        ladyfinger: "Vegetables",
+        okra: "Vegetables",
+        peas: "Vegetables",
+        beans: "Vegetables",
+        capsicum: "Vegetables",
+        pumpkin: "Vegetables",
+        radish: "Vegetables",
+        beetroot: "Vegetables",
+        garlic: "Vegetables",
+        ginger: "Vegetables",
+        vegetable: "Vegetables",
+        vegetables: "Vegetables",
+
+        apple: "Fruits",
+        apples: "Fruits",
+        banana: "Fruits",
+        bananas: "Fruits",
+        mango: "Fruits",
+        mangoes: "Fruits",
+        orange: "Fruits",
+        oranges: "Fruits",
+        grapes: "Fruits",
+        grape: "Fruits",
+        watermelon: "Fruits",
+        papaya: "Fruits",
+        pineapple: "Fruits",
+        pomegranate: "Fruits",
+        guava: "Fruits",
+        lemon: "Fruits",
+        strawberry: "Fruits",
+        fruit: "Fruits",
+        fruits: "Fruits",
+
+        rice: "Grains",
+        wheat: "Grains",
+        corn: "Grains",
+        maize: "Grains",
+        barley: "Grains",
+        oats: "Grains",
+        millet: "Grains",
+        jowar: "Grains",
+        bajra: "Grains",
+        ragi: "Grains",
+        dal: "Grains",
+        pulses: "Grains",
+        grain: "Grains",
+        grains: "Grains",
+
+        milk: "Dairy",
+        curd: "Dairy",
+        yogurt: "Dairy",
+        butter: "Dairy",
+        paneer: "Dairy",
+        cheese: "Dairy",
+        ghee: "Dairy",
+        cream: "Dairy",
+        dairy: "Dairy",
+
+        turmeric: "Spices",
+        haldi: "Spices",
+        chilli: "Spices",
+        chili: "Spices",
+        redchilli: "Spices",
+        cumin: "Spices",
+        jeera: "Spices",
+        coriander: "Spices",
+        dhania: "Spices",
+        cardamom: "Spices",
+        elaichi: "Spices",
+        clove: "Spices",
+        cloves: "Spices",
+        cinnamon: "Spices",
+        pepper: "Spices",
+        blackpepper: "Spices",
+        spice: "Spices",
+        spices: "Spices"
+
+    };
+
+
+    /* =====================================================
+       SUGGESTIONS
+    ===================================================== */
+
+    const popularProducts = [
+        "Tomato",
+        "Potato",
+        "Onion",
+        "Carrot",
+        "Spinach",
+        "Cabbage",
+        "Apple",
+        "Banana",
+        "Mango",
+        "Orange",
+        "Grapes",
+        "Rice",
+        "Wheat",
+        "Corn",
+        "Milk",
+        "Curd",
+        "Paneer",
+        "Butter",
+        "Turmeric",
+        "Chilli",
+        "Cumin",
+        "Coriander"
+    ];
+
+
+    // Only these three locations are supported by the KisanKart search.
+    const popularLocations = [
+        "Thane",
+        "Pune",
+        "Nashik"
+    ];
+
+
+    const productInput =
+        document.getElementById("productSearch");
+
+    const locationInput =
+        document.getElementById("locationSearch");
+
+    const productSuggestions =
+        document.getElementById("productSuggestions");
+
+    const locationSuggestions =
+        document.getElementById("locationSuggestions");
+
+    const searchResult =
+        document.getElementById("searchResult");
+
+
+    function createSuggestions(
+        input,
+        container,
+        list,
+        type
+    ) {
+
+        const value =
+            input.value.trim().toLowerCase();
+
+        container.innerHTML = "";
+
+        const filtered =
+            list.filter(function(item) {
+
+                return item
+                    .toLowerCase()
+                    .includes(value);
+
+            }).slice(0, 6);
+
+        if (filtered.length === 0) {
+            container.classList.remove("show");
+            return;
+        }
+
+        filtered.forEach(function(item) {
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "suggestion-item";
+
+            div.innerHTML =
+                type === "product"
+                ?
+                `${item} <span>Product</span>`
+                :
+                `${item} <span>Location</span>`;
+
+            div.addEventListener(
+                "click",
+                function() {
+
+                    input.value = item;
+
+                    container.classList.remove("show");
+
+                }
+            );
+
+            container.appendChild(div);
+
+        });
+
+        container.classList.add("show");
+
+    }
+
+
+    productInput.addEventListener(
+        "input",
+        function() {
+
+            createSuggestions(
+                productInput,
+                productSuggestions,
+                popularProducts,
+                "product"
+            );
+
+        }
+    );
+
+
+    locationInput.addEventListener(
+        "input",
+        function() {
+
+            createSuggestions(
+                locationInput,
+                locationSuggestions,
+                popularLocations,
+                "location"
+            );
+
+        }
+    );
+
+
+    productInput.addEventListener(
+        "focus",
+        function() {
+
+            createSuggestions(
+                productInput,
+                productSuggestions,
+                popularProducts,
+                "product"
+            );
+
+        }
+    );
+
+
+    locationInput.addEventListener(
+        "focus",
+        function() {
+
+            createSuggestions(
+                locationInput,
+                locationSuggestions,
+                popularLocations,
+                "location"
+            );
+
+        }
+    );
+
+
+    document.addEventListener(
+        "click",
+        function(event) {
+
+            if (!event.target.closest(".search-field")) {
+
+                productSuggestions.classList.remove("show");
+
+                locationSuggestions.classList.remove("show");
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       SEARCH
+    ===================================================== */
+
+    function searchProducts() {
+
+        const product =
+            productInput.value
+            .trim()
+            .toLowerCase();
+
+        const location =
+            locationInput.value.trim();
+
+        // Search is intentionally limited to the three supported locations.
+        const allowedLocations = ["thane", "pune", "nashik"];
+        const normalizedLocation = location.toLowerCase();
+
+        if (location !== "" && !allowedLocations.includes(normalizedLocation)) {
+            showSearchMessage(
+                `❌ No results found for <strong>${escapeHTML(location)}</strong>.<br><span style="font-size:13px;">Please search in Thane, Pune or Nashik.</span>`,
+                "error"
+            );
+            return;
+        }
+
+
+        if (
+            product === "" &&
+            location === ""
+        ) {
+
+            showSearchMessage(
+                "🔎 Please enter a product or location to search.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if (
+            product === "" &&
+            location !== ""
+        ) {
+
+            showSearchMessage(
+                `📍 Showing available products near <strong>${escapeHTML(location)}</strong>...`,
+                "success"
+            );
+
+            setTimeout(function() {
+
+                window.location.href =
+                    "/explore/All?location=" +
+                    encodeURIComponent(location);
+
+            }, 600);
+
+            return;
+        }
+
+
+        let category = null;
+
+
+        for (
+            const keyword in productCategories
+        ) {
+
+            if (
+                product.includes(keyword)
+            ) {
+
+                category =
+                    productCategories[keyword];
+
+                break;
+            }
+
+        }
+
+
+        if (category) {
+
+            let message =
+                `🌱 Searching for <strong>${escapeHTML(product)}</strong>`;
+
+            if (location !== "") {
+
+                message +=
+                    ` near <strong>${escapeHTML(location)}</strong>`;
+
+            }
+
+            message += "...";
+
+            showSearchMessage(
+                message,
+                "success"
+            );
+
+
+            let url =
+                "/explore/" +
+                encodeURIComponent(category) +
+                "?product=" +
+                encodeURIComponent(product);
+
+
+            if (location !== "") {
+
+                url +=
+                    "&location=" +
+                    encodeURIComponent(location);
+
+            }
+
+
+            setTimeout(function() {
+
+                window.location.href = url;
+
+            }, 600);
+
+            return;
+        }
+
+
+        if (location !== "") {
+
+            showSearchMessage(
+
+                `❌ We couldn't find <strong>${escapeHTML(product)}</strong> near <strong>${escapeHTML(location)}</strong>. Try tomato, potato, rice, milk, apple, turmeric etc.`,
+
+                "error"
+            );
+
+        }
+        else {
+
+            showSearchMessage(
+
+                `❌ We couldn't find <strong>${escapeHTML(product)}</strong>. Try vegetables, fruits, grains, dairy or spices.`,
+
+                "error"
+            );
+
+        }
+
+    }
+
+
+    function showSearchMessage(
+        message,
+        type
+    ) {
+
+        searchResult.innerHTML =
+            message;
+
+        searchResult.className =
+            "search-result show " +
+            type;
+
+    }
+
+
+    function escapeHTML(text) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            text;
+
+        return div.innerHTML;
+
+    }
+
+
+    productInput.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Enter") {
+                searchProducts();
+            }
+
+        }
+    );
+
+
+    locationInput.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Enter") {
+                searchProducts();
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       LOGIN / PROFILE
+       Uses the real Flask session. No redesign and no
+       localStorage dependency for login state.
+    ===================================================== */
+
+    function loadUserProfile() {
+
+        const profileWrapper =
+            document.getElementById("profileWrapper");
+
+        const loginButton =
+            document.getElementById("loginButton");
+
+        const registerButton =
+            document.getElementById("registerButton");
+
+        const loggedIn = {{ "true" if logged_in else "false" }};
+        const userName = {{ (user_name or "User")|tojson }};
+        const userRole = {{ (user_role or "KisanKart User")|tojson }};
+
+        if (!loggedIn) {
+            profileWrapper.classList.remove("show");
+            loginButton.style.display = "";
+            registerButton.style.display = "";
+            return;
+        }
+
+        profileWrapper.classList.add("show");
+        loginButton.style.display = "none";
+        registerButton.style.display = "none";
+
+        const name = String(userName || "User");
+        const roleMap = {
+            farmer: "Farmer",
+            buyer: "Buyer",
+            ngo: "NGO"
+        };
+        const role = roleMap[userRole] || String(userRole || "KisanKart User");
+
+        document.getElementById("profileName").textContent = name;
+        document.getElementById("profileFullName").textContent = name;
+        document.getElementById("profileRole").textContent = role;
+        document.getElementById("profileAvatar").textContent =
+            name.trim().charAt(0).toUpperCase() || "U";
+    }
+
+
+    /* =====================================================
+       PROFILE MENU
+    ===================================================== */
+
+    function toggleProfileMenu() {
+        const menu = document.getElementById("profileMenu");
+        menu.classList.toggle("show");
+    }
+
+
+    document.addEventListener("click", function(event) {
+        const wrapper = document.getElementById("profileWrapper");
+        const menu = document.getElementById("profileMenu");
+
+        if (wrapper && menu && !wrapper.contains(event.target)) {
+            menu.classList.remove("show");
+        }
+    });
+
+
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
+
+    function logoutUser() {
+        window.location.href = "/logout";
+    }
+
+
+    /* =====================================================
+       AUTO LOAD
+    ===================================================== */
+
+    document.addEventListener("DOMContentLoaded", function() {
+        loadUserProfile();
+    });
+
+</script>
+
+
+</body>
+
+</html>

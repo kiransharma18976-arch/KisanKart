@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Browse Products | KisanKart</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            background: #f7f2e8;
+            color: #18231f;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .navbar {
+            height: 75px;
+            background: #152a38;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 45px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #e7a33e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: #dce5e6;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .nav-links a:hover {
+            color: #e7a33e;
+        }
+
+        .logout {
+            color: #ffdddd !important;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            max-width: 1250px;
+            margin: auto;
+            padding: 45px 25px 60px;
+        }
+
+        .back {
+            color: #68736e;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .back:hover {
+            color: #152a38;
+        }
+
+        .small-title {
+            color: #b87322;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 25px;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-family: "Playfair Display", serif;
+            color: #152a38;
+            font-size: 40px;
+        }
+
+        .subtitle {
+            color: #747d78;
+            font-size: 14px;
+            margin-top: 7px;
+            margin-bottom: 35px;
+        }
+
+
+        /* =========================
+           LOCATION GRID
+        ========================= */
+
+        .location-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+
+        /* =========================
+           LOCATION SECTION
+        ========================= */
+
+        .location-section {
+            background: white;
+            border-radius: 22px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(20, 35, 30, 0.08);
+            border: 1px solid #eee9df;
+        }
+
+        .location-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .location-title-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .location-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: #f7f2e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .location-name {
+            color: #152a38;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .location-subtitle {
+            color: #7a837e;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .count {
+            background: #f7f2e8;
+            color: #b87322;
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+
+        /* =========================
+           PRODUCT PREVIEW
+        ========================= */
+
+        .preview-products {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .preview-card {
+            background: #fafafa;
+            border: 1px solid #eee9df;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: 0.25s;
+        }
+
+        .preview-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(20, 35, 30, 0.08);
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 125px;
+            background: #f1eadb;
+            overflow: hidden;
+        }
+
+        .preview-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .preview-info {
+            padding: 13px;
+        }
+
+        .preview-name {
+            color: #152a38;
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .preview-price {
+            color: #b87322;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+
+        /* =========================
+           VIEW MORE
+        ========================= */
+
+        .view-more {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 20px;
+            padding: 13px;
+            background: #152a38;
+            color: white;
+            text-decoration: none;
+            border-radius: 11px;
+            font-size: 13px;
+            font-weight: 800;
+            transition: 0.2s;
+        }
+
+        .view-more:hover {
+            background: #213f51;
+        }
+
+
+        /* =========================
+           EMPTY LOCATION
+        ========================= */
+
+        .no-products {
+            padding: 35px 15px;
+            text-align: center;
+            color: #747d78;
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .location-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .nav-links a {
+                font-size: 11px;
+            }
+        }
+
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                height: auto;
+                padding: 18px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .main {
+                padding: 30px 18px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .preview-products {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .location-section {
+                padding: 18px;
+            }
+
+            .location-name {
+                font-size: 21px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav class="navbar">
+
+    <a href="/buyer-dashboard" class="logo">
+
+        <div class="logo-icon">
+            🌾
+        </div>
+
+        KisanKart
+
+    </a>
+
+
+    <div class="nav-links">
+
+        <a href="/buyer-dashboard">
+            🏠 Dashboard
+        </a>
+
+        <a href="/buyer-products">
+            🥕 Products
+        </a>
+
+        <a href="#">
+            🛒 My Orders
+        </a>
+
+        <a href="#">
+            ❤️ Wishlist
+        </a>
+
+        <a href="/" class="logout">
+            🚪 Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main class="main">
+
+
+    <a href="/buyer-dashboard" class="back">
+        ← Back to Buyer Dashboard
+    </a>
+
+
+    <div class="small-title">
+        Fresh From Farmers
+    </div>
+
+
+    <h1>
+        Browse Products 🛒
+    </h1>
+
+
+    <p class="subtitle">
+        Discover fresh agricultural products directly from farmers.
+    </p>
+
+
+
+    <!-- =========================
+         LOCATION COLUMNS
+    ========================= -->
+
+    <div class="location-grid">
+
+
+        <!-- =========================
+             NASHIK
+        ========================= -->
+
+        <section class="location-section">
+
+
+            <div class="location-header">
+
+                <div class="location-title-box">
+
+                    <div class="location-icon">
+                        📍
+                    </div>
+
+                    <div>
+
+                        <div class="location-name">
+                            Nashik
+                        </div>
+
+                        <div class="location-subtitle">
+                            Fresh products from Nashik farmers
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="count">
+                    {{ nashik_products|length }} Products
+                </div>
+
+            </div>
+
+
+
+            {% if nashik_products %}
+
+            <div class="preview-products">
+
+                {% for product in nashik_products[:4] %}
+
+                <div class="preview-card">
+
+                    <div class="preview-image">
+
+                        <img
+                            src="{{ get_product_image(product.product_name) }}"
+                            alt="{{ product.product_name }}"
+                            loading="lazy"
+                        >
+
+                    </div>
+
+
+                    <div class="preview-info">
+
+                        <div class="preview-name">
+                            {{ product.product_name }}
+                        </div>
+
+                        <div class="preview-price">
+                            ₹{{ product.price }} / {{ product.unit }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <a href="/buyer-products/nashik" class="view-more">
+                View More Nashik Products →
+            </a>
+
+
+            {% else %}
+
+            <div class="no-products">
+                🌱 No products available from Nashik farmers yet.
+            </div>
+
+            {% endif %}
+
+
+        </section>
+
+
+
+        <!-- =========================
+             PUNE
+        ========================= -->
+
+        <section class="location-section">
+
+
+            <div class="location-header">
+
+                <div class="location-title-box">
+
+                    <div class="location-icon">
+                        📍
+                    </div>
+
+                    <div>
+
+                        <div class="location-name">
+                            Pune
+                        </div>
+
+                        <div class="location-subtitle">
+                            Fresh products from Pune farmers
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="count">
+                    {{ pune_products|length }} Products
+                </div>
+
+            </div>
+
+
+
+            {% if pune_products %}
+
+            <div class="preview-products">
+
+                {% for product in pune_products[:4] %}
+
+                <div class="preview-card">
+
+                    <div class="preview-image">
+
+                        <img
+                            src="{{ get_product_image(product.product_name) }}"
+                            alt="{{ product.product_name }}"
+                            loading="lazy"
+                        >
+
+                    </div>
+
+
+                    <div class="preview-info">
+
+                        <div class="preview-name">
+                            {{ product.product_name }}
+                        </div>
+
+                        <div class="preview-price">
+                            ₹{{ product.price }} / {{ product.unit }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <a href="/buyer-products/pune" class="view-more">
+                View More Pune Products →
+            </a>
+
+
+            {% else %}
+
+            <div class="no-products">
+                🌱 No products available from Pune farmers yet.
+            </div>
+
+            {% endif %}
+
+
+        </section>
+
+
+    </div>
+
+</main>
+
+
+</body>
+</html>

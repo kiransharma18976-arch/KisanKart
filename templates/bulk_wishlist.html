@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bulk Wishlist | KisanKart</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f8f2;
+            color: #263a29;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            background: #ffffff;
+            padding: 16px 5%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            font-size: 21px;
+            font-weight: 800;
+            color: #285b32;
+            white-space: nowrap;
+        }
+
+        .brand span {
+            color: #ef8f00;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #344238;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            padding: 9px 12px;
+
+            border-radius: 8px;
+
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            background: #eef6ed;
+            color: #23733a;
+        }
+
+        .logout {
+            background: #fff1f1 !important;
+            color: #c62828 !important;
+        }
+
+        .logout:hover {
+            background: #ffe0e0 !important;
+        }
+
+        /* ================= MAIN CONTAINER ================= */
+
+        .container {
+            max-width: 1100px;
+
+            margin: 40px auto;
+
+            padding: 0 20px 60px;
+        }
+
+        /* ================= PAGE HEADER ================= */
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+
+            color: #234c2c;
+
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #6d786f;
+
+            font-size: 15px;
+        }
+
+        /* ================= WISHLIST GRID ================= */
+
+        .wishlist-grid {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 22px;
+        }
+
+        /* ================= PRODUCT CARD ================= */
+
+        .product-card {
+            background: #ffffff;
+
+            border-radius: 18px;
+
+            padding: 22px;
+
+            box-shadow: 0 6px 22px rgba(50, 70, 50, 0.09);
+
+            transition: all 0.25s ease;
+
+            display: flex;
+            flex-direction: column;
+
+            min-height: 280px;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+
+            box-shadow: 0 10px 28px rgba(50, 70, 50, 0.14);
+        }
+
+        /* ================= PRODUCT ICON ================= */
+
+        .product-icon {
+            width: 60px;
+            height: 60px;
+
+            background: #eef6ed;
+
+            border-radius: 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 30px;
+
+            margin-bottom: 18px;
+        }
+
+        /* ================= PRODUCT NAME ================= */
+
+        .product-card h2 {
+            font-size: 20px;
+
+            color: #284d30;
+
+            margin-bottom: 12px;
+
+            line-height: 1.3;
+        }
+
+        /* ================= PRODUCT DETAILS ================= */
+
+        .product-details {
+            margin-bottom: 20px;
+
+            color: #6d786f;
+
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+        .price {
+            font-size: 20px;
+
+            font-weight: 800;
+
+            color: #e27f00;
+        }
+
+        .unit {
+            font-size: 13px;
+
+            color: #6d786f;
+        }
+
+        .location {
+            margin-top: 5px;
+        }
+
+        /* ================= ACTIONS ================= */
+
+        .actions {
+            margin-top: auto;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 9px;
+        }
+
+        .btn {
+            width: 100%;
+
+            padding: 11px 14px;
+
+            border-radius: 9px;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+        /* BUY NOW */
+
+        .buy-btn {
+            background: #ef8f00;
+
+            color: #ffffff;
+        }
+
+        .buy-btn:hover {
+            background: #d97900;
+        }
+
+        /* ADD TO CART */
+
+        .cart-btn {
+            background: #2d7038;
+
+            color: #ffffff;
+        }
+
+        .cart-btn:hover {
+            background: #235d2d;
+        }
+
+        /* REMOVE */
+
+        .remove-btn {
+            width: 100%;
+
+            padding: 10px;
+
+            border-radius: 9px;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            color: #c62828;
+
+            background: #fff5f5;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: #ffe4e4;
+        }
+
+        /* ================= EMPTY WISHLIST ================= */
+
+        .empty-wishlist {
+            background: #ffffff;
+
+            border-radius: 20px;
+
+            padding: 70px 25px;
+
+            text-align: center;
+
+            box-shadow: 0 6px 25px rgba(50, 70, 50, 0.09);
+        }
+
+        .empty-icon {
+            font-size: 60px;
+
+            margin-bottom: 18px;
+        }
+
+        .empty-wishlist h2 {
+            color: #284d30;
+
+            font-size: 24px;
+
+            margin-bottom: 10px;
+        }
+
+        .empty-wishlist p {
+            color: #747d76;
+
+            font-size: 14px;
+
+            margin-bottom: 25px;
+        }
+
+        .browse-btn {
+            display: inline-block;
+
+            text-decoration: none;
+
+            background: #2d7038;
+
+            color: #ffffff;
+
+            padding: 12px 22px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+        .browse-btn:hover {
+            background: #235d2d;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 950px) {
+
+            .wishlist-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .navbar {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                justify-content: flex-start;
+            }
+
+            .container {
+                margin-top: 25px;
+            }
+
+        }
+
+        @media (max-width: 520px) {
+
+            .wishlist-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 27px;
+            }
+
+            .empty-wishlist {
+                padding: 55px 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <div class="brand">
+
+        🌾 KisanKart
+
+        <span>
+            | 📦 Bulk Buyer
+        </span>
+
+    </div>
+
+
+    <div class="nav-links">
+
+        <a href="/bulk-dashboard">
+            Dashboard
+        </a>
+
+        <a href="/bulk-products">
+            Products
+        </a>
+
+        <a href="/bulk-wishlist">
+            ❤️ Wishlist
+        </a>
+
+        <a href="/bulk-cart">
+            🛒 Bulk Cart
+        </a>
+
+        <a href="/bulk-orders">
+            Order Status
+        </a>
+
+        <a href="/logout" class="logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main class="container">
+
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+        <h1>
+            ❤️ Bulk Wishlist
+        </h1>
+
+        <p>
+            Save your favourite products and order them whenever you need them.
+        </p>
+
+    </div>
+
+
+
+    {% if products %}
+
+
+    <!-- =================================================
+         WISHLIST PRODUCTS
+    ================================================== -->
+
+    <div class="wishlist-grid">
+
+
+        {% for p in products %}
+
+
+        <!-- PRODUCT CARD -->
+
+        <div class="product-card">
+
+
+            <!-- PRODUCT ICON -->
+
+            <div class="product-icon">
+                🥬
+            </div>
+
+
+            <!-- PRODUCT NAME -->
+
+            <h2>
+                {{ p.product_name }}
+            </h2>
+
+
+            <!-- PRODUCT DETAILS -->
+
+            <div class="product-details">
+
+                <div>
+
+                    <span class="price">
+                        ₹{{ p.price }}
+                    </span>
+
+                    <span class="unit">
+                        / {{ p.unit }}
+                    </span>
+
+                </div>
+
+
+                <div class="location">
+
+                    📍 {{ p.location }}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ACTION BUTTONS -->
+
+            <div class="actions">
+
+
+                <!-- BUY NOW -->
+
+                <a
+                    class="btn buy-btn"
+                    href="{{ url_for('bulk_buy_now', product_id=p.id) }}"
+                >
+                    🛍️ Buy Now
+                </a>
+
+
+                <!-- ADD TO BULK CART -->
+
+                <a
+                    class="btn cart-btn"
+                    href="{{ url_for('bulk_add_to_cart', product_id=p.id) }}"
+                >
+                    🛒 Add to Bulk Cart
+                </a>
+
+
+                <!-- REMOVE FROM WISHLIST -->
+
+                <a
+                    class="remove-btn"
+                    href="{{ url_for('bulk_toggle_wishlist', product_id=p.id) }}"
+                >
+                    ✕ Remove from Wishlist
+                </a>
+
+
+            </div>
+
+
+        </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
+
+    {% else %}
+
+
+    <!-- =================================================
+         EMPTY WISHLIST
+    ================================================== -->
+
+    <div class="empty-wishlist">
+
+
+        <div class="empty-icon">
+            ❤️
+        </div>
+
+
+        <h2>
+            No Bulk Wishlist Items Yet
+        </h2>
+
+
+        <p>
+            You haven't saved any products to your bulk wishlist.
+            Browse products and add your favourites here.
+        </p>
+
+
+        <a
+            class="browse-btn"
+            href="/bulk-products"
+        >
+            🛒 Browse Bulk Products →
+        </a>
+
+
+    </div>
+
+
+    {% endif %}
+
+
+</main>
+
+
+</body>
+
+</html>

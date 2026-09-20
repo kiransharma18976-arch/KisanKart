@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ category }} - KisanKart</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f5f8f3;
+            color: #263a29;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .navbar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 55px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #344238;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 9px 12px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .nav-btn {
+            background: #2e7d32;
+            color: white !important;
+            padding: 10px 15px !important;
+        }
+
+        .cart-btn {
+            background: #fff3e0;
+            color: #e65100 !important;
+        }
+
+        .wishlist-btn {
+            background: #fce4ec;
+            color: #c2185b !important;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .page-header {
+            text-align: center;
+            padding: 45px 20px 30px;
+        }
+
+        .page-header h1 {
+            font-size: 36px;
+            color: #245b29;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #718071;
+            font-size: 15px;
+        }
+
+
+        /* =========================
+           LOCATION CONTAINER
+        ========================= */
+
+        .location-container {
+            width: 94%;
+            max-width: 1450px;
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 25px;
+
+            padding-bottom: 50px;
+        }
+
+
+        /* =========================
+           LOCATION SECTION
+        ========================= */
+
+        .location-section {
+            background: white;
+            border-radius: 20px;
+            padding: 22px;
+
+            box-shadow:
+                0 5px 22px rgba(0, 0, 0, 0.07);
+
+            border: 1px solid #e7eee7;
+        }
+
+        .location-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+
+            padding-bottom: 15px;
+
+            border-bottom: 1px solid #edf1ed;
+        }
+
+        .location-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .location-icon {
+            width: 45px;
+            height: 45px;
+
+            background: #e8f5e9;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 22px;
+        }
+
+        .location-title h2 {
+            color: #245b29;
+            font-size: 21px;
+        }
+
+        .location-title p {
+            color: #7b877d;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+
+        /* =========================
+           PRODUCT GRID
+        ========================= */
+
+        .product-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 14px;
+        }
+
+
+        /* =========================
+           PRODUCT CARD
+        ========================= */
+
+        .product-card {
+            background: white;
+
+            border: 1px solid #e2e9e2;
+
+            border-radius: 14px;
+
+            overflow: hidden;
+
+            transition: 0.25s;
+
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 9px 22px rgba(0, 0, 0, 0.10);
+        }
+
+
+        /* =========================
+           PRODUCT IMAGE
+        ========================= */
+
+        .product-image {
+            height: 135px;
+
+            background: #eef6ed;
+
+            overflow: hidden;
+
+            position: relative;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+        }
+
+
+        /* =========================
+           WISHLIST BUTTON
+        ========================= */
+
+        .wishlist-heart {
+            position: absolute;
+
+            right: 8px;
+            top: 8px;
+
+            width: 34px;
+            height: 34px;
+
+            border-radius: 50%;
+
+            background: white;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            text-decoration: none;
+
+            font-size: 19px;
+
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.15);
+
+            z-index: 5;
+
+            transition: 0.2s;
+        }
+
+        .wishlist-heart:hover {
+            transform: scale(1.08);
+        }
+
+
+        /* =========================
+           PRODUCT INFO
+        ========================= */
+
+        .product-info {
+            padding: 13px;
+        }
+
+        .product-info h3 {
+            font-size: 15px;
+
+            color: #293c2c;
+
+            margin-bottom: 6px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+        .farmer-name {
+            font-size: 11px;
+
+            color: #7a847b;
+
+            margin-bottom: 8px;
+        }
+
+        .product-bottom {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 10px;
+        }
+
+        .price {
+            color: #2e7d32;
+
+            font-size: 16px;
+
+            font-weight: bold;
+        }
+
+        .unit {
+            color: #7a847b;
+
+            font-size: 11px;
+        }
+
+
+        /* =========================
+           ACTION BUTTONS
+        ========================= */
+
+        .action-buttons {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 7px;
+        }
+
+        .action-btn {
+            display: block;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            padding: 8px 5px;
+
+            border-radius: 7px;
+
+            font-size: 11px;
+
+            font-weight: bold;
+
+            transition: 0.2s;
+        }
+
+        .cart-action {
+            background: #fff3e0;
+
+            color: #e65100;
+        }
+
+        .cart-action:hover {
+            background: #ffe0b2;
+        }
+
+        .buy-action {
+            background: #2e7d32;
+
+            color: white;
+        }
+
+        .buy-action:hover {
+            background: #1b5e20;
+        }
+
+
+        /* =========================
+           EMPTY
+        ========================= */
+
+        .empty {
+            text-align: center;
+
+            padding: 35px 10px;
+
+            color: #89938b;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           COMING SOON
+        ========================= */
+
+        .coming-soon-card {
+            min-height: 330px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+            text-align: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f8fbf6,
+                    #eef7ec
+                );
+
+            border: 1px solid #dcebdc;
+
+            border-radius: 15px;
+
+            padding: 25px;
+        }
+
+        .coming-soon-icon {
+            width: 75px;
+            height: 75px;
+
+            border-radius: 50%;
+
+            background: #e8f5e9;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-size: 36px;
+
+            margin-bottom: 18px;
+        }
+
+        .coming-soon-card h3 {
+            font-size: 23px;
+
+            color: #245b29;
+
+            margin-bottom: 9px;
+        }
+
+        .coming-soon-card p {
+            font-size: 13px;
+
+            color: #78847a;
+
+            line-height: 1.6;
+
+            max-width: 260px;
+
+            margin-bottom: 18px;
+        }
+
+        .coming-badge {
+            background: #2e7d32;
+
+            color: white;
+
+            padding: 8px 18px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+
+
+        /* =========================
+           SEARCH RESULT HIGHLIGHT
+        ========================= */
+
+        .location-section.search-selected {
+            border: 2px solid #2e7d32;
+            box-shadow: 0 10px 30px rgba(46, 125, 50, 0.22);
+            transform: translateY(-3px);
+        }
+
+        .location-section.search-selected .location-header {
+            border-bottom-color: #c8e6c9;
+        }
+
+        .search-context {
+            width: 94%;
+            max-width: 1450px;
+            margin: 0 auto 24px;
+            padding: 13px 18px;
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            border-radius: 12px;
+            color: #245b29;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .search-context strong {
+            color: #1b5e20;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 1100px) {
+
+            .location-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 750px) {
+
+            .navbar {
+                padding: 0 18px;
+            }
+
+            .nav-links a:not(.nav-btn) {
+                display: none;
+            }
+
+            .location-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+         NAVBAR
+    ========================================================= -->
+
+    <div class="navbar">
+
+        <div class="logo">
+            🌾 KisanKart
+        </div>
+
+        <div class="nav-links">
+
+            <a href="/">
+                Home
+            </a>
+
+            <a href="/buyer-dashboard">
+                Dashboard
+            </a>
+
+            <a href="/wishlist"
+               class="wishlist-btn">
+                ♡ Wishlist
+            </a>
+
+            <a href="/cart"
+               class="cart-btn">
+                🛒 Cart
+            </a>
+
+            <a href="/logout"
+               class="nav-btn">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         HEADER
+    ========================================================= -->
+
+    <div class="page-header">
+
+        <h1>
+            🛒 {{ category }}
+        </h1>
+
+        <p>
+            Fresh {{ category|lower }}
+            directly from farmers
+            across different locations.
+        </p>
+
+    </div>
+
+    {% if search_product %}
+    <div class="search-context">
+        🔎 Showing <strong>{{ search_product }}</strong>
+        across Nashik, Pune and Thane
+        {% if selected_location %}
+            · Your selected location: <strong>{{ selected_location }}</strong>
+        {% endif %}
+    </div>
+    {% endif %}
+
+
+    <!-- =========================================================
+         LOCATIONS
+         
+         ONLY:
+         NASHIK
+         PUNE
+         THANE
+         DELHI COMING SOON
+         HYDERABAD COMING SOON
+         
+         NO BOISAR
+    ========================================================= -->
+
+    <div class="location-container">
+
+
+        <!-- =====================================================
+             NASHIK
+        ====================================================== -->
+
+        <div id="nashik-section" class="location-section {% if selected_location|lower == "nashik" %}search-selected{% endif %}">
+
+            <div class="location-header">
+
+                <div class="location-title">
+
+                    <div class="location-icon">
+                        📍
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Nashik Farmers
+                        </h2>
+
+                        <p>
+                            Fresh products from Nashik
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {% if nashik_products %}
+
+            <div class="product-grid">
+
+                {% for product in nashik_products %}
+
+                <div class="product-card">
+
+
+                    <div class="product-image">
+
+                        <img
+                            src="{{ get_product_image(product.product_name) }}"
+                            alt="{{ product.product_name }}"
+                            loading="lazy"
+                        >
+
+
+                        <!-- WISHLIST -->
+
+                        {% if product.id in wishlist %}
+
+                        <a
+                            href="{{ url_for('toggle_wishlist', product_id=product.id) }}"
+                            class="wishlist-heart"
+                            title="Remove from Wishlist"
+                        >
+                            ❤️
+                        </a>
+
+                        {% else %}
+
+                        <a
+                            href="{{ url_for('toggle_wishlist', product_id=product.id) }}"
+                            class="wishlist-heart"
+                            title="Add to Wishlist"
+                        >
+                            ♡
+                        </a>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="product-info">
+
+                        <h3>
+                            {{ product.product_name }}
+                        </h3>
+
+
+                        <div class="farmer-name">
+
+                            👨‍🌾
+
+                            {{ product.first_name }}
+                            {{ product.last_name }}
+
+                        </div>
+
+
+                        <div class="product-bottom">
+
+                            <div class="price">
+                                ₹{{ product.price }}
+                            </div>
+
+                            <div class="unit">
+                                / {{ product.unit }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="action-buttons">
+
+                            <a
+                                href="{{ url_for('add_to_cart', product_id=product.id) }}"
+                                class="action-btn cart-action"
+                            >
+                                🛒 Add to Cart
+                            </a>
+
+
+                            <a
+                                href="{{ url_for('order_product', product_id=product.id) }}"
+                                class="action-btn buy-action"
+                            >
+                                ⚡ Buy Now
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <div class="empty">
+
+                No {{ category|lower }}
+                products available from Nashik farmers.
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- =====================================================
+             PUNE
+        ====================================================== -->
+
+        <div id="pune-section" class="location-section {% if selected_location|lower == "pune" %}search-selected{% endif %}">
+
+            <div class="location-header">
+
+                <div class="location-title">
+
+                    <div class="location-icon">
+                        📍
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Pune Farmers
+                        </h2>
+
+                        <p>
+                            Fresh products from Pune
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {% if pune_products %}
+
+            <div class="product-grid">
+
+                {% for product in pune_products %}
+
+                <div class="product-card">
+
+
+                    <div class="product-image">
+
+                        <img
+                            src="{{ get_product_image(product.product_name) }}"
+                            alt="{{ product.product_name }}"
+                            loading="lazy"
+                        >
+
+
+                        {% if product.id in wishlist %}
+
+                        <a
+                            href="{{ url_for('toggle_wishlist', product_id=product.id) }}"
+                            class="wishlist-heart"
+                            title="Remove from Wishlist"
+                        >
+                            ❤️
+                        </a>
+
+                        {% else %}
+
+                        <a
+                            href="{{ url_for('toggle_wishlist', product_id=product.id) }}"
+                            class="wishlist-heart"
+                            title="Add to Wishlist"
+                        >
+                            ♡
+                        </a>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="product-info">
+
+                        <h3>
+                            {{ product.product_name }}
+                        </h3>
+
+
+                        <div class="farmer-name">
+
+                            👨‍🌾
+
+                            {{ product.first_name }}
+                            {{ product.last_name }}
+
+                        </div>
+
+
+                        <div class="product-bottom">
+
+                            <div class="price">
+                                ₹{{ product.price }}
+                            </div>
+
+                            <div class="unit">
+                                / {{ product.unit }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="action-buttons">
+
+                            <a
+                                href="{{ url_for('add_to_cart', product_id=product.id) }}"
+                                class="action-btn cart-action"
+                            >
+                                🛒 Add to Cart
+                            </a>
+
+
+                            <a
+                                href="{{ url_for('order_product', product_id=product.id) }}"
+                                class="action-btn buy-action"
+                            >
+                                ⚡ Buy Now
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <div class="empty">
+
+                No {{ category|lower }}
+                products available from Pune farmers.
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- =====================================================
+             THANE
+        ====================================================== -->
+
+        <div id="thane-section" class="location-section {% if selected_location|lower == "thane" %}search-selected{% endif %}">
+
+            <div class="location-header">
+
+                <div class="location-title">
+
+                    <div class="location-icon">
+                        📍
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Thane Farmers
+                        </h2>
+
+                        <p>
+                            Fresh products from Thane
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {% if thane_products %}
+
+            <div class="product-grid">
+
+                {% for product in thane_products %}
+
+                <div class="product-card">
+
+
+                    <div class="product-image">
+
+                        <img
+                            src="{{ get_product_image(product.product_name) }}"
+                            alt="{{ product.product_name }}"
+                            loading="lazy"
+                        >
+
+
+                        {% if product.id in wishlist %}
+
+                        <a
+                            href="{{ url_for('toggle_wishlist', product_id=product.id) }}"
+                            class="wishlist-heart"
+                            title="Remove from Wishlist"
+                        >
+                            ❤️
+                        </a>
+
+                        {% else %}
+
+                        <a
+                            href="{{ url_for('toggle_wishlist', product_id=product.id) }}"
+                            class="wishlist-heart"
+                            title="Add to Wishlist"
+                        >
+                            ♡
+                        </a>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="product-info">
+
+                        <h3>
+                            {{ product.product_name }}
+                        </h3>
+
+
+                        <div class="farmer-name">
+
+                            👨‍🌾
+
+                            {{ product.first_name }}
+                            {{ product.last_name }}
+
+                        </div>
+
+
+                        <div class="product-bottom">
+
+                            <div class="price">
+                                ₹{{ product.price }}
+                            </div>
+
+                            <div class="unit">
+                                / {{ product.unit }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="action-buttons">
+
+                            <a
+                                href="{{ url_for('add_to_cart', product_id=product.id) }}"
+                                class="action-btn cart-action"
+                            >
+                                🛒 Add to Cart
+                            </a>
+
+
+                            <a
+                                href="{{ url_for('order_product', product_id=product.id) }}"
+                                class="action-btn buy-action"
+                            >
+                                ⚡ Buy Now
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <div class="empty">
+
+                No {{ category|lower }}
+                products available from Thane farmers.
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- =====================================================
+             DELHI COMING SOON
+        ====================================================== -->
+
+        <div class="location-section">
+
+            <div class="location-header">
+
+                <div class="location-title">
+
+                    <div class="location-icon">
+                        📍
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Delhi Farmers
+                        </h2>
+
+                        <p>
+                            Farmer network coming soon
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="coming-soon-card">
+
+                <div class="coming-soon-icon">
+                    🏙️
+                </div>
+
+                <h3>
+                    Delhi
+                </h3>
+
+                <p>
+
+                    We are expanding our farmer
+                    network to Delhi.
+
+                    Fresh products from local
+                    farmers will be available soon.
+
+                </p>
+
+                <span class="coming-badge">
+                    🚀 Coming Soon
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================================
+             HYDERABAD COMING SOON
+        ====================================================== -->
+
+        <div class="location-section">
+
+            <div class="location-header">
+
+                <div class="location-title">
+
+                    <div class="location-icon">
+                        📍
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Hyderabad Farmers
+                        </h2>
+
+                        <p>
+                            Farmer network coming soon
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="coming-soon-card">
+
+                <div class="coming-soon-icon">
+                    🌆
+                </div>
+
+                <h3>
+                    Hyderabad
+                </h3>
+
+                <p>
+
+                    Our farmer network is
+                    coming soon to Hyderabad.
+
+                    Stay tuned for fresh products
+                    directly from local farmers.
+
+                </p>
+
+                <span class="coming-badge">
+                    🚀 Coming Soon
+                </span>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</body>
+
+</html>

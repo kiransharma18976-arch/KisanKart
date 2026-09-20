@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Checkout | {{ product.product_name }} | KisanKart</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f8f3;
+    color:#263a29;
+    min-height:100vh;
+}
+
+.navbar{
+    height:70px;
+    background:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 50px;
+    box-shadow:0 2px 10px #00000012;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:800;
+    color:#2e7d32;
+    text-decoration:none;
+}
+
+.nav{
+    display:flex;
+    gap:20px;
+}
+
+.nav a{
+    text-decoration:none;
+    color:#344238;
+    font-weight:600;
+    font-size:14px;
+}
+
+.main{
+    width:92%;
+    max-width:1000px;
+    margin:38px auto 60px;
+}
+
+.back{
+    color:#2e7d32;
+    text-decoration:none;
+    font-weight:700;
+    font-size:14px;
+}
+
+.page-title{
+    margin:18px 0 22px;
+}
+
+.page-title h1{
+    color:#245b29;
+    font-size:32px;
+    margin-bottom:7px;
+}
+
+.page-title p{
+    color:#69766c;
+    font-size:14px;
+}
+
+.checkout{
+    display:grid;
+    grid-template-columns:0.85fr 1.15fr;
+    gap:24px;
+    align-items:start;
+}
+
+.product-card,
+.form-card{
+    background:white;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 8px 30px #00000012;
+}
+
+.product-card{
+    position:sticky;
+    top:20px;
+}
+
+.product-image{
+    width:100%;
+    height:250px;
+    border-radius:15px;
+    overflow:hidden;
+    background:#eef6ed;
+    margin-bottom:18px;
+}
+
+.product-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.badge{
+    display:inline-block;
+    background:#e8f5e9;
+    color:#2e7d32;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:800;
+}
+
+.product-card h2{
+    color:#245b29;
+    margin:10px 0;
+    font-size:25px;
+}
+
+.farmer{
+    color:#69766c;
+    font-size:14px;
+    margin-bottom:15px;
+}
+
+.price{
+    color:#2e7d32;
+    font-size:25px;
+    font-weight:800;
+}
+
+.price small{
+    color:#69766c;
+    font-size:13px;
+}
+
+.summary{
+    margin-top:18px;
+    padding:15px;
+    background:#f5f8f3;
+    border-radius:12px;
+    font-size:13px;
+    line-height:1.8;
+}
+
+.form-card h2{
+    color:#245b29;
+    margin-bottom:5px;
+}
+
+.form-sub{
+    color:#718076;
+    font-size:13px;
+    margin-bottom:18px;
+}
+
+label{
+    display:block;
+    color:#314338;
+    font-weight:700;
+    font-size:13px;
+    margin:15px 0 7px;
+}
+
+input,
+textarea,
+select{
+    width:100%;
+    padding:13px 14px;
+    border:1px solid #d7e1d8;
+    border-radius:11px;
+    font-size:14px;
+    outline:none;
+    font-family:inherit;
+    background:white;
+}
+
+textarea{
+    min-height:85px;
+    resize:vertical;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+    border-color:#2e7d32;
+    box-shadow:0 0 0 3px #2e7d3212;
+}
+
+.two{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+}
+
+.payment-title{
+    margin-top:19px;
+    color:#314338;
+    font-weight:700;
+    font-size:13px;
+}
+
+.payment-options{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:8px;
+}
+
+.payment-option{
+    border:1px solid #d7e1d8;
+    border-radius:12px;
+    padding:13px;
+    cursor:pointer;
+    background:#fff;
+}
+
+.payment-option input{
+    width:auto;
+    margin-right:7px;
+    accent-color:#2e7d32;
+}
+
+.payment-option strong{
+    color:#314338;
+    font-size:13px;
+}
+
+.payment-option span{
+    display:block;
+    color:#7b877e;
+    font-size:11px;
+    margin-top:5px;
+    padding-left:22px;
+}
+
+.total{
+    margin-top:20px;
+    padding:16px;
+    border-radius:12px;
+    background:#edf7ed;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.total span{
+    color:#506157;
+    font-weight:700;
+}
+
+.total strong{
+    color:#1b5e20;
+    font-size:22px;
+}
+
+.submit{
+    width:100%;
+    margin-top:16px;
+    padding:15px;
+    border:0;
+    border-radius:12px;
+    background:#2e7d32;
+    color:white;
+    font-size:15px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.submit:hover{
+    background:#1b5e20;
+}
+
+.secure{
+    text-align:center;
+    color:#7c887f;
+    font-size:11px;
+    margin-top:11px;
+}
+
+@media(max-width:800px){
+    .navbar{
+        padding:0 18px;
+    }
+
+    .nav{
+        gap:10px;
+    }
+
+    .checkout{
+        grid-template-columns:1fr;
+    }
+
+    .product-card{
+        position:static;
+    }
+}
+
+@media(max-width:520px){
+    .nav a:nth-child(1){
+        display:none;
+    }
+
+    .main{
+        width:94%;
+    }
+
+    .two,
+    .payment-options{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+<a class="logo" href="{{ url_for('buyer_dashboard') }}">
+🌾 KisanKart
+</a>
+
+<div class="nav">
+
+<a href="{{ url_for('buyer_products') }}">
+Products
+</a>
+
+<a href="{{ url_for('cart') }}">
+🛒 Cart
+</a>
+
+<a href="{{ url_for('wishlist') }}">
+❤️ Wishlist
+</a>
+
+<a href="{{ url_for('logout') }}">
+Logout
+</a>
+
+</div>
+
+</nav>
+
+<main class="main">
+
+<a class="back" href="{{ url_for('buyer_products') }}">
+← Back to Products
+</a>
+
+<div class="page-title">
+    <h1>Complete Your Order</h1>
+    <p>Enter your delivery details and choose your preferred payment option.</p>
+</div>
+
+<div class="checkout">
+
+<div class="product-card">
+
+<div class="product-image">
+<img
+    src="{{ get_product_image(product.product_name) }}"
+    alt="{{ product.product_name }}"
+    onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/tomato.jpg') }}';"
+>
+</div>
+
+<span class="badge">
+{{ product.category }}
+</span>
+
+<h2>
+{{ product.product_name }}
+</h2>
+
+<div class="farmer">
+👨‍🌾 Farmer:
+{{ product.first_name }}
+{{ product.last_name }}
+</div>
+
+<div class="price">
+₹{{ product.price }}
+<small>/ {{ product.unit }}</small>
+</div>
+
+<div class="summary">
+📦 Available:
+<strong>{{ product.quantity }} {{ product.unit }}</strong>
+<br>
+📍 Location:
+{{ product.location or product.farmer_location or 'Not specified' }}
+</div>
+
+</div>
+
+
+<div class="form-card">
+
+<h2>Order Details</h2>
+
+<p class="form-sub">
+Please provide the information needed for delivery.
+</p>
+
+<form method="POST">
+
+<input
+    type="hidden"
+    name="order_type"
+    value="Regular"
+>
+
+<label for="buyer_name">
+Your Name
+</label>
+
+<input
+    id="buyer_name"
+    type="text"
+    name="buyer_name"
+    value="{{ default_buyer_name }}"
+    placeholder="Enter your full name"
+    required
+>
+
+
+<div class="two">
+
+<div>
+<label for="buyer_phone">
+Phone Number
+</label>
+
+<input
+    id="buyer_phone"
+    type="tel"
+    name="buyer_phone"
+    value="{{ default_phone }}"
+    placeholder="Enter phone number"
+    required
+>
+</div>
+
+<div>
+<label for="quantity">
+Quantity ({{ product.unit }})
+</label>
+
+<input
+    id="quantity"
+    type="number"
+    name="quantity"
+    min="1"
+    max="{{ product.quantity }}"
+    value="1"
+    required
+>
+</div>
+
+</div>
+
+
+<label for="delivery_address">
+Delivery Address
+</label>
+
+<textarea
+    id="delivery_address"
+    name="delivery_address"
+    placeholder="Enter your complete delivery address"
+    required
+>{{ default_address }}</textarea>
+
+
+<div class="payment-title">
+Payment Method
+</div>
+
+<div class="payment-options">
+
+<label class="payment-option">
+    <input
+        type="radio"
+        name="payment_method"
+        value="COD"
+        checked
+    >
+    <strong>💵 Cash on Delivery</strong>
+    <span>Pay when your order arrives.</span>
+</label>
+
+<label class="payment-option" style="opacity:.65; cursor:not-allowed;">
+    <input
+        type="radio"
+        name="payment_method"
+        value="Online"
+        disabled
+    >
+    <strong>💳 Online Payment <small style="color:#f39c12;">(Coming Soon)</small></strong>
+    <span>Online payment will be available soon.</span>
+</label>
+
+</div>
+
+
+<div class="total">
+    <span>Estimated Total</span>
+    <strong id="totalAmount">
+        ₹{{ product.price }}
+    </strong>
+</div>
+
+<button
+    type="submit"
+    class="submit"
+>
+    ✅ Place Order
+</button>
+
+<div class="secure">
+    🔒 Your order details are submitted securely to KisanKart.
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</main>
+
+<script>
+const quantityInput = document.getElementById("quantity");
+const totalAmount = document.getElementById("totalAmount");
+const price = Number("{{ product.price }}");
+
+function updateTotal(){
+    const quantity = Number(quantityInput.value || 1);
+    const total = price * quantity;
+
+    totalAmount.textContent =
+        "₹" + total.toFixed(2);
+}
+
+quantityInput.addEventListener(
+    "input",
+    updateTotal
+);
+
+updateTotal();
+</script>
+
+</body>
+</html>
