@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Rate & Review | KisanKart
+</title>
+
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+
+body{
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:#f7f2e8;
+
+    color:#18231f;
+
+    min-height:100vh;
+}
+
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+
+    height:75px;
+
+    background:#152a38;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 45px;
+
+}
+
+
+.logo{
+
+    color:#fff;
+
+    text-decoration:none;
+
+    font-size:23px;
+
+    font-weight:800;
+
+}
+
+
+.nav{
+
+    display:flex;
+
+    gap:20px;
+
+    align-items:center;
+
+}
+
+
+.nav a{
+
+    color:#fff;
+
+    text-decoration:none;
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
+
+
+.nav a:hover{
+
+    opacity:.8;
+
+}
+
+
+/* ================= MAIN ================= */
+
+.main{
+
+    max-width:850px;
+
+    margin:auto;
+
+    padding:45px 22px 70px;
+
+}
+
+
+.back{
+
+    color:#2e7d32;
+
+    text-decoration:none;
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
+
+
+.back:hover{
+
+    text-decoration:underline;
+
+}
+
+
+.heading{
+
+    margin:25px 0;
+
+}
+
+
+.heading h1{
+
+    font-family:Georgia,serif;
+
+    color:#152a38;
+
+    font-size:38px;
+
+}
+
+
+.heading p{
+
+    color:#68736e;
+
+    font-size:13px;
+
+    margin-top:7px;
+
+}
+
+
+/* ================= REVIEW CARD ================= */
+
+.card{
+
+    background:#fff;
+
+    border-radius:22px;
+
+    padding:30px;
+
+    box-shadow:
+        0 10px 30px rgba(20,35,30,.08);
+
+}
+
+
+/* PRODUCT */
+
+.product{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+    padding-bottom:25px;
+
+    border-bottom:1px solid #eee9df;
+
+}
+
+
+.product-icon{
+
+    width:80px;
+
+    height:80px;
+
+    border-radius:18px;
+
+    background:#e8f5e9;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:35px;
+
+}
+
+
+.product-info h2{
+
+    color:#152a38;
+
+    font-size:23px;
+
+    margin-bottom:7px;
+
+}
+
+
+.product-info p{
+
+    color:#747d78;
+
+    font-size:12px;
+
+    margin-top:4px;
+
+}
+
+
+/* ================= RATING ================= */
+
+.rating-title{
+
+    color:#152a38;
+
+    font-size:16px;
+
+    font-weight:800;
+
+    margin-top:27px;
+
+    margin-bottom:12px;
+
+}
+
+
+.stars{
+
+    display:flex;
+
+    flex-direction:row-reverse;
+
+    justify-content:flex-end;
+
+    gap:5px;
+
+}
+
+
+.stars input{
+
+    display:none;
+
+}
+
+
+.stars label{
+
+    font-size:38px;
+
+    color:#d8d3c9;
+
+    cursor:pointer;
+
+    transition:.15s;
+
+}
+
+
+.stars label:hover,
+.stars label:hover ~ label{
+
+    color:#e7a33e;
+
+}
+
+
+.stars input:checked ~ label{
+
+    color:#e7a33e;
+
+}
+
+
+/* ================= REVIEW TEXT ================= */
+
+.form-group{
+
+    margin-top:25px;
+
+}
+
+
+.form-group label{
+
+    display:block;
+
+    color:#152a38;
+
+    font-size:13px;
+
+    font-weight:800;
+
+    margin-bottom:8px;
+
+}
+
+
+textarea{
+
+    width:100%;
+
+    min-height:140px;
+
+    resize:vertical;
+
+    border:1px solid #ddd8cd;
+
+    border-radius:12px;
+
+    padding:14px;
+
+    font-family:Arial,Helvetica,sans-serif;
+
+    font-size:14px;
+
+    outline:none;
+
+}
+
+
+textarea:focus{
+
+    border-color:#e7a33e;
+
+}
+
+
+/* ================= BUTTON ================= */
+
+.submit-btn{
+
+    width:100%;
+
+    margin-top:22px;
+
+    padding:15px;
+
+    border:0;
+
+    border-radius:11px;
+
+    background:#152a38;
+
+    color:#fff;
+
+    font-size:14px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+}
+
+
+.submit-btn:hover{
+
+    background:#213f51;
+
+}
+
+
+/* CANCEL */
+
+.cancel{
+
+    display:block;
+
+    text-align:center;
+
+    margin-top:15px;
+
+    color:#68736e;
+
+    text-decoration:none;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+
+.cancel:hover{
+
+    color:#152a38;
+
+}
+
+
+/* INFO */
+
+.info{
+
+    margin-top:20px;
+
+    background:#f7f2e8;
+
+    border-radius:12px;
+
+    padding:14px;
+
+    color:#68736e;
+
+    font-size:11px;
+
+    line-height:1.6;
+
+}
+
+
+/* RESPONSIVE */
+
+@media(max-width:600px){
+
+    .navbar{
+
+        padding:0 18px;
+
+    }
+
+    .nav a:not(:last-child){
+
+        display:none;
+
+    }
+
+    .main{
+
+        padding:30px 18px 50px;
+
+    }
+
+    .heading h1{
+
+        font-size:30px;
+
+    }
+
+    .product{
+
+        align-items:flex-start;
+
+    }
+
+    .product-icon{
+
+        width:65px;
+
+        height:65px;
+
+        font-size:28px;
+
+    }
+
+    .product-info h2{
+
+        font-size:19px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+
+    <a
+        class="logo"
+        href="{{ url_for('buyer_dashboard') }}"
+    >
+
+        🌾 KisanKart
+
+    </a>
+
+
+    <div class="nav">
+
+        <a href="{{ url_for('buyer_products') }}">
+            Products
+        </a>
+
+        <a href="{{ url_for('cart') }}">
+            🛒 Cart
+        </a>
+
+        <a href="{{ url_for('wishlist') }}">
+            ❤️ Wishlist
+        </a>
+
+        <a href="{{ url_for('my_orders') }}">
+            📦 My Orders
+        </a>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+
+</nav>
+
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+
+    <a
+        class="back"
+        href="{{ url_for('my_orders') }}"
+    >
+
+        ← Back to My Orders
+
+    </a>
+
+
+
+    <div class="heading">
+
+        <h1>
+            Rate & Review ⭐
+        </h1>
+
+        <p>
+            Share your experience with this product and farmer.
+        </p>
+
+    </div>
+
+
+
+    <div class="card">
+
+
+        <!-- PRODUCT -->
+
+        <div class="product">
+
+
+            <div class="product-icon">
+                🌾
+            </div>
+
+
+            <div class="product-info">
+
+                <h2>
+                    {{ order.product_name }}
+                </h2>
+
+
+                <p>
+                    📦 Order #{{ order.id }}
+                </p>
+
+
+                {% if order.farmer_first_name %}
+
+                <p>
+
+                    👨‍🌾 Farmer:
+                    {{ order.farmer_first_name }}
+                    {{ order.farmer_last_name }}
+
+                </p>
+
+                {% endif %}
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- FORM -->
+
+        <form
+            method="POST"
+            action="{{ url_for('review_order', order_id=order.id) }}"
+        >
+
+
+            <!-- RATING -->
+
+            <div class="rating-title">
+
+                How would you rate this product?
+
+            </div>
+
+
+            <div class="stars">
+
+
+                <input
+                    type="radio"
+                    id="star5"
+                    name="rating"
+                    value="5"
+                    required
+                >
+
+                <label for="star5">
+                    ★
+                </label>
+
+
+                <input
+                    type="radio"
+                    id="star4"
+                    name="rating"
+                    value="4"
+                >
+
+                <label for="star4">
+                    ★
+                </label>
+
+
+                <input
+                    type="radio"
+                    id="star3"
+                    name="rating"
+                    value="3"
+                >
+
+                <label for="star3">
+                    ★
+                </label>
+
+
+                <input
+                    type="radio"
+                    id="star2"
+                    name="rating"
+                    value="2"
+                >
+
+                <label for="star2">
+                    ★
+                </label>
+
+
+                <input
+                    type="radio"
+                    id="star1"
+                    name="rating"
+                    value="1"
+                >
+
+                <label for="star1">
+                    ★
+                </label>
+
+
+            </div>
+
+
+
+            <!-- REVIEW -->
+
+            <div class="form-group">
+
+                <label for="review_text">
+
+                    Write your review
+
+                </label>
+
+
+                <textarea
+                    id="review_text"
+                    name="review_text"
+                    placeholder="Tell us about the product quality, freshness and your experience..."
+                    maxlength="1000"
+                ></textarea>
+
+            </div>
+
+
+
+            <!-- SUBMIT -->
+
+            <button
+                type="submit"
+                class="submit-btn"
+            >
+
+                ⭐ Submit Rating & Review
+
+            </button>
+
+
+        </form>
+
+
+
+        <a
+            class="cancel"
+            href="{{ url_for('my_orders') }}"
+        >
+
+            Cancel
+
+        </a>
+
+
+
+        <div class="info">
+
+            ⭐ Your review helps other buyers understand
+            the quality of products available from farmers
+            on KisanKart.
+
+        </div>
+
+
+    </div>
+
+
+</main>
+
+
+</body>
+
+</html>
