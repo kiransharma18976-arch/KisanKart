@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+
+<title>Wishlist - KisanKart</title>
+
+<style>
+
+body {
+    margin: 0;
+    padding: 30px;
+    background: #f5f8f3;
+    font-family: Arial;
+}
+
+h1 {
+    text-align: center;
+    color: #c2185b;
+}
+
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+}
+
+.card {
+    background: white;
+    padding: 18px;
+    margin-bottom: 15px;
+    border-radius: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,.08);
+}
+
+h3 {
+    color: #293c2c;
+}
+
+.price {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+.actions a {
+    text-decoration: none;
+    padding: 9px 13px;
+    border-radius: 8px;
+    margin-left: 5px;
+    font-size: 12px;
+}
+
+.buy {
+    background: #2e7d32;
+    color: white;
+}
+
+.remove {
+    background: #fce4ec;
+    color: #c2185b;
+}
+
+.empty {
+    text-align: center;
+    margin-top: 100px;
+    color: #777;
+}
+
+.back {
+    text-align: center;
+}
+
+.back a {
+    color: #2e7d32;
+    text-decoration: none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>❤️ My Wishlist</h1>
+
+<div class="container">
+
+{% if products %}
+
+    {% for product in products %}
+
+    <div class="card">
+
+        <div>
+
+            <h3>
+                {{ product.product_name }}
+            </h3>
+
+            <p>
+                👨‍🌾
+                {{ product.first_name }}
+                {{ product.last_name }}
+            </p>
+
+            <div class="price">
+                ₹{{ product.price }} / {{ product.unit }}
+            </div>
+
+        </div>
+
+        <div class="actions">
+
+            <a
+                href="{{ url_for('order_product', product_id=product.id) }}"
+                class="buy"
+            >
+                ⚡ Buy Now
+            </a>
+
+            <a
+                href="{{ url_for('toggle_wishlist', product_id=product.id) }}"
+                class="remove"
+            >
+                Remove
+            </a>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <div class="empty">
+
+        <h2>♡ Wishlist is empty</h2>
+
+        <p>
+            Products you like will appear here.
+        </p>
+
+    </div>
+
+{% endif %}
+
+</div>
+
+<div class="back">
+
+    <a href="/buyer-dashboard">
+        ← Back to Buyer Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>
