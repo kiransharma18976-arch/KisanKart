@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KisanKart | Vegetables</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f2e8;
+            color: #18231f;
+        }
+
+        .navbar {
+            background: #0d1922;
+            color: white;
+            padding: 17px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            background: #e7a33e;
+            padding: 8px 10px;
+            border-radius: 10px;
+            margin-right: 8px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .location {
+            background: rgba(255,255,255,0.08);
+            padding: 9px 14px;
+            border-radius: 8px;
+        }
+
+        .cart-btn {
+            background: #e7a33e;
+            color: #14211e;
+            padding: 10px 17px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 55px 20px 35px;
+        }
+
+        .hero h1 {
+            font-size: 44px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            color: #66716d;
+            font-size: 16px;
+        }
+
+        .filter-box {
+            max-width: 1100px;
+            margin: 0 auto 35px;
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            display: flex;
+            gap: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+        }
+
+        .filter-box input,
+        .filter-box select {
+            flex: 1;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 9px;
+            outline: none;
+        }
+
+        .products {
+            max-width: 1100px;
+            margin: auto;
+            padding: 0 20px 70px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 17px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+            transition: 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            height: 210px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-info h3 {
+            font-size: 21px;
+            margin-bottom: 8px;
+        }
+
+        .farmer {
+            color: #68736e;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .location-tag {
+            display: inline-block;
+            background: #edf4ed;
+            color: #447c54;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .price {
+            font-size: 23px;
+            font-weight: bold;
+            color: #152a38;
+        }
+
+        .unit {
+            color: #777;
+            font-size: 13px;
+        }
+
+        .quantity {
+            margin: 10px 0 15px;
+            color: #59635e;
+            font-size: 14px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 9px;
+        }
+
+        .buttons button {
+            flex: 1;
+            padding: 11px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+        }
+
+        .cart {
+            background: #152a38;
+            color: white;
+        }
+
+        .buy {
+            background: #e7a33e;
+            color: #14211e;
+        }
+
+        .login-message {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            background: #0d1922;
+            color: white;
+            padding: 18px 22px;
+            border-radius: 13px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            display: none;
+            z-index: 500;
+            max-width: 330px;
+        }
+
+        .login-message strong {
+            color: #e7a33e;
+        }
+
+        .login-message a {
+            display: inline-block;
+            margin-top: 10px;
+            background: #e7a33e;
+            color: #14211e;
+            padding: 8px 13px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        @media(max-width: 800px) {
+            .products {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 600px) {
+            .products {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-box {
+                flex-direction: column;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+            }
+
+            .location {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <a href="/" class="logo">
+        <span>🌾</span>KisanKart
+    </a>
+
+    <div class="nav-right">
+
+        <div class="location">
+            📍 <span id="currentLocation">Pune</span>
+        </div>
+
+        <a href="/cart" class="cart-btn">
+            🛒 Cart
+        </a>
+
+    </div>
+
+</header>
+
+
+<section class="hero">
+
+    <h1>Fresh Vegetables 🥕</h1>
+
+    <p>
+        Fresh vegetables directly from farmers near you.
+    </p>
+
+</section>
+
+
+<div class="filter-box">
+
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="Search vegetables..."
+        onkeyup="filterProducts()"
+    >
+
+    <select id="locationFilter" onchange="filterProducts()">
+
+        <option value="all">All Locations</option>
+        <option value="Pune">Pune</option>
+        <option value="Thane">Thane</option>
+        <option value="Nashik">Nashik</option>
+
+    </select>
+
+</div>
+
+
+<section class="products" id="productContainer">
+
+
+    <!-- TOMATO -->
+
+    <div
+        class="product-card"
+        data-product="tomato"
+        data-location="Pune"
+    >
+
+        <img
+            src="/static/images/tomato.jpg"
+            class="product-image"
+            alt="Fresh Tomatoes"
+        >
+
+        <div class="product-info">
+
+            <h3>Fresh Tomatoes</h3>
+
+            <div class="farmer">
+                👨‍🌾 Farmer: Rajesh Patil
+            </div>
+
+            <div class="location-tag">
+                📍 Pune
+            </div>
+
+            <div>
+                <span class="price">₹35</span>
+                <span class="unit">/ kg</span>
+            </div>
+
+            <div class="quantity">
+                Available: 250 kg
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    class="cart"
+                    onclick="addToCart('Fresh Tomatoes',35,'Pune')"
+                >
+                    🛒 Add to Cart
+                </button>
+
+                <button
+                    class="buy"
+                    onclick="buyNow('Fresh Tomatoes',35,'Pune')"
+                >
+                    Buy Now
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- POTATO -->
+
+    <div
+        class="product-card"
+        data-product="potato"
+        data-location="Nashik"
+    >
+
+        <img
+            src="/static/images/potato.jpg"
+            class="product-image"
+            alt="Fresh Potatoes"
+        >
+
+        <div class="product-info">
+
+            <h3>Fresh Potatoes</h3>
+
+            <div class="farmer">
+                👨‍🌾 Farmer: Suresh Shinde
+            </div>
+
+            <div class="location-tag">
+                📍 Nashik
+            </div>
+
+            <div>
+                <span class="price">₹28</span>
+                <span class="unit">/ kg</span>
+            </div>
+
+            <div class="quantity">
+                Available: 400 kg
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    class="cart"
+                    onclick="addToCart('Fresh Potatoes',28,'Nashik')"
+                >
+                    🛒 Add to Cart
+                </button>
+
+                <button
+                    class="buy"
+                    onclick="buyNow('Fresh Potatoes',28,'Nashik')"
+                >
+                    Buy Now
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ONION -->
+
+    <div
+        class="product-card"
+        data-product="onion"
+        data-location="Nashik"
+    >
+
+        <img
+            src="/static/images/onion.jpg"
+            class="product-image"
+            alt="Fresh Onions"
+        >
+
+        <div class="product-info">
+
+            <h3>Fresh Onions</h3>
+
+            <div class="farmer">
+                👨‍🌾 Farmer: Mahesh Jadhav
+            </div>
+
+            <div class="location-tag">
+                📍 Nashik
+            </div>
+
+            <div>
+                <span class="price">₹32</span>
+                <span class="unit">/ kg</span>
+            </div>
+
+            <div class="quantity">
+                Available: 350 kg
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    class="cart"
+                    onclick="addToCart('Fresh Onions',32,'Nashik')"
+                >
+                    🛒 Add to Cart
+                </button>
+
+                <button
+                    class="buy"
+                    onclick="buyNow('Fresh Onions',32,'Nashik')"
+                >
+                    Buy Now
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CARROT -->
+
+    <div
+        class="product-card"
+        data-product="carrot"
+        data-location="Pune"
+    >
+
+        <img
+            src="/static/images/carrot.jpg"
+            class="product-image"
+            alt="Fresh Carrots"
+        >
+
+        <div class="product-info">
+
+            <h3>Fresh Carrots</h3>
+
+            <div class="farmer">
+                👨‍🌾 Farmer: Amit Pawar
+            </div>
+
+            <div class="location-tag">
+                📍 Pune
+            </div>
+
+            <div>
+                <span class="price">₹40</span>
+                <span class="unit">/ kg</span>
+            </div>
+
+            <div class="quantity">
+                Available: 180 kg
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    class="cart"
+                    onclick="addToCart('Fresh Carrots',40,'Pune')"
+                >
+                    🛒 Add to Cart
+                </button>
+
+                <button
+                    class="buy"
+                    onclick="buyNow('Fresh Carrots',40,'Pune')"
+                >
+                    Buy Now
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SPINACH -->
+
+    <div
+        class="product-card"
+        data-product="spinach"
+        data-location="Thane"
+    >
+
+        <img
+            src="/static/images/spinach.jpg"
+            class="product-image"
+            alt="Fresh Spinach"
+        >
+
+        <div class="product-info">
+
+            <h3>Fresh Spinach</h3>
+
+            <div class="farmer">
+                👨‍🌾 Farmer: Kavita More
+            </div>
+
+            <div class="location-tag">
+                📍 Thane
+            </div>
+
+            <div>
+                <span class="price">₹25</span>
+                <span class="unit">/ kg</span>
+            </div>
+
+            <div class="quantity">
+                Available: 120 kg
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    class="cart"
+                    onclick="addToCart('Fresh Spinach',25,'Thane')"
+                >
+                    🛒 Add to Cart
+                </button>
+
+                <button
+                    class="buy"
+                    onclick="buyNow('Fresh Spinach',25,'Thane')"
+                >
+                    Buy Now
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CAULIFLOWER -->
+
+    <div
+        class="product-card"
+        data-product="cauliflower"
+        data-location="Thane"
+    >
+
+        <img
+            src="/static/images/cauliflower.jpg"
+            class="product-image"
+            alt="Fresh Cauliflower"
+        >
+
+        <div class="product-info">
+
+            <h3>Fresh Cauliflower</h3>
+
+            <div class="farmer">
+                👨‍🌾 Farmer: Prakash More
+            </div>
+
+            <div class="location-tag">
+                📍 Thane
+            </div>
+
+            <div>
+                <span class="price">₹38</span>
+                <span class="unit">/ kg</span>
+            </div>
+
+            <div class="quantity">
+                Available: 200 kg
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    class="cart"
+                    onclick="addToCart('Fresh Cauliflower',38,'Thane')"
+                >
+                    🛒 Add to Cart
+                </button>
+
+                <button
+                    class="buy"
+                    onclick="buyNow('Fresh Cauliflower',38,'Thane')"
+                >
+                    Buy Now
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<div class="login-message" id="loginMessage">
+
+    🔐 <strong>Login required</strong>
+
+    <br>
+
+    Please login or create an account to continue.
+
+    <br>
+
+    <a href="/login">Login Now →</a>
+
+</div>
+
+
+<script>
+
+    /*
+       ============================
+       LOGIN CHECK
+       ============================
+
+       Flask se session variable bhejna ho
+       toh template mein:
+
+       const isLoggedIn = {{ 'true' if session.get('user_id') else 'false' }};
+
+       Abhi testing ke liye false rakha hai.
+    */
+
+    const isLoggedIn = false;
+
+
+    function requireLogin(action) {
+
+        if (!isLoggedIn) {
+
+            const message =
+                document.getElementById("loginMessage");
+
+            message.style.display = "block";
+
+            setTimeout(() => {
+                message.style.display = "none";
+            }, 4000);
+
+            return false;
+        }
+
+        return true;
+    }
+
+
+    function addToCart(product, price, location) {
+
+        if (!requireLogin("cart")) {
+            return;
+        }
+
+        /*
+           Login ke baad Flask cart route
+        */
+
+        window.location.href =
+            "/cart/add?product=" +
+            encodeURIComponent(product) +
+            "&price=" +
+            price +
+            "&location=" +
+            encodeURIComponent(location);
+    }
+
+
+    function buyNow(product, price, location) {
+
+        if (!requireLogin("buy")) {
+            return;
+        }
+
+        window.location.href =
+            "/buy-now?product=" +
+            encodeURIComponent(product) +
+            "&price=" +
+            price +
+            "&location=" +
+            encodeURIComponent(location);
+    }
+
+
+    function filterProducts() {
+
+        const search =
+            document
+                .getElementById("searchInput")
+                .value
+                .toLowerCase();
+
+        const location =
+            document
+                .getElementById("locationFilter")
+                .value;
+
+        const cards =
+            document.querySelectorAll(".product-card");
+
+
+        cards.forEach(card => {
+
+            const product =
+                card.dataset.product.toLowerCase();
+
+            const cardLocation =
+                card.dataset.location;
+
+            const productMatch =
+                product.includes(search);
+
+            const locationMatch =
+                location === "all" ||
+                cardLocation === location;
+
+
+            if (productMatch && locationMatch) {
+
+                card.style.display = "block";
+
+            } else {
+
+                card.style.display = "none";
+
+            }
+
+        });
+
+    }
+
+</script>
+
+</body>
+</html>
