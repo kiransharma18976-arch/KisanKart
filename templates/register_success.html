@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Account Created - KisanKart</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                linear-gradient(
+                    135deg,
+                    #e8f5e9,
+                    #f5f9f4,
+                    #eaf6ea
+                );
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+        }
+
+        .success-card {
+            width: 100%;
+            max-width: 520px;
+            background: white;
+            border-radius: 28px;
+            padding: 45px 40px;
+            text-align: center;
+
+            box-shadow:
+                0 15px 50px rgba(46, 125, 50, 0.15);
+
+            border: 1px solid #e0eee0;
+
+            animation: cardAppear 0.6s ease;
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 30px;
+        }
+
+        .success-icon {
+            width: 95px;
+            height: 95px;
+
+            margin: 0 auto 25px;
+
+            border-radius: 50%;
+
+            background: #e8f5e9;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-size: 48px;
+
+            box-shadow:
+                0 8px 25px rgba(46, 125, 50, 0.15);
+
+            animation: pop 0.5s ease;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(0.5);
+            }
+
+            70% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        h1 {
+            color: #245b29;
+            font-size: 30px;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: #718071;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .user-box {
+            background: #f7fbf6;
+            border: 1px solid #e1eee1;
+
+            border-radius: 16px;
+
+            padding: 18px;
+
+            margin-bottom: 28px;
+        }
+
+        .user-box p {
+            color: #718071;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .user-name {
+            color: #2e7d32;
+            font-size: 19px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .account-type {
+            display: inline-block;
+
+            background: #e8f5e9;
+
+            color: #2e7d32;
+
+            padding: 7px 16px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            text-transform: capitalize;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            display: block;
+
+            text-decoration: none;
+
+            padding: 13px 20px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            transition: 0.2s;
+        }
+
+        .login-btn {
+            background: #2e7d32;
+            color: white;
+
+            box-shadow:
+                0 5px 15px rgba(46, 125, 50, 0.2);
+        }
+
+        .login-btn:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+        }
+
+        .home-btn {
+            background: #f1f5f1;
+            color: #456049;
+        }
+
+        .home-btn:hover {
+            background: #e5ece5;
+            transform: translateY(-2px);
+        }
+
+        .footer-text {
+            margin-top: 25px;
+
+            color: #9aa49b;
+
+            font-size: 11px;
+        }
+
+        @media (max-width: 500px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .success-card {
+                padding: 35px 22px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .success-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="success-card">
+
+        <div class="logo">
+            🌾 KisanKart
+        </div>
+
+        <div class="success-icon">
+            ✅
+        </div>
+
+        <h1>
+            Account Created!
+        </h1>
+
+        <p class="subtitle">
+            🎉 Your KisanKart account has been created successfully.
+            Welcome to the KisanKart community!
+        </p>
+
+        <div class="user-box">
+
+            <p>
+                Welcome,
+            </p>
+
+            <div class="user-name">
+                {{ first_name }} {{ last_name }}
+            </div>
+
+            <span class="account-type">
+                {{ role }} Account
+            </span>
+
+        </div>
+
+        <div class="buttons">
+
+            <a href="/login" class="btn login-btn">
+                🔐 Go to Login
+            </a>
+
+            <a href="/" class="btn home-btn">
+                🏠 Back to Home
+            </a>
+
+        </div>
+
+        <div class="footer-text">
+            Fresh • Direct • Trusted 🌱
+        </div>
+
+    </div>
+
+</body>
+</html>
