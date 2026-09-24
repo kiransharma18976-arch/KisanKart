@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 import mysql.connector
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "change-this-secret-key")
+app.secret_key = "kisankart_secret_key_2026"
 
 
 # ============================================================
@@ -226,68 +226,214 @@ def message_page(
 # PRODUCT IMAGE FUNCTION
 # ============================================================
 
+# ============================================================
+# PRODUCT IMAGE CACHE / DATABASE SETUP
+# ============================================================
+
+_product_image_column_ready = False
+
+
+def ensure_product_image_column():
+    """Create the product image URL column once, without breaking the app."""
+    global _product_image_column_ready
+
+    if _product_image_column_ready:
+        return True
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = DATABASE()
+              AND TABLE_NAME = 'products'
+              AND COLUMN_NAME = 'image_url'
+        """)
+
+        column_exists = int(cursor.fetchone()[0])
+
+        if not column_exists:
+            cursor.execute("""
+                ALTER TABLE products
+                ADD COLUMN image_url TEXT NULL
+            """)
+            connection.commit()
+
+        _product_image_column_ready = True
+        return True
+
+    except Exception as e:
+        # Image support must never stop the website from opening.
+        print("Product image column setup warning:", e)
+        return False
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+def _get_saved_product_image(product_name):
+    """Return the already-saved online image for this product, if any."""
+    if not product_name:
+        return None
+
+    if not ensure_product_image_column():
+        return None
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT image_url
+            FROM products
+            WHERE LOWER(TRIM(product_name)) = LOWER(TRIM(%s))
+              AND image_url IS NOT NULL
+              AND TRIM(image_url) <> ''
+            ORDER BY id ASC
+            LIMIT 1
+        """, (product_name,))
+
+        row = cursor.fetchone()
+        return str(row["image_url"]).strip() if row and row.get("image_url") else None
+
+    except Exception as e:
+        print("Saved product image lookup warning:", e)
+        return None
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+def _save_product_image(product_name, image_url):
+    """Save a chosen online image once so every page keeps the same image."""
+    if not product_name or not image_url:
+        return
+
+    if not ensure_product_image_column():
+        return
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            UPDATE products
+            SET image_url = %s
+            WHERE LOWER(TRIM(product_name)) = LOWER(TRIM(%s))
+              AND (image_url IS NULL OR TRIM(image_url) = '')
+        """, (image_url, product_name))
+
+        connection.commit()
+
+    except Exception as e:
+        print("Product image save warning:", e)
+        if connection:
+            connection.rollback()
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+def _local_product_image(filename):
+    """Return a local image only when the file really exists."""
+    if not filename:
+        return None
+
+    local_file = os.path.join(
+        app.static_folder,
+        "images",
+        filename
+    )
+
+    if not os.path.isfile(local_file):
+        return None
+
+    return url_for(
+        "static",
+        filename="images/" + filename
+    )
+
+
+# ============================================================
+# PRODUCT IMAGE FUNCTION
+# ============================================================
+
 def get_product_image(product_name, uploaded_image=None):
     """
-    Return the farmer-uploaded product image when available.
-    Otherwise use the existing product-name image mapping.
-    Never fall back to tomato.jpg for an unknown product.
+    Product image priority:
+
+    1. Farmer-provided image URL/path, when it actually exists.
+    2. Existing KisanKart local image, when the file actually exists.
+    3. A previously saved online image from the products table.
+    4. A strict Wikimedia Commons product search.
+    5. Generic food.jpg only when no related online image is available.
+
+    The selected online URL is saved in products.image_url, so the same
+    product keeps the same image on Home/Explore/search/product cards and
+    after an application restart. No random image is selected on refresh.
     """
 
-    # 1) Farmer uploaded image
+    # --------------------------------------------------------
+    # 1) Farmer-provided image
+    # --------------------------------------------------------
     uploaded = str(uploaded_image or "").strip()
 
     if uploaded:
-        # Images saved by farmer_add_product are stored as:
-        # uploads/products/<filename>
-        if uploaded.startswith("/"):
-            return uploaded
-
         if uploaded.startswith("http://") or uploaded.startswith("https://"):
             return uploaded
 
-        return url_for(
-            "static",
-            filename=uploaded
-        )
+        if uploaded.startswith("/static/"):
+            relative_name = uploaded[len("/static/"):].lstrip("/")
+            local_file = os.path.join(app.static_folder, relative_name)
+            if os.path.isfile(local_file):
+                return uploaded
 
-    # 2) Existing static image mapping
-    name = str(product_name or "").lower().strip()
+        relative_name = uploaded.lstrip("/")
+        local_file = os.path.join(app.static_folder, relative_name)
+        if os.path.isfile(local_file):
+            return url_for("static", filename=relative_name)
 
-    # Stable online images for newly-added products that are not yet in
-    # KisanKart's local image library. These are public Wikimedia Commons
-    # images, so they do not depend on the farmer's PC.
+    # --------------------------------------------------------
+    # 2) Product name / local image mapping
+    # --------------------------------------------------------
+    import re
+
+    raw_name = str(product_name or "").strip()
+    image_search_name = re.sub(
+        r"\s*\([^)]*\)",
+        "",
+        raw_name
+    ).strip()
+
+    name = image_search_name.lower().strip()
+
+    if not name:
+        return url_for("static", filename="images/food.jpg")
+
+    # Stable product-specific online images.
     online_image_map = {
         "strawberry": "https://commons.wikimedia.org/wiki/Special:FilePath/Strawberries.jpg?width=900",
-
-        # Grain/pulse names should point to the FOOD/DAL image, not the crop plant.
-        # "Pigeon Pea (तुअर दाल)" is the farmer-facing name; the English part
-        # "Pigeon Pea" is used as the image-search key.
-        "pigeon pea": "https://commons.wikimedia.org/wiki/Special:FilePath/Split_pigeon_peas.jpg?width=900",
-        "pigeon peas": "https://commons.wikimedia.org/wiki/Special:FilePath/Split_pigeon_peas.jpg?width=900",
-        "toor dal": "https://commons.wikimedia.org/wiki/Special:FilePath/Split_pigeon_peas.jpg?width=900",
-        "tuar dal": "https://commons.wikimedia.org/wiki/Special:FilePath/Split_pigeon_peas.jpg?width=900",
-        "tur dal": "https://commons.wikimedia.org/wiki/Special:FilePath/Split_pigeon_peas.jpg?width=900",
-        "arhar dal": "https://commons.wikimedia.org/wiki/Special:FilePath/Split_pigeon_peas.jpg?width=900",
-        "green gram": "https://commons.wikimedia.org/wiki/Special:FilePath/Green_Gram_Dal_%28_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%B8%E0%A6%B9_%E0%A6%8F%E0%A6%AC%E0%A6%82_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%9B%E0%A6%BE%E0%A6%A1%E0%A6%BC%E0%A6%BE_%E0%A6%AE%E0%A7%81%E0%A6%97_%E0%A6%A1%E0%A6%BE%E0%A6%B2%29.JPG?width=900",
-        "green gram dal": "https://commons.wikimedia.org/wiki/Special:FilePath/Green_Gram_Dal_%28_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%B8%E0%A6%B9_%E0%A6%8F%E0%A6%AC%E0%A6%82_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%9B%E0%A6%BE%E0%A6%A1%E0%A6%BC%E0%A6%BE_%E0%A6%AE%E0%A7%81%E0%A6%97_%E0%A6%A1%E0%A6%BE%E0%A6%B2%29.JPG?width=900",
-        "mung bean": "https://commons.wikimedia.org/wiki/Special:FilePath/Green_Gram_Dal_%28_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%B8%E0%A6%B9_%E0%A6%8F%E0%A6%AC%E0%A6%82_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%9B%E0%A6%BE%E0%A6%A1%E0%A6%BC%E0%A6%BE_%E0%A6%AE%E0%A7%81%E0%A6%97_%E0%A6%A1%E0%A6%BE%E0%A6%B2%29.JPG?width=900",
-        "mung beans": "https://commons.wikimedia.org/wiki/Special:FilePath/Green_Gram_Dal_%28_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%B8%E0%A6%B9_%E0%A6%8F%E0%A6%AC%E0%A6%82_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%9B%E0%A6%BE%E0%A6%A1%E0%A6%BC%E0%A6%BE_%E0%A6%AE%E0%A7%81%E0%A6%97_%E0%A6%A1%E0%A6%BE%E0%A6%B2%29.JPG?width=900",
-        "garam masala": "https://commons.wikimedia.org/wiki/Special:FilePath/Garam_Masala.JPG?width=900",
-        "garam masala powder": "https://commons.wikimedia.org/wiki/Special:FilePath/Garam_Masala.JPG?width=900",
-        "lentils": "https://commons.wikimedia.org/wiki/Special:FilePath/Masoor_daal.jpg?width=900",
-        "lentil": "https://commons.wikimedia.org/wiki/Special:FilePath/Masoor_daal.jpg?width=900",
-        "masoor": "https://commons.wikimedia.org/wiki/Special:FilePath/Masoor_daal.jpg?width=900",
-        "masoor dal": "https://commons.wikimedia.org/wiki/Special:FilePath/Masoor_daal.jpg?width=900",
     }
-
-    image_search_name = name.split("(", 1)[0].strip()
-
-    if image_search_name in online_image_map:
-        return online_image_map[image_search_name]
-
-    for keyword, image_url in sorted(online_image_map.items(), key=lambda item: len(item[0]), reverse=True):
-        if keyword in name:
-            return image_url
 
     image_map = {
         # ================= VEGETABLES =================
@@ -358,104 +504,186 @@ def get_product_image(product_name, uploaded_image=None):
         "cardamom": "Cardamom.jpg"
     }
 
+    # Exact local match first. If the file is missing from the PC/deployment,
+    # do NOT return a broken URL; continue to the online search.
     if name in image_map:
-        return url_for(
-            "static",
-            filename="images/" + image_map[name]
-        )
+        local_url = _local_product_image(image_map[name])
+        if local_url:
+            return local_url
 
-    # Partial match
-    for keyword, filename in image_map.items():
+    # Partial local match, with the same real-file check.
+    for keyword, filename in sorted(image_map.items(), key=lambda item: len(item[0]), reverse=True):
         if keyword in name:
-            return url_for(
-                "static",
-                filename="images/" + filename
-            )
+            local_url = _local_product_image(filename)
+            if local_url:
+                return local_url
 
-    # 3) Online fallback for NEW farmer-added products.
-    # If the farmer enters "English Name (Hindi Name)", search only the
-    # English part so the Hindi text does not confuse image search.
-    image_search_name = name.split("(", 1)[0].strip() if "(" in name else name
-    if image_search_name:
+    # --------------------------------------------------------
+    # 3) Use the image already saved in the database.
+    # --------------------------------------------------------
+    saved_url = _get_saved_product_image(raw_name)
+    if saved_url:
+        return saved_url
+
+    # --------------------------------------------------------
+    # 4) Stable product-specific online mapping.
+    # --------------------------------------------------------
+    online_url = None
+
+    if name in online_image_map:
+        online_url = online_image_map[name]
+    else:
+        for keyword, image_url in online_image_map.items():
+            if keyword in name:
+                online_url = image_url
+                break
+
+    # --------------------------------------------------------
+    # 5) Strict online search for products not mapped locally.
+    # --------------------------------------------------------
+    if not online_url:
         online_url = get_wikimedia_product_image(image_search_name)
-        if online_url:
-            return online_url
 
-    # 4) Final safe local fallback.
+    if online_url:
+        _save_product_image(raw_name, online_url)
+        return online_url
+
+    # --------------------------------------------------------
+    # 6) Safe final fallback. Never use an unrelated product image.
+    # --------------------------------------------------------
     return url_for(
         "static",
         filename="images/food.jpg"
     )
 
 
-
-
 @lru_cache(maxsize=256)
 def get_wikimedia_product_image(product_name):
-    """Find a relevant public product image on Wikimedia Commons.
+    """Find a strictly product-related public image on Wikimedia Commons.
 
-    The result is cached so the same product keeps the same image during
-    the running app instead of getting a different image on every refresh.
-    If the internet/API is unavailable, return None and let the caller use
-    the normal local fallback.
+    Only an image whose file title clearly contains the product name (or all
+    meaningful product words) is accepted. Generic search results are rejected
+    instead of showing an unrelated image such as biryani for a spice.
     """
     try:
         import requests
+        import re
 
-        query = str(product_name or '').strip()
+        query = str(product_name or "").strip()
         if not query:
             return None
 
-        api_url = 'https://commons.wikimedia.org/w/api.php'
-        params = {
-            'action': 'query',
-            'generator': 'search',
-            'gsrsearch': query,
-            'gsrnamespace': 6,
-            'gsrlimit': 8,
-            'prop': 'imageinfo',
-            'iiprop': 'url',
-            'iiurlwidth': 900,
-            'format': 'json',
-            'origin': '*',
+        # Remove common display words and Hindi text already removed by caller.
+        cleaned_query = re.sub(r"\s*\([^)]*\)", "", query).strip().lower()
+        stop_words = {
+            "fresh",
+            "premium",
+            "quality",
+            "high",
+            "grade",
+            "organic",
+            "best",
         }
+        meaningful_words = [
+            word
+            for word in re.findall(r"[a-z0-9]+", cleaned_query)
+            if word not in stop_words and len(word) >= 2
+        ]
 
-        response = requests.get(
-            api_url,
-            params=params,
-            timeout=4,
-            headers={'User-Agent': 'KisanKart/1.0 product image lookup'}
-        )
-        response.raise_for_status()
-        data = response.json()
-
-        pages = list((data.get('query') or {}).get('pages', {}).values())
-        if not pages:
+        if not meaningful_words:
             return None
 
-        # Prefer a title containing the complete product name.
-        normalized = ' '.join(query.lower().split())
-        def score(page):
-            title = str(page.get('title', '')).lower()
-            title = title.replace('file:', '').replace('_', ' ')
-            score_value = 0
-            if normalized in title:
-                score_value += 100
-            for word in normalized.split():
-                if len(word) >= 3 and word in title:
-                    score_value += 10
-            return score_value
+        normalized_phrase = " ".join(meaningful_words)
 
-        pages.sort(key=score, reverse=True)
+        api_url = "https://commons.wikimedia.org/w/api.php"
+        headers = {
+            "User-Agent": "KisanKart/1.0 product image lookup"
+        }
 
-        for page in pages:
-            info = (page.get('imageinfo') or [{}])[0]
-            image_url = info.get('thumburl') or info.get('url')
-            if image_url:
-                return image_url
+        # Search 1: exact product phrase in file titles.
+        search_queries = [
+            f'intitle:"{normalized_phrase}"',
+            normalized_phrase,
+        ]
 
-    except Exception:
+        # Handle common chilli/chili spelling differences.
+        if "chilli" in normalized_phrase:
+            search_queries.append(normalized_phrase.replace("chilli", "chili"))
+        elif "chili" in normalized_phrase:
+            search_queries.append(normalized_phrase.replace("chili", "chilli"))
+
+        seen_titles = set()
+
+        for search_query in search_queries:
+            params = {
+                "action": "query",
+                "generator": "search",
+                "gsrsearch": search_query,
+                "gsrnamespace": 6,
+                "gsrlimit": 20,
+                "prop": "imageinfo",
+                "iiprop": "url",
+                "iiurlwidth": 900,
+                "format": "json",
+                "origin": "*",
+            }
+
+            response = requests.get(
+                api_url,
+                params=params,
+                timeout=4,
+                headers=headers
+            )
+            response.raise_for_status()
+            data = response.json()
+
+            pages = list(
+                (data.get("query") or {}).get("pages", {}).values()
+            )
+            if not pages:
+                continue
+
+            for page in pages:
+                title_raw = str(page.get("title", ""))
+                title = title_raw.lower().replace("file:", "").replace("_", " ")
+                title = re.sub(r"[^a-z0-9]+", " ", title)
+                title_words = set(title.split())
+
+                if title_raw in seen_titles:
+                    continue
+                seen_titles.add(title_raw)
+
+                # Every meaningful product word must occur in the file title.
+                if not all(word in title_words for word in meaningful_words):
+                    continue
+
+                # Reject obvious cooked-meal/non-product results.
+                bad_context_words = {
+                    "biryani",
+                    "curry",
+                    "soup",
+                    "pizza",
+                    "cake",
+                    "dessert",
+                    "recipe",
+                    "restaurant",
+                    "menu",
+                    "salad",
+                    "dish",
+                    "meal",
+                }
+
+                if title_words.intersection(bad_context_words):
+                    continue
+
+                info = (page.get("imageinfo") or [{}])[0]
+                image_url = info.get("thumburl") or info.get("url")
+                if image_url:
+                    return image_url
+
+    except Exception as e:
         # External image lookup must never break product pages.
+        print("Online product image lookup warning:", e)
         return None
 
     return None
@@ -609,11 +837,10 @@ app.jinja_env.globals["get_food_image"] = get_food_image
 def get_connection():
 
     return mysql.connector.connect(
-        host=os.getenv("DB_HOST", "localhost"),
-        port=int(os.getenv("DB_PORT", "3306")),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", ""),
-        database=os.getenv("DB_NAME", "kisankart")
+        host="localhost",
+        user="root",
+        password="kiran123",
+        database="kisankart"
     )
 
 
