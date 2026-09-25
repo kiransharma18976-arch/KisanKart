@@ -8,11 +8,6 @@ import mysql.connector
 app = Flask(__name__)
 app.secret_key = "kisankart_secret_key_2026"
 
-
-# ============================================================
-# GLOBAL USER SESSION
-# ============================================================
-
 @app.context_processor
 def inject_user():
     return {
@@ -22,11 +17,6 @@ def inject_user():
         "user_role": session.get("user_role"),
         "user_location": session.get("user_location")
     }
-
-
-# ============================================================
-# ATTRACTIVE MESSAGE PAGE
-# ============================================================
 
 def message_page(
     title,
@@ -60,9 +50,6 @@ def message_page(
                 background:
                     linear-gradient(
                         135deg,
-                        #e8f5e9,
-                        #f1f8e9,
-                        #e0f2f1
                     );
 
                 display: flex;
@@ -117,8 +104,6 @@ def message_page(
                 background:
                     linear-gradient(
                         135deg,
-                        #43a047,
-                        #81c784
                     );
 
                 display: flex;
@@ -153,8 +138,6 @@ def message_page(
                 background:
                     linear-gradient(
                         135deg,
-                        #2e7d32,
-                        #43a047
                     );
 
                 color: white;
@@ -221,222 +204,55 @@ def message_page(
     </html>
     """
 
-
-# ============================================================
-# PRODUCT IMAGE FUNCTION
-# ============================================================
-
-# ============================================================
-# PRODUCT IMAGE CACHE / DATABASE SETUP
-# ============================================================
-
-_product_image_column_ready = False
-
-
-def ensure_product_image_column():
-    """Create the product image URL column once, without breaking the app."""
-    global _product_image_column_ready
-
-    if _product_image_column_ready:
-        return True
-
-    connection = None
-    cursor = None
-
-    try:
-        connection = get_connection()
-        cursor = connection.cursor()
-
-        cursor.execute("""
-            SELECT COUNT(*)
-            FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE TABLE_SCHEMA = DATABASE()
-              AND TABLE_NAME = 'products'
-              AND COLUMN_NAME = 'image_url'
-        """)
-
-        column_exists = int(cursor.fetchone()[0])
-
-        if not column_exists:
-            cursor.execute("""
-                ALTER TABLE products
-                ADD COLUMN image_url TEXT NULL
-            """)
-            connection.commit()
-
-        _product_image_column_ready = True
-        return True
-
-    except Exception as e:
-        # Image support must never stop the website from opening.
-        print("Product image column setup warning:", e)
-        return False
-
-    finally:
-        if cursor:
-            cursor.close()
-        if connection:
-            connection.close()
-
-
-def _get_saved_product_image(product_name):
-    """Return the already-saved online image for this product, if any."""
-    if not product_name:
-        return None
-
-    if not ensure_product_image_column():
-        return None
-
-    connection = None
-    cursor = None
-
-    try:
-        connection = get_connection()
-        cursor = connection.cursor(dictionary=True)
-
-        cursor.execute("""
-            SELECT image_url
-            FROM products
-            WHERE LOWER(TRIM(product_name)) = LOWER(TRIM(%s))
-              AND image_url IS NOT NULL
-              AND TRIM(image_url) <> ''
-            ORDER BY id ASC
-            LIMIT 1
-        """, (product_name,))
-
-        row = cursor.fetchone()
-        return str(row["image_url"]).strip() if row and row.get("image_url") else None
-
-    except Exception as e:
-        print("Saved product image lookup warning:", e)
-        return None
-
-    finally:
-        if cursor:
-            cursor.close()
-        if connection:
-            connection.close()
-
-
-def _save_product_image(product_name, image_url):
-    """Save a chosen online image once so every page keeps the same image."""
-    if not product_name or not image_url:
-        return
-
-    if not ensure_product_image_column():
-        return
-
-    connection = None
-    cursor = None
-
-    try:
-        connection = get_connection()
-        cursor = connection.cursor()
-
-        cursor.execute("""
-            UPDATE products
-            SET image_url = %s
-            WHERE LOWER(TRIM(product_name)) = LOWER(TRIM(%s))
-              AND (image_url IS NULL OR TRIM(image_url) = '')
-        """, (image_url, product_name))
-
-        connection.commit()
-
-    except Exception as e:
-        print("Product image save warning:", e)
-        if connection:
-            connection.rollback()
-
-    finally:
-        if cursor:
-            cursor.close()
-        if connection:
-            connection.close()
-
-
-def _local_product_image(filename):
-    """Return a local image only when the file really exists."""
-    if not filename:
-        return None
-
-    local_file = os.path.join(
-        app.static_folder,
-        "images",
-        filename
-    )
-
-    if not os.path.isfile(local_file):
-        return None
-
-    return url_for(
-        "static",
-        filename="images/" + filename
-    )
-
-
-# ============================================================
-# PRODUCT IMAGE FUNCTION
-# ============================================================
-
 def get_product_image(product_name, uploaded_image=None):
-    """
-    Product image priority:
 
-    1. Farmer-provided image URL/path, when it actually exists.
-    2. Existing KisanKart local image, when the file actually exists.
-    3. A previously saved online image from the products table.
-    4. A strict Wikimedia Commons product search.
-    5. Generic food.jpg only when no related online image is available.
-
-    The selected online URL is saved in products.image_url, so the same
-    product keeps the same image on Home/Explore/search/product cards and
-    after an application restart. No random image is selected on refresh.
-    """
-
-    # --------------------------------------------------------
-    # 1) Farmer-provided image
-    # --------------------------------------------------------
     uploaded = str(uploaded_image or "").strip()
 
     if uploaded:
+        if uploaded.startswith("/"):
+            return uploaded
+
         if uploaded.startswith("http://") or uploaded.startswith("https://"):
             return uploaded
 
-        if uploaded.startswith("/static/"):
-            relative_name = uploaded[len("/static/"):].lstrip("/")
-            local_file = os.path.join(app.static_folder, relative_name)
-            if os.path.isfile(local_file):
-                return uploaded
+        return url_for(
+            "static",
+            filename=uploaded
+        )
 
-        relative_name = uploaded.lstrip("/")
-        local_file = os.path.join(app.static_folder, relative_name)
-        if os.path.isfile(local_file):
-            return url_for("static", filename=relative_name)
+    name = str(product_name or "").lower().strip()
 
-    # --------------------------------------------------------
-    # 2) Product name / local image mapping
-    # --------------------------------------------------------
-    import re
-
-    raw_name = str(product_name or "").strip()
-    image_search_name = re.sub(
-        r"\s*\([^)]*\)",
-        "",
-        raw_name
-    ).strip()
-
-    name = image_search_name.lower().strip()
-
-    if not name:
-        return url_for("static", filename="images/food.jpg")
-
-    # Stable product-specific online images.
     online_image_map = {
         "strawberry": "https://commons.wikimedia.org/wiki/Special:FilePath/Strawberries.jpg?width=900",
+
+        "pigeon pea": "https://commons.wikimedia.org/wiki/Special:FilePath/Split_pigeon_peas.jpg?width=900",
+        "pigeon peas": "https://commons.wikimedia.org/wiki/Special:FilePath/Split_pigeon_peas.jpg?width=900",
+        "toor dal": "https://commons.wikimedia.org/wiki/Special:FilePath/Split_pigeon_peas.jpg?width=900",
+        "tuar dal": "https://commons.wikimedia.org/wiki/Special:FilePath/Split_pigeon_peas.jpg?width=900",
+        "tur dal": "https://commons.wikimedia.org/wiki/Special:FilePath/Split_pigeon_peas.jpg?width=900",
+        "arhar dal": "https://commons.wikimedia.org/wiki/Special:FilePath/Split_pigeon_peas.jpg?width=900",
+        "green gram": "https://commons.wikimedia.org/wiki/Special:FilePath/Green_Gram_Dal_%28_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%B8%E0%A6%B9_%E0%A6%8F%E0%A6%AC%E0%A6%82_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%9B%E0%A6%BE%E0%A6%A1%E0%A6%BC%E0%A6%BE_%E0%A6%AE%E0%A7%81%E0%A6%97_%E0%A6%A1%E0%A6%BE%E0%A6%B2%29.JPG?width=900",
+        "green gram dal": "https://commons.wikimedia.org/wiki/Special:FilePath/Green_Gram_Dal_%28_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%B8%E0%A6%B9_%E0%A6%8F%E0%A6%AC%E0%A6%82_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%9B%E0%A6%BE%E0%A6%A1%E0%A6%BC%E0%A6%BE_%E0%A6%AE%E0%A7%81%E0%A6%97_%E0%A6%A1%E0%A6%BE%E0%A6%B2%29.JPG?width=900",
+        "mung bean": "https://commons.wikimedia.org/wiki/Special:FilePath/Green_Gram_Dal_%28_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%B8%E0%A6%B9_%E0%A6%8F%E0%A6%AC%E0%A6%82_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%9B%E0%A6%BE%E0%A6%A1%E0%A6%BC%E0%A6%BE_%E0%A6%AE%E0%A7%81%E0%A6%97_%E0%A6%A1%E0%A6%BE%E0%A6%B2%29.JPG?width=900",
+        "mung beans": "https://commons.wikimedia.org/wiki/Special:FilePath/Green_Gram_Dal_%28_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%B8%E0%A6%B9_%E0%A6%8F%E0%A6%AC%E0%A6%82_%E0%A6%96%E0%A7%8B%E0%A6%B8%E0%A6%BE_%E0%A6%9B%E0%A6%BE%E0%A6%A1%E0%A6%BC%E0%A6%BE_%E0%A6%AE%E0%A7%81%E0%A6%97_%E0%A6%A1%E0%A6%BE%E0%A6%B2%29.JPG?width=900",
+        "garam masala": "https://commons.wikimedia.org/wiki/Special:FilePath/Garam_Masala.JPG?width=900",
+        "garam masala powder": "https://commons.wikimedia.org/wiki/Special:FilePath/Garam_Masala.JPG?width=900",
+        "lentils": "https://commons.wikimedia.org/wiki/Special:FilePath/Masoor_daal.jpg?width=900",
+        "lentil": "https://commons.wikimedia.org/wiki/Special:FilePath/Masoor_daal.jpg?width=900",
+        "masoor": "https://commons.wikimedia.org/wiki/Special:FilePath/Masoor_daal.jpg?width=900",
+        "masoor dal": "https://commons.wikimedia.org/wiki/Special:FilePath/Masoor_daal.jpg?width=900",
     }
 
+    image_search_name = name.split("(", 1)[0].strip()
+
+    if image_search_name in online_image_map:
+        return online_image_map[image_search_name]
+
+    for keyword, image_url in sorted(online_image_map.items(), key=lambda item: len(item[0]), reverse=True):
+        if keyword in name:
+            return image_url
+
     image_map = {
-        # ================= VEGETABLES =================
         "tomato": "tomato.jpg",
         "potato": "potato.jpg",
         "onion": "onion.jpg",
@@ -451,7 +267,6 @@ def get_product_image(product_name, uploaded_image=None):
         "ladyfinger": "lady.jpg",
         "okra": "lady.jpg",
 
-        # ================= FRUITS =================
         "apple": "apple.jpg",
         "banana": "banana.jpg",
         "orange": "orange.jpg",
@@ -463,7 +278,6 @@ def get_product_image(product_name, uploaded_image=None):
         "watermelon": "watermelon.jpg",
         "muskmelon": "Muskmelon.jpg",
 
-        # ================= GRAINS =================
         "premium basmati rice": "Premium Basmati Rice.jpg",
         "basmati rice": "Premium Basmati Rice.jpg",
         "wheat": "Wheat.jpg",
@@ -476,7 +290,6 @@ def get_product_image(product_name, uploaded_image=None):
         "ragi": "Ragi.jpg",
         "barley": "Barley.jpg",
 
-        # ================= DAIRY =================
         "fresh cow milk": "fresh Cow Milk.jpg",
         "cow milk": "fresh Cow Milk.jpg",
         "buffalo milk": "Buffalo Milk.jpg",
@@ -490,7 +303,6 @@ def get_product_image(product_name, uploaded_image=None):
         "fresh cream": "Fresh Cream.jpg",
         "milk powder": "Milk Powder.jpg",
 
-        # ================= SPICES =================
         "red chilli": "Red Chilli.jpg",
         "red chili": "Red Chilli.jpg",
         "turmeric": "Turmeric.jpg",
@@ -504,212 +316,96 @@ def get_product_image(product_name, uploaded_image=None):
         "cardamom": "Cardamom.jpg"
     }
 
-    # Exact local match first. If the file is missing from the PC/deployment,
-    # do NOT return a broken URL; continue to the online search.
     if name in image_map:
-        local_url = _local_product_image(image_map[name])
-        if local_url:
-            return local_url
+        return url_for(
+            "static",
+            filename="images/" + image_map[name]
+        )
 
-    # Partial local match, with the same real-file check.
-    for keyword, filename in sorted(image_map.items(), key=lambda item: len(item[0]), reverse=True):
+    for keyword, filename in image_map.items():
         if keyword in name:
-            local_url = _local_product_image(filename)
-            if local_url:
-                return local_url
+            return url_for(
+                "static",
+                filename="images/" + filename
+            )
 
-    # --------------------------------------------------------
-    # 3) Use the image already saved in the database.
-    # --------------------------------------------------------
-    saved_url = _get_saved_product_image(raw_name)
-    if saved_url:
-        return saved_url
-
-    # --------------------------------------------------------
-    # 4) Stable product-specific online mapping.
-    # --------------------------------------------------------
-    online_url = None
-
-    if name in online_image_map:
-        online_url = online_image_map[name]
-    else:
-        for keyword, image_url in online_image_map.items():
-            if keyword in name:
-                online_url = image_url
-                break
-
-    # --------------------------------------------------------
-    # 5) Strict online search for products not mapped locally.
-    # --------------------------------------------------------
-    if not online_url:
+    image_search_name = name.split("(", 1)[0].strip() if "(" in name else name
+    if image_search_name:
         online_url = get_wikimedia_product_image(image_search_name)
+        if online_url:
+            return online_url
 
-    if online_url:
-        _save_product_image(raw_name, online_url)
-        return online_url
-
-    # --------------------------------------------------------
-    # 6) Safe final fallback. Never use an unrelated product image.
-    # --------------------------------------------------------
     return url_for(
         "static",
         filename="images/food.jpg"
     )
 
-
 @lru_cache(maxsize=256)
 def get_wikimedia_product_image(product_name):
-    """Find a strictly product-related public image on Wikimedia Commons.
-
-    Only an image whose file title clearly contains the product name (or all
-    meaningful product words) is accepted. Generic search results are rejected
-    instead of showing an unrelated image such as biryani for a spice.
-    """
     try:
         import requests
-        import re
 
-        query = str(product_name or "").strip()
+        query = str(product_name or '').strip()
         if not query:
             return None
 
-        # Remove common display words and Hindi text already removed by caller.
-        cleaned_query = re.sub(r"\s*\([^)]*\)", "", query).strip().lower()
-        stop_words = {
-            "fresh",
-            "premium",
-            "quality",
-            "high",
-            "grade",
-            "organic",
-            "best",
+        api_url = 'https://commons.wikimedia.org/w/api.php'
+        params = {
+            'action': 'query',
+            'generator': 'search',
+            'gsrsearch': query,
+            'gsrnamespace': 6,
+            'gsrlimit': 8,
+            'prop': 'imageinfo',
+            'iiprop': 'url',
+            'iiurlwidth': 900,
+            'format': 'json',
+            'origin': '*',
         }
-        meaningful_words = [
-            word
-            for word in re.findall(r"[a-z0-9]+", cleaned_query)
-            if word not in stop_words and len(word) >= 2
-        ]
 
-        if not meaningful_words:
+        response = requests.get(
+            api_url,
+            params=params,
+            timeout=4,
+            headers={'User-Agent': 'KisanKart/1.0 product image lookup'}
+        )
+        response.raise_for_status()
+        data = response.json()
+
+        pages = list((data.get('query') or {}).get('pages', {}).values())
+        if not pages:
             return None
 
-        normalized_phrase = " ".join(meaningful_words)
+        normalized = ' '.join(query.lower().split())
+        def score(page):
+            title = str(page.get('title', '')).lower()
+            title = title.replace('file:', '').replace('_', ' ')
+            score_value = 0
+            if normalized in title:
+                score_value += 100
+            for word in normalized.split():
+                if len(word) >= 3 and word in title:
+                    score_value += 10
+            return score_value
 
-        api_url = "https://commons.wikimedia.org/w/api.php"
-        headers = {
-            "User-Agent": "KisanKart/1.0 product image lookup"
-        }
+        pages.sort(key=score, reverse=True)
 
-        # Search 1: exact product phrase in file titles.
-        search_queries = [
-            f'intitle:"{normalized_phrase}"',
-            normalized_phrase,
-        ]
+        for page in pages:
+            info = (page.get('imageinfo') or [{}])[0]
+            image_url = info.get('thumburl') or info.get('url')
+            if image_url:
+                return image_url
 
-        # Handle common chilli/chili spelling differences.
-        if "chilli" in normalized_phrase:
-            search_queries.append(normalized_phrase.replace("chilli", "chili"))
-        elif "chili" in normalized_phrase:
-            search_queries.append(normalized_phrase.replace("chili", "chilli"))
-
-        seen_titles = set()
-
-        for search_query in search_queries:
-            params = {
-                "action": "query",
-                "generator": "search",
-                "gsrsearch": search_query,
-                "gsrnamespace": 6,
-                "gsrlimit": 20,
-                "prop": "imageinfo",
-                "iiprop": "url",
-                "iiurlwidth": 900,
-                "format": "json",
-                "origin": "*",
-            }
-
-            response = requests.get(
-                api_url,
-                params=params,
-                timeout=4,
-                headers=headers
-            )
-            response.raise_for_status()
-            data = response.json()
-
-            pages = list(
-                (data.get("query") or {}).get("pages", {}).values()
-            )
-            if not pages:
-                continue
-
-            for page in pages:
-                title_raw = str(page.get("title", ""))
-                title = title_raw.lower().replace("file:", "").replace("_", " ")
-                title = re.sub(r"[^a-z0-9]+", " ", title)
-                title_words = set(title.split())
-
-                if title_raw in seen_titles:
-                    continue
-                seen_titles.add(title_raw)
-
-                # Every meaningful product word must occur in the file title.
-                if not all(word in title_words for word in meaningful_words):
-                    continue
-
-                # Reject obvious cooked-meal/non-product results.
-                bad_context_words = {
-                    "biryani",
-                    "curry",
-                    "soup",
-                    "pizza",
-                    "cake",
-                    "dessert",
-                    "recipe",
-                    "restaurant",
-                    "menu",
-                    "salad",
-                    "dish",
-                    "meal",
-                }
-
-                if title_words.intersection(bad_context_words):
-                    continue
-
-                info = (page.get("imageinfo") or [{}])[0]
-                image_url = info.get("thumburl") or info.get("url")
-                if image_url:
-                    return image_url
-
-    except Exception as e:
-        # External image lookup must never break product pages.
-        print("Online product image lookup warning:", e)
+    except Exception:
         return None
 
     return None
 
 app.jinja_env.globals["get_product_image"] = get_product_image
 
-
-# ============================================================
-# FOOD DONATION IMAGE FUNCTION
-# ============================================================
-
 def get_food_image(food_name, uploaded_image=None):
-    """
-    Food donation image priority:
-    1. User-uploaded donation image.
-    2. Existing KisanKart local image matched from the food name.
-    3. A keyword-specific online meal image from TheMealDB.
-    4. Generic local food.jpg fallback.
-
-    The online lookup is deliberately keyword-based so different foods do not
-    all fall back to the same rice image. If the internet/API is unavailable,
-    the local fallback is still used and the page never breaks.
-    """
     uploaded = str(uploaded_image or "").strip()
 
-    # 1) Uploaded donation image always gets highest priority.
     if uploaded:
         if uploaded.startswith("http://") or uploaded.startswith("https://"):
             return uploaded
@@ -720,7 +416,6 @@ def get_food_image(food_name, uploaded_image=None):
         if uploaded.startswith("static/"):
             return "/" + uploaded
 
-        # Database stores only the uploaded filename.
         return url_for(
             "static",
             filename="uploads/donations/" + uploaded
@@ -728,10 +423,6 @@ def get_food_image(food_name, uploaded_image=None):
 
     name = str(food_name or "").lower().strip()
 
-    # 2) Existing KisanKart local images.
-    # Keep these mappings for actual product/ingredient images that already
-    # exist in the project. Do NOT map cooked-meal words to food.jpg here,
-    # otherwise every donation would get the same generic picture.
     local_food_map = {
         "tomato": "tomato.jpg",
         "potato": "potato.jpg",
@@ -755,7 +446,6 @@ def get_food_image(food_name, uploaded_image=None):
         "poha": "poha rice.jpg",
     }
 
-    # Check longer phrases first.
     for keyword in sorted(local_food_map, key=len, reverse=True):
         if keyword in name:
             filename = local_food_map[keyword]
@@ -763,10 +453,6 @@ def get_food_image(food_name, uploaded_image=None):
             if os.path.exists(local_file):
                 return url_for("static", filename="images/" + filename)
 
-    # 3) Keyword-specific online meal images.
-    # TheMealDB's V1 API supports meal-name searches and returns strMealThumb.
-    # These search terms are chosen to produce visually different meal images.
-    # The free test API key is intended for development/educational use.
     online_food_map = [
         ("paneer", "Matar Paneer"),
         ("dal", "Dal fry"),
@@ -791,15 +477,12 @@ def get_food_image(food_name, uploaded_image=None):
     try:
         import requests
 
-        # If several keywords are present, use a more specific combination
-        # first so cards such as "Paneer Sabji & Rice" get a paneer image.
         selected_search = None
         for keyword, search_term in online_food_map:
             if keyword in name:
                 selected_search = search_term
                 break
 
-        # If no known keyword exists, try the user's complete food name.
         search_terms = []
         if selected_search:
             search_terms.append(selected_search)
@@ -820,33 +503,21 @@ def get_food_image(food_name, uploaded_image=None):
                     return meals[0]["strMealThumb"]
 
     except Exception:
-        # Never let an external image service break the website.
         pass
 
-    # 4) Final local fallback.
     return url_for("static", filename="images/food.jpg")
 
-
 app.jinja_env.globals["get_food_image"] = get_food_image
-
-
-# ============================================================
-# MYSQL CONNECTION
-# ============================================================
 
 def get_connection():
 
     return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="kiran123",
-        database="kisankart"
+        host=os.getenv("DB_HOST", "localhost"),
+        port=int(os.getenv("DB_PORT", "3306")),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASSWORD", "kiran123"),
+        database=os.getenv("DB_NAME", "kisankart")
     )
-
-
-# ============================================================
-# NOTIFICATIONS
-# ============================================================
 
 def ensure_notification_table():
     connection = None
@@ -881,7 +552,6 @@ def ensure_notification_table():
         if connection:
             connection.close()
 
-
 def create_notification(cursor, user_id, title, message):
     try:
         cursor.execute("""
@@ -891,7 +561,6 @@ def create_notification(cursor, user_id, title, message):
 
     except Exception as e:
         print("Notification insert warning:", e)
-
 
 def get_unread_notification_count(user_id):
     connection = None
@@ -920,7 +589,6 @@ def get_unread_notification_count(user_id):
             cursor.close()
         if connection:
             connection.close()
-
 
 @app.route("/notifications")
 def notifications():
@@ -982,25 +650,14 @@ def notifications():
         if connection:
             connection.close()
 
-
-# ============================================================
-# HOME
-# ============================================================
-
 @app.route("/")
 def home():
 
     return render_template("index.html")
 
-
-# ============================================================
-# EXPLORE CATEGORY
-# ============================================================
-
 @app.route("/surplus-food")
 def surplus_food():
     return render_template("surplus_food.html")
-
 
 @app.route("/explore/<category>")
 def explore(category):
@@ -1031,7 +688,6 @@ def explore(category):
     product_query = request.args.get("product", "").strip()
     selected_location = request.args.get("location", "").strip()
 
-    # Search locations are intentionally limited to these three.
     allowed_locations = {"thane", "pune", "nashik"}
     if selected_location and selected_location.lower() not in allowed_locations:
         return message_page(
@@ -1082,8 +738,6 @@ def explore(category):
     cursor.close()
     connection.close()
 
-    # Separate locations
-
     nashik_products = [
         p for p in all_products
         if str(
@@ -1127,11 +781,6 @@ def explore(category):
 
         selected_location=selected_location
     )
-
-
-# ============================================================
-# SEARCH PRODUCTS
-# ============================================================
 
 @app.route("/search-products")
 def search_products():
@@ -1211,11 +860,6 @@ def search_products():
         location_query=location_query
     )
 
-
-# ============================================================
-# ADD TO CART
-# ============================================================
-
 @app.route("/add-to-cart/<int:product_id>")
 def add_to_cart(product_id):
 
@@ -1253,11 +897,6 @@ def add_to_cart(product_id):
         or url_for("buyer_products")
     )
 
-
-# ============================================================
-# REMOVE FROM CART
-# ============================================================
-
 @app.route("/remove-from-cart/<int:product_id>")
 def remove_from_cart(product_id):
 
@@ -1275,11 +914,6 @@ def remove_from_cart(product_id):
     return redirect(
         url_for("cart")
     )
-
-
-# ============================================================
-# CART
-# ============================================================
 
 @app.route("/cart")
 def cart():
@@ -1346,11 +980,6 @@ def cart():
         products=products
     )
 
-
-# ============================================================
-# WISHLIST TOGGLE
-# ============================================================
-
 @app.route("/wishlist/<int:product_id>")
 def toggle_wishlist(product_id):
 
@@ -1391,11 +1020,6 @@ def toggle_wishlist(product_id):
         request.referrer
         or url_for("buyer_products")
     )
-
-
-# ============================================================
-# WISHLIST PAGE
-# ============================================================
 
 @app.route("/wishlist")
 def wishlist():
@@ -1462,11 +1086,6 @@ def wishlist():
         products=products
     )
 
-
-# ============================================================
-# LOGIN
-# ============================================================
-
 @app.route(
     "/login",
     methods=["GET", "POST"]
@@ -1509,13 +1128,7 @@ def login():
         cursor.close()
         connection.close()
 
-        # ====================================================
-        # VALID USER
-        # ====================================================
-
         if user:
-
-            # Store complete user session
 
             session["user_id"] = user["id"]
 
@@ -1531,8 +1144,6 @@ def login():
                 "location"
             )
 
-            # Session remains until logout.
-
             next_url = session.pop(
                 "next_url",
                 None
@@ -1544,10 +1155,6 @@ def login():
                     next_url
                 )
 
-            # =================================================
-            # FARMER
-            # =================================================
-
             if user["role"] == "farmer":
 
                 return redirect(
@@ -1555,10 +1162,6 @@ def login():
                         "farmer_dashboard"
                     )
                 )
-
-            # =================================================
-            # BUYER
-            # =================================================
 
             elif user["role"] == "buyer":
 
@@ -1568,10 +1171,6 @@ def login():
                     )
                 )
 
-            # =================================================
-            # NGO
-            # =================================================
-
             elif user["role"] == "ngo":
 
                 return redirect(
@@ -1579,10 +1178,6 @@ def login():
                         "ngo_dashboard"
                     )
                 )
-
-        # ====================================================
-        # INVALID LOGIN
-        # ====================================================
 
         return message_page(
             "Invalid Email or Password",
@@ -1596,18 +1191,9 @@ def login():
             url_for("login")
         )
 
-    # ========================================================
-    # GET REQUEST
-    # ========================================================
-
     return render_template(
         "login.html"
     )
-
-
-# ============================================================
-# REGISTER
-# ============================================================
 
 @app.route(
     "/register",
@@ -1615,19 +1201,11 @@ def login():
 )
 def register():
 
-    # ========================================================
-    # GET = OPEN REGISTRATION FORM
-    # ========================================================
-
     if request.method == "GET":
 
         return render_template(
             "register.html"
         )
-
-    # ========================================================
-    # POST = FORM SUBMITTED
-    # ========================================================
 
     first_name = request.form.get(
         "first_name",
@@ -1664,10 +1242,6 @@ def register():
         ""
     )
 
-    # ========================================================
-    # REQUIRED FIELD CHECK
-    # ========================================================
-
     if (
         not first_name
         or not last_name
@@ -1689,10 +1263,6 @@ def register():
             url_for("register")
         )
 
-    # ========================================================
-    # PASSWORD CHECK
-    # ========================================================
-
     if password != confirm_password:
 
         return message_page(
@@ -1706,10 +1276,6 @@ def register():
 
             url_for("register")
         )
-
-    # ========================================================
-    # ROLE CHECK
-    # ========================================================
 
     if role not in [
         "farmer",
@@ -1729,10 +1295,6 @@ def register():
             url_for("register")
         )
 
-    # ========================================================
-    # MYSQL CONNECTION
-    # ========================================================
-
     connection = None
     cursor = None
 
@@ -1743,10 +1305,6 @@ def register():
         cursor = connection.cursor(
             dictionary=True
         )
-
-        # ====================================================
-        # CHECK EXISTING EMAIL
-        # ====================================================
 
         cursor.execute(
             """
@@ -1772,10 +1330,6 @@ def register():
 
                 url_for("login")
             )
-
-        # ====================================================
-        # INSERT USER
-        # ====================================================
 
         cursor.execute(
             """
@@ -1847,10 +1401,6 @@ def register():
 
             connection.close()
 
-    # ========================================================
-    # REGISTRATION SUCCESS
-    # ========================================================
-
     role_name = role.capitalize()
 
     return f"""
@@ -1888,9 +1438,6 @@ def register():
                 background:
                     linear-gradient(
                         135deg,
-                        #e8f5e9,
-                        #f1f8e9,
-                        #e0f2f1
                     );
 
                 display: flex;
@@ -1951,8 +1498,6 @@ def register():
                 background:
                     linear-gradient(
                         135deg,
-                        #2e7d32,
-                        #66bb6a
                     );
 
                 display: flex;
@@ -2036,8 +1581,6 @@ def register():
                 background:
                     linear-gradient(
                         135deg,
-                        #2e7d32,
-                        #43a047
                     );
 
                 color: white;
@@ -2165,11 +1708,6 @@ def register():
     </html>
     """
 
-
-# ============================================================
-# FARMER DASHBOARD
-# ============================================================
-
 @app.route("/farmer-dashboard")
 def farmer_dashboard():
 
@@ -2189,7 +1727,6 @@ def farmer_dashboard():
     connection = get_connection()
     cursor = connection.cursor()
 
-    # TOTAL PRODUCTS
     cursor.execute("""
         SELECT COUNT(*)
         FROM products
@@ -2197,7 +1734,6 @@ def farmer_dashboard():
     """, (farmer_id,))
     total_products = cursor.fetchone()[0]
 
-    # ACTIVE ORDERS
     cursor.execute("""
         SELECT COUNT(*)
         FROM orders
@@ -2207,7 +1743,6 @@ def farmer_dashboard():
     """, (farmer_id,))
     active_orders = cursor.fetchone()[0]
 
-    # TOTAL EARNINGS
     cursor.execute("""
         SELECT COALESCE(SUM(orders.total_amount), 0)
         FROM orders
@@ -2217,8 +1752,6 @@ def farmer_dashboard():
     """, (farmer_id,))
     total_earnings = cursor.fetchone()[0]
 
-    # PRODUCT RATING
-    # Average of ratings submitted by buyers for this farmer's products.
     cursor.execute("""
         SELECT
             COALESCE(AVG(orders.review_rating), 0),
@@ -2245,11 +1778,6 @@ def farmer_dashboard():
         product_rating=product_rating,
         review_count=review_count
     )
-
-
-# ============================================================
-# FARMER PROFILE
-# ============================================================
 
 @app.route("/farmer-reviews")
 def farmer_reviews():
@@ -2292,7 +1820,6 @@ def farmer_reviews():
     connection.close()
 
     return render_template("farmer_reviews.html", reviews=reviews)
-
 
 @app.route("/farmer-profile")
 def farmer_profile():
@@ -2364,11 +1891,6 @@ def farmer_profile():
         farmer=farmer
     )
 
-
-# ============================================================
-# BUYER DASHBOARD
-# ============================================================
-
 @app.route("/buyer-dashboard")
 def buyer_dashboard():
 
@@ -2386,9 +1908,6 @@ def buyer_dashboard():
 
     unread_notifications = get_unread_notification_count(session["user_id"])
 
-    # ----------------------------------------------------
-    # FOOD DONATION REVIEWS FROM NGOS
-    # ----------------------------------------------------
     donation_reviews = []
     connection = None
     cursor = None
@@ -2430,9 +1949,6 @@ def buyer_dashboard():
         unread_notifications=unread_notifications,
         donation_reviews=donation_reviews
     )
-# ============================================================
-# BUYER PROFILE
-# ============================================================
 
 @app.route("/profile")
 def profile():
@@ -2483,10 +1999,6 @@ def profile():
         "buyer_profile.html",
         buyer=buyer
     )
-
-# ============================================================
-# SURPLUS FOOD DONATION - BUSINESS BUYER
-# ============================================================
 
 @app.route("/donate-surplus-food", methods=["GET", "POST"])
 def donate_surplus_food():
@@ -2619,7 +2131,6 @@ def donate_surplus_food():
                 "Pending"
             ))
 
-            # Notify all registered NGOs about the new donation.
             cursor.execute("""
                 SELECT id
                 FROM users
@@ -2666,11 +2177,6 @@ def donate_surplus_food():
         )
 
     return render_template("donate_surplus_food.html", buyer=buyer)
-
-
-# ============================================================
-# MY FOOD DONATIONS - BUSINESS BUYER
-# ============================================================
 
 @app.route("/my-food-donations")
 def my_food_donations():
@@ -2741,14 +2247,6 @@ def my_food_donations():
         donations=donations
     )
 
-
-# ============================================================
-# BULK BUYER
-# ============================================================
-# ============================================================
-# BULK BUYER DASHBOARD
-# ============================================================
-
 @app.route("/bulk-buyer")
 def bulk_buyer_dashboard():
 
@@ -2765,11 +2263,6 @@ def bulk_buyer_dashboard():
         )
 
     return render_template("bulk_buyer_dashboard.html")
-
-
-# ============================================================
-# BULK PRODUCTS
-# ============================================================
 
 @app.route("/bulk-products")
 def bulk_products():
@@ -2790,9 +2283,6 @@ def bulk_products():
     connection = get_connection()
     cursor = connection.cursor(dictionary=True)
 
-    # Keep the existing product query and functionality.
-    # Only separate the products into the three required locations
-    # so the template can display them in three side-by-side sections.
     cursor.execute("""
         SELECT products.*, users.first_name, users.last_name
         FROM products
@@ -2828,7 +2318,6 @@ def bulk_products():
         pune_products=pune_products,
         thane_products=thane_products
     )
-
 
 @app.route("/bulk-add-to-cart/<int:product_id>")
 def bulk_add_to_cart(product_id):
@@ -2872,7 +2361,6 @@ def bulk_add_to_cart(product_id):
 
     return redirect(url_for("bulk_cart"))
 
-
 @app.route("/bulk-remove-from-cart/<int:product_id>")
 def bulk_remove_from_cart(product_id):
     bulk_cart = session.get("bulk_cart", [])
@@ -2880,7 +2368,6 @@ def bulk_remove_from_cart(product_id):
         bulk_cart.remove(product_id)
     session["bulk_cart"] = bulk_cart
     return redirect(url_for("bulk_cart"))
-
 
 @app.route("/bulk-cart", methods=["GET"])
 def bulk_cart():
@@ -2915,7 +2402,6 @@ def bulk_cart():
         connection.close()
 
     return render_template("bulk_cart.html", products=products)
-
 
 @app.route("/bulk-checkout", methods=["POST"])
 def bulk_checkout():
@@ -3021,7 +2507,6 @@ def bulk_checkout():
         "Back to Buyer Options",
         url_for("buyer_dashboard")
     )
-
 
 @app.route("/bulk-order", methods=["GET", "POST"], endpoint="bulk_order")
 def bulk_order():
@@ -3206,11 +2691,6 @@ def bulk_order():
     </html>
     """
 
-
-# ============================================================
-# CONTACT FARMER
-# ============================================================
-
 @app.route("/contact-farmer/<int:product_id>")
 def contact_farmer(product_id):
     if "user_id" not in session:
@@ -3304,11 +2784,6 @@ def contact_farmer(product_id):
     </html>
     """
 
-
-# ============================================================
-# BUYER PRODUCTS
-# ============================================================
-
 @app.route("/buyer-products")
 def buyer_products():
 
@@ -3317,8 +2792,6 @@ def buyer_products():
     cursor = connection.cursor(
         dictionary=True
     )
-
-    # NASHIK
 
     cursor.execute(
         """
@@ -3338,8 +2811,6 @@ def buyer_products():
 
     nashik_products = cursor.fetchall()
 
-    # PUNE
-
     cursor.execute(
         """
         SELECT
@@ -3357,8 +2828,6 @@ def buyer_products():
     )
 
     pune_products = cursor.fetchall()
-
-    # THANE
 
     cursor.execute(
         """
@@ -3391,11 +2860,6 @@ def buyer_products():
         thane_products=thane_products
     )
 
-
-# ============================================================
-# # ============================================================
-# BUYER ORDER STATUS
-# ============================================================
 @app.route("/my-orders")
 def my_orders():
 
@@ -3452,9 +2916,6 @@ def my_orders():
 
     orders = cursor.fetchall()
 
-    # --------------------------------------------------------
-    # Identify order type without changing existing database
-    # --------------------------------------------------------
     for order in orders:
 
         if " - " in str(order.get("buyer_name", "")):
@@ -3469,9 +2930,6 @@ def my_orders():
         "my_orders.html",
         orders=orders
     )
-# ============================================================
-# CATEGORY PAGES
-# ============================================================
 
 @app.route("/vegetables")
 def vegetables():
@@ -3480,14 +2938,12 @@ def vegetables():
         "vegetables.html"
     )
 
-
 @app.route("/vegetable")
 def vegetable():
 
     return redirect(
         url_for("vegetables")
     )
-
 
 @app.route("/fruits")
 def fruits():
@@ -3496,14 +2952,12 @@ def fruits():
         "fruits.html"
     )
 
-
 @app.route("/grains")
 def grains():
 
     return render_template(
         "grains.html"
     )
-
 
 @app.route("/dairy")
 def dairy():
@@ -3512,18 +2966,12 @@ def dairy():
         "dairy.html"
     )
 
-
 @app.route("/spices")
 def spices():
 
     return render_template(
         "spices.html"
     )
-
-
-# ============================================================
-# FARMER ORDERS
-# ============================================================
 
 @app.route("/farmer-orders")
 def farmer_orders():
@@ -3594,11 +3042,6 @@ def farmer_orders():
         orders=orders
     )
 
-
-# ============================================================
-# UPDATE ORDER
-# ============================================================
-
 @app.route(
     "/update-order/<int:order_id>/<status>"
 )
@@ -3638,7 +3081,6 @@ def update_order(order_id, status):
     connection = get_connection()
     cursor = connection.cursor(dictionary=True)
 
-    # Verify that the order belongs to this farmer.
     cursor.execute(
         """
         SELECT orders.id, orders.status
@@ -3667,10 +3109,6 @@ def update_order(order_id, status):
 
     current_status = order["status"] or "Pending"
 
-    # Order flow:
-    # Pending -> Accepted / Rejected
-    # Accepted -> Out for Delivery
-    # Out for Delivery -> Completed / Unable to Deliver
     valid_transitions = {
         "Pending": ["Accepted", "Rejected"],
         "Accepted": ["Out for Delivery"],
@@ -3709,11 +3147,6 @@ def update_order(order_id, status):
     connection.close()
 
     return redirect(url_for("farmer_orders"))
-
-
-# ============================================================
-# ADD PRODUCT
-# ============================================================
 
 @app.route(
     "/add-product",
@@ -3775,8 +3208,6 @@ def add_product():
             dictionary=True
         )
 
-        # GET FARMER LOCATION
-
         cursor.execute(
             """
             SELECT location
@@ -3793,8 +3224,6 @@ def add_product():
             if farmer
             else None
         )
-
-        # INSERT PRODUCT
 
         cursor.execute(
             """
@@ -3855,11 +3284,6 @@ def add_product():
         "add_product.html"
     )
 
-
-# ============================================================
-# MY PRODUCTS
-# ============================================================
-
 @app.route("/my-products")
 def my_products():
 
@@ -3910,11 +3334,6 @@ def my_products():
         "my_products.html",
         products=products
     )
-
-
-# ============================================================
-# ORDER PRODUCT
-# ============================================================
 
 @app.route(
     "/order/<int:product_id>",
@@ -3975,8 +3394,6 @@ def order_product(product_id):
 
     product = cursor.fetchone()
 
-    # PRODUCT NOT FOUND
-
     if not product:
 
         cursor.close()
@@ -3993,10 +3410,6 @@ def order_product(product_id):
 
             url_for("buyer_products")
         )
-
-    # ========================================================
-    # PLACE ORDER
-    # ========================================================
 
     if request.method == "POST":
 
@@ -4121,11 +3534,6 @@ def order_product(product_id):
         payment_methods=["COD", "Online"]
     )
 
-
-# ============================================================
-# EDIT PRODUCT
-# ============================================================
-
 @app.route(
     "/edit-product/<int:product_id>",
     methods=["GET", "POST"]
@@ -4219,8 +3627,6 @@ def edit_product(product_id):
             "description"
         )
 
-        # GET FARMER LOCATION
-
         cursor.execute(
             """
             SELECT location
@@ -4237,8 +3643,6 @@ def edit_product(product_id):
             if farmer
             else product["location"]
         )
-
-        # UPDATE PRODUCT
 
         cursor.execute(
             """
@@ -4285,11 +3689,6 @@ def edit_product(product_id):
         "edit_product.html",
         product=product
     )
-
-
-# ============================================================
-# DELETE PRODUCT
-# ============================================================
 
 @app.route(
     "/delete-product/<int:product_id>",
@@ -4345,24 +3744,12 @@ def delete_product(product_id):
         url_for("my_products")
     )
 
-# ============================================================
-# FOOD DONATION
-# ============================================================
-
 @app.route("/food-donation", methods=["GET", "POST"])
 def food_donation():
-
-    # --------------------------------------------------------
-    # LOGIN CHECK
-    # --------------------------------------------------------
 
     if "user_id" not in session:
         session["next_url"] = request.path
         return redirect(url_for("login"))
-
-    # --------------------------------------------------------
-    # BUYER CHECK
-    # --------------------------------------------------------
 
     if session.get("user_role") != "buyer":
         return message_page(
@@ -4372,10 +3759,6 @@ def food_donation():
             "Go to Buyer Dashboard",
             url_for("buyer_dashboard")
         )
-
-    # --------------------------------------------------------
-    # SUBMIT DONATION
-    # --------------------------------------------------------
 
     if request.method == "POST":
 
@@ -4419,10 +3802,6 @@ def food_donation():
             ""
         ).strip()
 
-        # ----------------------------------------------------
-        # BASIC VALIDATION
-        # ----------------------------------------------------
-
         if (
             not food_type
             or not quantity
@@ -4439,10 +3818,6 @@ def food_donation():
                 "Try Again",
                 url_for("food_donation")
             )
-
-        # ----------------------------------------------------
-        # SAVE DONATION
-        # ----------------------------------------------------
 
         connection = None
         cursor = None
@@ -4524,10 +3899,6 @@ def food_donation():
             if connection:
                 connection.close()
 
-        # ----------------------------------------------------
-        # SUCCESS
-        # ----------------------------------------------------
-
         return message_page(
             "Food Donation Submitted!",
             "Thank you for your donation. Your food donation has been submitted successfully and is now waiting for NGO confirmation.",
@@ -4536,16 +3907,9 @@ def food_donation():
             url_for("buyer_dashboard")
         )
 
-    # --------------------------------------------------------
-    # OPEN DONATION FORM
-    # --------------------------------------------------------
-
     return render_template(
         "food_donation.html"
     )
-# ============================================================
-# SURPLUS FOOD REVIEW SETUP
-# ============================================================
 def ensure_surplus_food_review_columns():
     connection = None
     cursor = None
@@ -4580,11 +3944,6 @@ def ensure_surplus_food_review_columns():
         if connection:
             connection.close()
 
-
-# ============================================================
-# NGO DASHBOARD
-# ============================================================
-
 @app.route("/ngo-dashboard")
 def ngo_dashboard():
 
@@ -4608,10 +3967,6 @@ def ngo_dashboard():
         connection = get_connection()
         cursor = connection.cursor(dictionary=True)
 
-        # ----------------------------------------------------
-        # AVAILABLE SURPLUS FOOD
-        # Pending donations which are not assigned to an NGO.
-        # ----------------------------------------------------
         cursor.execute("""
             SELECT
                 sf.id,
@@ -4639,9 +3994,6 @@ def ngo_dashboard():
         """)
         donations = cursor.fetchall()
 
-        # ----------------------------------------------------
-        # THIS NGO'S ACCEPTED / COMPLETED DONATIONS
-        # ----------------------------------------------------
         cursor.execute("""
             SELECT
                 sf.id,
@@ -4670,11 +4022,6 @@ def ngo_dashboard():
         """, (ngo_id,))
         history = cursor.fetchall()
 
-        # ----------------------------------------------------
-        # DASHBOARD COUNTS
-        # Total = all donations currently visible to this NGO
-        # (available + accepted + completed).
-        # ----------------------------------------------------
         pending_donations = sum(
             1 for d in donations if d.get("status") == "Pending"
         )
@@ -4690,9 +4037,6 @@ def ngo_dashboard():
             + completed_donations
         )
 
-        # ----------------------------------------------------
-        # NGO PROFILE
-        # ----------------------------------------------------
         cursor.execute("""
             SELECT
                 id,
@@ -4745,11 +4089,6 @@ def ngo_dashboard():
         if connection:
             connection.close()
 
-
-# ============================================================
-# NGO ACCEPT SURPLUS FOOD DONATION
-# ============================================================
-
 @app.route("/accept-donation/<int:donation_id>", methods=["POST"])
 def accept_donation(donation_id):
 
@@ -4773,7 +4112,6 @@ def accept_donation(donation_id):
         connection = get_connection()
         cursor = connection.cursor(dictionary=True)
 
-        # Only an unassigned Pending donation can be accepted.
         cursor.execute("""
             SELECT
                 id,
@@ -4855,11 +4193,6 @@ def accept_donation(donation_id):
         if connection:
             connection.close()
 
-
-# ============================================================
-# NGO REJECT SURPLUS FOOD DONATION
-# ============================================================
-
 @app.route("/reject-donation/<int:donation_id>", methods=["POST"])
 def reject_donation(donation_id):
 
@@ -4882,7 +4215,6 @@ def reject_donation(donation_id):
         connection = get_connection()
         cursor = connection.cursor(dictionary=True)
 
-        # Only an unassigned Pending donation can be rejected.
         cursor.execute("""
             SELECT
                 id,
@@ -4907,8 +4239,6 @@ def reject_donation(donation_id):
                 url_for("ngo_dashboard")
             )
 
-        # Use the existing Cancelled status so no database ENUM change is required.
-        # The NGO dashboard presents this action to the user as "Rejected".
         cursor.execute("""
             UPDATE surplus_food
             SET status = 'Cancelled'
@@ -4964,11 +4294,6 @@ def reject_donation(donation_id):
             cursor.close()
         if connection:
             connection.close()
-
-
-# ============================================================
-# NGO COMPLETE SURPLUS FOOD DONATION
-# ============================================================
 
 @app.route("/complete-donation/<int:donation_id>", methods=["POST"])
 def complete_donation(donation_id):
@@ -5067,10 +4392,6 @@ def complete_donation(donation_id):
         if connection:
             connection.close()
 
-
-# ============================================================
-# NGO REVIEW SURPLUS FOOD DONATION
-# ============================================================
 @app.route("/review-donation/<int:donation_id>", methods=["POST"])
 def review_donation(donation_id):
 
@@ -5201,12 +4522,6 @@ def review_donation(donation_id):
             url_for("ngo_dashboard")
         )
 
-
-# ============================================================
-# NGO PROFILE
-# ============================================================
-
-
 @app.route("/ngo-profile")
 def ngo_profile():
 
@@ -5279,11 +4594,6 @@ def ngo_profile():
         ngo=ngo
     )
 
-
-# ============================================================
-# NGO AVAILABLE PRODUCTS
-# ============================================================
-
 @app.route("/ngo-products")
 def ngo_products():
 
@@ -5341,11 +4651,6 @@ def ngo_products():
         products=products
     )
 
-
-# ============================================================
-# NGO LOGOUT
-# ============================================================
-
 @app.route("/ngo-logout")
 def ngo_logout():
 
@@ -5355,15 +4660,8 @@ def ngo_logout():
         url_for("home")
     )
 
-
-# ============================================================
-# LOGOUT
-# ============================================================
-
 @app.route("/logout")
 def logout():
-
-    # Completely remove login session
 
     session.clear()
 
@@ -5371,10 +4669,6 @@ def logout():
         url_for("home")
     )
 
-
-# ============================================================
-# BULK ORDER ADDRESS SETUP
-# ============================================================
 def ensure_bulk_order_columns():
     connection = None
     cursor = None
@@ -5410,13 +4704,6 @@ def ensure_bulk_order_columns():
         if connection:
             connection.close()
 
-
-# ============================================================
-# ORDER TYPE SETUP (ADDED - DOES NOT REMOVE EXISTING FEATURES)
-# ============================================================
-# Creates order_type only if the existing orders table does not have it.
-# Existing old bulk orders that used "Buyer Name - Business Name" are
-# automatically marked as Bulk. Existing normal orders remain Regular.
 def ensure_order_type_column():
     connection = None
     cursor = None
@@ -5440,8 +4727,6 @@ def ensure_order_type_column():
             """)
             connection.commit()
 
-        # Recover old bulk orders created by the previous bulk-order route.
-        # That route stored business orders as "Buyer Name - Business Name".
         cursor.execute("""
             UPDATE orders
             SET order_type = 'Bulk'
@@ -5458,18 +4743,6 @@ def ensure_order_type_column():
         if connection:
             connection.close()
 
-
-# ============================================================
-# RUN APP
-# ============================================================
-
-# ============================================================
-# REVIEW SUPPORT
-# ============================================================
-
-# ============================================================
-# REVIEW SETUP
-# ============================================================
 def ensure_review_columns():
     connection = None
     cursor = None
@@ -5506,9 +4779,6 @@ def ensure_review_columns():
         if connection:
             connection.close()
 
-# ============================================================
-# SUBMIT REVIEW
-# ============================================================
 @app.route("/submit-review", methods=["POST"])
 def submit_review():
 
