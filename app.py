@@ -135,10 +135,7 @@ def message_page(
 
                 text-decoration: none;
 
-                background:
-                    linear-gradient(
-                        135deg,
-                    );
+                background: #2e7d32;
 
                 color: white;
 
